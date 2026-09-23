@@ -11,6 +11,7 @@ namespace RedCliffMystery.Investigation
         public const string TestimonyFlagId = "seolpyeong_training_testimony_heard";
         public const string Testimony = "저는 형주에서 채모 장군과 장윤 장군이 수군을 훈련하던 곳의 서리였습니다. 군량의 출납과 훈련 과정을 기록하는 일을 맡았습니다.";
         public InvestigationView view;
+        public IntroductionStage introductionStage;
         public bool DocumentInspected { get; private set; }
         public bool TestimonyHeard { get; private set; }
         public string PlayerName { get; private set; } = "이름 없는 참모";
@@ -28,8 +29,11 @@ namespace RedCliffMystery.Investigation
 
         void Start()
         {
-            UpdateObjective();
-            SetModal("적벽추리 · 서막", "그대의 이름은?", "서기 208년, 적벽대전 직전.\n\n한미한 가문 출신인 당신은 조조의 부름을 받아 군영에 들어섰다. 아직 이름을 알릴 기회조차 없었던 당신에게, 뜻밖의 임무가 기다리고 있다.", "최대 16자 · 비워 두면 ‘이름 없는 참모’로 시작 · 이름과 기록은 이번 실행 동안 유지됩니다.");
+            if (introductionStage != null) introductionStage.Begin();
+            view.SetPrologueLayout(true);
+            view.SetPlayerIdentity("알현 대기", "조조군 지휘 천막");
+            view.SetObjective("조조의 부름에 응하라");
+            SetModal("서막 · 조조군 지휘 천막", "조조", "서기 208년, 적벽대전 직전.\n\n지휘 천막에 들어서자 군략 탁자 앞에 선 조조가 당신을 바라본다.\n\n“가까이 오라. 그대의 이름은 무엇인가?”", "이름은 최대 16자 · 빈칸이면 ‘이름 없는 참모’");
             enteringName = true;
             onEscape = null;
             view.AddNameEntry(BeginIntroduction);
@@ -41,7 +45,7 @@ namespace RedCliffMystery.Investigation
             string cleaned = (enteredName ?? "").Trim().Replace("\n", "").Replace("\r", "").Replace("\t", "");
             PlayerName = string.IsNullOrWhiteSpace(cleaned) ? "이름 없는 참모" : cleaned.Substring(0, Mathf.Min(16, cleaned.Length));
             enteringName = false;
-            view.SetPlayerIdentity(PlayerName);
+            view.SetPlayerIdentity(PlayerName, "조조군 지휘 천막");
             BeginSequence("조조", new[] {
                 $"{PlayerName}, 그대를 이번 사건을 조사할 임시 참모로 삼겠다.",
                 "문서고에 보관하던 화공대비책이 사라졌다. 적의 화공에 대비하기 위한 문서다. 군의 안위가 걸린 일이니 가벼이 여길 수 없다.",
@@ -51,14 +55,18 @@ namespace RedCliffMystery.Investigation
 
         void ShowInvestigationBrief()
         {
-            SetModal("임무 수령 · 조조군 임시 참모", PlayerName + "의 첫 조사", "사라진 「화공대비책」의 행방과 범인을 밝혀라.\n\n첫 조사: 빈 문서 보관함 확인 → 설평의 경력 청취\n확인된 사실과 진술은 수첩에서 다시 살펴볼 수 있다.\n\nWASD 이동 · 마우스 시점 · E 조사/대화\nJ 수첩 · Esc 대화 닫기/일시정지", "현재 구현 범위: 문서고 첫 조사 · 사흘의 시간 진행과 최종 지목은 이후 추가됩니다.");
+            SetModal("임무 수령 · 조조군 임시 참모", PlayerName + "의 첫 조사", "사라진 「화공대비책」의 행방과 범인을 밝혀라.\n\n문서고에서 빈 보관함을 확인하고, 서기 설평의 말을 들어보자.\n\n확인된 사실과 진술은 J키로 여는 수첩에 기록된다.", "E / Enter 계속 · 문서고로 이동한 뒤 조작 안내가 표시됩니다.");
             onEscape = null;
-            view.AddChoice("문서고 조사 시작", FinishIntroduction);
+            view.AddChoice("명을 받고 문서고로 향한다", FinishIntroduction);
             onAdvance = FinishIntroduction;
         }
 
         void FinishIntroduction()
         {
+            if (introductionStage != null) introductionStage.EnterArchive();
+            view.SetPrologueLayout(false);
+            view.SetPlayerIdentity(PlayerName);
+            UpdateObjective();
             introductionFinished = true;
             CloseModal();
         }

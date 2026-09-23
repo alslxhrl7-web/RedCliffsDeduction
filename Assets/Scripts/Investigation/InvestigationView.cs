@@ -17,10 +17,22 @@ namespace RedCliffMystery.Investigation
         public RectTransform choices;
         public Font font;
 
-        public void SetPlayerIdentity(string playerName)
+        public void SetPlayerIdentity(string playerName, string locationName = "조조군 문서고")
         {
             var location = transform.Find("ObjectiveBackdrop/Location").GetComponent<UnityEngine.UI.Text>();
-            location.text = "조조군 문서고  /  임시 참모 · " + playerName;
+            location.text = locationName + "  /  " + playerName;
+        }
+
+        public void SetPrologueLayout(bool prologue)
+        {
+            var panel = modal.transform.Find("Panel").GetComponent<RectTransform>();
+            panel.anchorMin = prologue ? new Vector2(.035f,.08f) : new Vector2(.12f,.12f);
+            panel.anchorMax = prologue ? new Vector2(.49f,.86f) : new Vector2(.88f,.86f);
+            panel.offsetMin = panel.offsetMax = Vector2.zero;
+            modal.GetComponent<UnityEngine.UI.Image>().color = new Color(.015f,.025f,.03f,prologue ? .08f : .68f);
+            body.fontSize = prologue ? 23 : 25;
+            footer.fontSize = prologue ? 15 : 18;
+            transform.Find("Controls").gameObject.SetActive(!prologue);
         }
 
         void Awake()
