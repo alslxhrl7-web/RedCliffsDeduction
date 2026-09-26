@@ -16,6 +16,7 @@ namespace RedCliffMystery.Investigation
         public bool TestimonyHeard { get; private set; }
         public string PlayerName { get; private set; } = "이름 없는 참모";
         public bool BlocksMovement { get; private set; } = true;
+        public bool CanProcessInvestigationInput => !BlocksMovement && Time.frameCount > modalClosedFrame;
         public bool FirstInvestigationComplete => DocumentInspected && TestimonyHeard;
         string[] sequence;
         string sequenceSpeaker;
@@ -24,6 +25,7 @@ namespace RedCliffMystery.Investigation
         Action onAdvance;
         Action onEscape;
         int modalOpenedFrame;
+        int modalClosedFrame = -1;
         bool enteringName;
         bool introductionFinished;
 
@@ -101,6 +103,7 @@ namespace RedCliffMystery.Investigation
             onEscape = null;
             view.HideModal();
             BlocksMovement = false;
+            modalClosedFrame = Time.frameCount;
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
         }
@@ -178,16 +181,30 @@ namespace RedCliffMystery.Investigation
                 ? "설평의 진술 · 미검증\n“" + Testimony + "”"
                 : "인물 진술\n아직 기록한 진술이 없다. 설평에게 경력을 물어보자.";
             SetModal("조사 수첩", "사실과 진술", evidence + "\n\n" + testimony,
-                FirstInvestigationComplete ? "첫 조사 완료 · 다음 조사 대상: 채모·장윤 (후속 장면에서 구현)" : "기록은 이번 실행 동안 유지됩니다.");
+                FirstInvestigationComplete ? "첫 조사 완료 · 다음 조사할 곳을 선택할 수 있습니다." : "기록은 이번 실행 동안 유지됩니다.");
+            if (FirstInvestigationComplete) view.AddChoice("다음 조사 선택", ShowStageSelection);
             view.AddChoice("수첩 닫기", CloseModal);
             onAdvance = CloseModal;
+        }
+
+        public void ShowStageSelection()
+        {
+            if (!introductionFinished || !FirstInvestigationComplete) return;
+            sequence = null;
+            onSequenceComplete = null;
+            SetModal("조사 이동", "다음 조사 선택",
+                "문서고의 첫 조사를 마쳤다.\n\n설평은 채모·장윤의 수군 훈련지에서 기록을 맡았다고 말했다. 두 사람의 진술을 들어 그의 경력을 확인할 필요가 있다.",
+                "이름과 조사 기록은 유지됩니다.  ·  Esc 문서고로 돌아가기");
+            view.AddChoice("채모·장윤 조사 · 준비 중", null, false);
+            view.AddChoice("수첩 다시 보기", ShowJournal);
+            view.AddChoice("문서고로 돌아가기", CloseModal);
         }
 
         void UpdateObjective()
         {
             string objective = !DocumentInspected ? "빈 문서 보관함을 조사하라"
                 : !TestimonyHeard ? "설평에게 형주 시절의 경력을 물어라"
-                : "첫 조사 완료 · J키로 수첩 확인";
+                : "첫 조사 완료 · J키로 수첩에서 다음 조사 선택";
             view.SetObjective(objective);
         }
     }

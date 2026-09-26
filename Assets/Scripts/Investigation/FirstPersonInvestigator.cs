@@ -19,7 +19,7 @@ namespace RedCliffMystery.Investigation
 
         void Update()
         {
-            if (session == null || viewCamera == null || session.BlocksMovement || !Application.isFocused)
+            if (session == null || viewCamera == null || !session.CanProcessInvestigationInput || !Application.isFocused)
                 return;
             var keyboard = Keyboard.current;
             var mouse = Mouse.current;

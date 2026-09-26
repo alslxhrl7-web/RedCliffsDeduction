@@ -64,7 +64,7 @@ namespace RedCliffMystery.Investigation
             crosshair.SetActive(true);
         }
 
-        public void AddChoice(string label, UnityAction action)
+        public void AddChoice(string label, UnityAction action, bool interactable = true)
         {
             var go = new GameObject(label, typeof(RectTransform), typeof(UnityEngine.UI.Image),
                 typeof(UnityEngine.UI.Button), typeof(UnityEngine.UI.LayoutElement));
@@ -72,18 +72,20 @@ namespace RedCliffMystery.Investigation
             go.GetComponent<UnityEngine.UI.Image>().color = new Color(.20f, .25f, .26f, 1);
             go.GetComponent<UnityEngine.UI.LayoutElement>().preferredHeight = 52;
             var button = go.GetComponent<UnityEngine.UI.Button>();
+            button.interactable = interactable;
             var colors = button.colors;
             colors.highlightedColor = new Color(1f, .84f, .53f);
             colors.pressedColor = new Color(.72f, .62f, .42f);
             button.colors = colors;
-            button.onClick.AddListener(action);
+            if (action != null) button.onClick.AddListener(action);
             var textGo = new GameObject("Label", typeof(RectTransform), typeof(UnityEngine.UI.Text));
             textGo.transform.SetParent(go.transform, false);
             var rect = textGo.GetComponent<RectTransform>();
             rect.anchorMin = Vector2.zero; rect.anchorMax = Vector2.one;
             rect.offsetMin = new Vector2(18, 0); rect.offsetMax = new Vector2(-18, 0);
             var text = textGo.GetComponent<UnityEngine.UI.Text>();
-            text.font = font; text.fontSize = 23; text.color = new Color(.97f, .93f, .84f);
+            text.font = font; text.fontSize = 23;
+            text.color = interactable ? new Color(.97f, .93f, .84f) : new Color(.65f, .69f, .68f);
             text.alignment = TextAnchor.MiddleLeft; text.text = label; text.raycastTarget = false;
             text.supportRichText = false;
         }
