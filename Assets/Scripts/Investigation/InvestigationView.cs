@@ -16,6 +16,7 @@ namespace RedCliffMystery.Investigation
         public UnityEngine.UI.Text footer;
         public RectTransform choices;
         public Font font;
+        float choiceHeight;
 
         public void SetPlayerIdentity(string playerName, string locationName = "조조군 문서고")
         {
@@ -56,6 +57,8 @@ namespace RedCliffMystery.Investigation
             body.text = content;
             footer.text = hint;
             foreach (Transform child in choices) { child.gameObject.SetActive(false); Destroy(child.gameObject); }
+            choiceHeight = 0;
+            ResizeChoiceArea();
         }
 
         public void HideModal()
@@ -66,6 +69,7 @@ namespace RedCliffMystery.Investigation
 
         public void AddChoice(string label, UnityAction action, bool interactable = true)
         {
+            ReserveChoiceHeight(52);
             var go = new GameObject(label, typeof(RectTransform), typeof(UnityEngine.UI.Image),
                 typeof(UnityEngine.UI.Button), typeof(UnityEngine.UI.LayoutElement));
             go.transform.SetParent(choices, false);
@@ -92,6 +96,7 @@ namespace RedCliffMystery.Investigation
 
         public void AddNameEntry(Action<string> submit)
         {
+            ReserveChoiceHeight(58);
             var go = new GameObject("PlayerNameInput", typeof(RectTransform), typeof(UnityEngine.UI.Image),
                 typeof(UnityEngine.UI.InputField), typeof(UnityEngine.UI.LayoutElement));
             go.transform.SetParent(choices, false);
@@ -110,6 +115,22 @@ namespace RedCliffMystery.Investigation
             input.placeholder = placeholder;
             AddChoice("이 이름으로 시작", () => submit(input.text));
             input.ActivateInputField();
+        }
+
+        void ReserveChoiceHeight(float height)
+        {
+            choiceHeight += height + (choiceHeight > 0 ? 8 : 0);
+            ResizeChoiceArea();
+        }
+
+        void ResizeChoiceArea()
+        {
+            choices.offsetMax = new Vector2(choices.offsetMax.x, 62 + choiceHeight);
+            var rect = body.rectTransform;
+            rect.anchorMin = Vector2.zero;
+            rect.anchorMax = Vector2.one;
+            rect.offsetMin = new Vector2(40, 80 + choiceHeight);
+            rect.offsetMax = new Vector2(-40, -145);
         }
 
         UnityEngine.UI.Text InputLabel(Transform parent, string name, string content)

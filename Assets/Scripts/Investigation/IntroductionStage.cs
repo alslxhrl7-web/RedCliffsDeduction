@@ -23,11 +23,7 @@ namespace RedCliffMystery.Investigation
 
         void MoveTo(Transform spawn)
         {
-            var controller = player.GetComponent<CharacterController>();
-            controller.enabled = false;
-            player.transform.SetPositionAndRotation(spawn.position, spawn.rotation);
-            player.viewCamera.transform.localRotation = Quaternion.identity;
-            controller.enabled = true;
+            player.TeleportTo(spawn);
         }
     }
 }

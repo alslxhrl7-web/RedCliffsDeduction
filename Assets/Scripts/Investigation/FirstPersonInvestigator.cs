@@ -56,6 +56,20 @@ namespace RedCliffMystery.Investigation
             return null;
         }
 
+        public void TeleportTo(Transform arrival)
+        {
+            if (arrival == null) return;
+            if (controller == null) controller = GetComponent<CharacterController>();
+            bool wasEnabled = controller.enabled;
+            controller.enabled = false;
+            transform.SetPositionAndRotation(arrival.position, arrival.rotation);
+            pitch = 0;
+            verticalSpeed = 0;
+            viewCamera.transform.localRotation = Quaternion.identity;
+            controller.enabled = wasEnabled;
+            Physics.SyncTransforms();
+        }
+
         void OnApplicationFocus(bool focused)
         {
             if (!focused && session != null && !session.BlocksMovement) session.ShowPause();
