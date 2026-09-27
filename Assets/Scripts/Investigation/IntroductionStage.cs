@@ -12,18 +12,13 @@ namespace RedCliffMystery.Investigation
         public void Begin()
         {
             tent.SetActive(true);
-            MoveTo(tentSpawn);
+            player.TeleportTo(tentSpawn);
         }
 
         public void EnterArchive()
         {
-            MoveTo(archiveSpawn);
+            player.TeleportTo(archiveSpawn);
             tent.SetActive(false);
-        }
-
-        void MoveTo(Transform spawn)
-        {
-            player.TeleportTo(spawn);
         }
     }
 }

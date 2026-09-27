@@ -77,7 +77,7 @@ namespace RedCliffMystery.EditorTools
                 if (!EditorSceneManager.SaveScene(scene))
                     throw new InvalidOperationException("Unity could not save the Investigation scene.");
                 Undo.CollapseUndoOperations(undoGroup);
-                Debug.Log("Investigation routes connected: archive entrance, Duseok, and naval camp with Caimao and Zhangyun.");
+                Debug.Log("Investigation routes connected: archive entrance, Duseok, and naval camp with Caimao, Zhangyun, and the maintenance order.");
             }
             catch
             {
@@ -121,6 +121,7 @@ namespace RedCliffMystery.EditorTools
             Tent("ZhangyunTent", root, new Vector3(4, 0, 4.65f), zhangyunCloth);
             Person("Caimao", root, new Vector3(-4, 0, 2), caimaoCloth, InvestigationTarget.TargetKind.Caimao, true);
             Person("Zhangyun", root, new Vector3(4, 0, 2), zhangyunCloth, InvestigationTarget.TargetKind.Zhangyun, true);
+            BuildMaintenanceOrder(root);
             Standard("CampStandard", root, new Vector3(0, 0, 6.7f), banner);
             Standard("CaimaoStandard", root, new Vector3(-6.6f, 0, 2.2f), caimaoCloth);
             Standard("ZhangyunStandard", root, new Vector3(6.6f, 0, 2.2f), zhangyunCloth);
@@ -143,6 +144,24 @@ namespace RedCliffMystery.EditorTools
             Box("RightPost", gate, new Vector3(2, 1.6f, 0), new Vector3(.28f, 3.2f, .28f), darkWood);
             Box("Crossbeam", gate, new Vector3(0, 3.15f, 0), new Vector3(4.65f, .3f, .32f), wood);
             Box("EntranceBanner", gate, new Vector3(0, 2.68f, -.02f), new Vector3(2.25f, .58f, .055f), banner, false);
+        }
+
+        static void BuildMaintenanceOrder(Transform root)
+        {
+            // Keep the cross-path and both commanders' approaches clear.
+            var table = Group("MaintenanceOrderTable", root, new Vector3(0, 0, 2.4f));
+            var target = Component<InvestigationTarget>(table.gameObject);
+            Undo.RecordObject(target, UndoLabel);
+            target.kind = InvestigationTarget.TargetKind.MaintenanceOrder;
+            // The tabletop also resolves to this target, so the thin page is easy to inspect.
+            Box("Tabletop", table, new Vector3(0, .94f, 0), new Vector3(1.8f, .12f, 1), wood);
+            for (int x = -1; x <= 1; x += 2)
+                for (int z = -1; z <= 1; z += 2)
+                    Box("Leg" + x + z, table, new Vector3(x * .72f, .44f, z * .35f), new Vector3(.12f, .88f, .12f), darkWood);
+            Box("MaintenanceOrder", table, new Vector3(-.13f, 1.023f, .02f), new Vector3(1.1f, .045f, .69f), paper);
+            for (int i = 0; i < 4; i++)
+                Box("Writing" + i, table, new Vector3(-.20f, 1.048f, -.16f + i * .105f), new Vector3(.68f, .004f, .025f), hair, false);
+            Box("CommandSeal", table, new Vector3(.30f, 1.048f, -.13f), new Vector3(.12f, .004f, .12f), banner, false);
         }
 
         static void Fence(string name, Transform root, Vector3 position, float yaw)

@@ -4,15 +4,15 @@ using UnityEngine.InputSystem;
 
 namespace RedCliffMystery.Investigation
 {
-    // First-scene prototype state. No global save/ending implementation is replaced.
     public sealed class InvestigationSession : MonoBehaviour
     {
-        public const string MissingDocumentClueId = "clue_document_missing";
-        public const string TestimonyFlagId = "seolpyeong_training_testimony_heard";
-        public const string Testimony = "저는 형주에서 채모 장군과 장윤 장군이 수군을 훈련하던 곳의 서리였습니다. 군량의 출납과 훈련 과정을 기록하는 일을 맡았습니다.";
+        public const int JournalPageCount = 8;
+        public const string Testimony = "저는 형주 동쪽 수채의 서리였습니다. 출입 시설을 정비하던 닷새에도 현장에서 출항하는 배를 확인하고 훈련 내용을 기록했습니다. 그동안 군량도 계속 지급됐습니다.";
         public const string DuseokTestimony = "문서고를 지키던 중 잠시 자리를 비운 적은 있습니다. 제가 자리를 비운 동안 누가 드나들었는지는 보지 못했습니다.";
-        public const string CaimaoTestimony = "수군의 훈련 기록을 확인하려면 어느 시기의 어떤 훈련인지부터 좁혀야 하오. 군량이 지급됐다는 사실만으로 수상 훈련이 있었다고 단정할 수는 없소.";
-        public const string ZhangyunTestimony = "수상 훈련을 하지 않는 날에도 병사에게 군량은 지급하오. 훈련 기록과 군량 출납은 같은 일을 기록하는 문서가 아니오.";
+        public const string CaimaoTestimony = "동쪽 수채의 출입 시설을 정비한 닷새 동안, 그곳에서 밖으로 출항하는 훈련은 중단했소. 정박한 배에서의 작업이나 다른 수채의 훈련을 말하는 것이 아니오.";
+        public const string ZhangyunTestimony = "그 정비 닷새에도 군량은 지급했소. 동쪽 수채의 병사들은 선박 보수와 육상 훈련을 하고 있었으니까. 군량 지급이 출항 훈련을 했다는 뜻은 아니오.";
+        public const string MaintenanceOrder = "동쪽 수채 출입 시설 정비 · 첫날부터 닷새째까지\n\n이 기간 동쪽 수채 밖으로 출항하는 훈련을 중단한다. 병사들은 선박 보수와 육상 훈련을 계속한다.";
+        public const string ReconfirmedTestimony = "명령서에 적힌 그 닷새, 그 동쪽 수채가 맞습니다. 다른 사람의 보고서를 옮긴 것이 아니라 출항하는 배를 제가 직접 보고 기록했습니다.";
         public InvestigationView view;
         public IntroductionStage introductionStage;
         public InvestigationRoute route;
@@ -21,6 +21,11 @@ namespace RedCliffMystery.Investigation
         public bool DuseokTestimonyHeard { get; private set; }
         public bool CaimaoTestimonyHeard { get; private set; }
         public bool ZhangyunTestimonyHeard { get; private set; }
+        public bool MaintenanceOrderRead { get; private set; }
+        public bool TestimonyReconfirmed { get; private set; }
+        public bool ContradictionFound { get; private set; }
+        public bool CanCompareTestimonies => TestimonyHeard && CaimaoTestimonyHeard && ZhangyunTestimonyHeard
+            && MaintenanceOrderRead && TestimonyReconfirmed;
         public string PlayerName { get; private set; } = "이름 없는 참모";
         public bool BlocksMovement { get; private set; } = true;
         public bool CanProcessInvestigationInput => !BlocksMovement && Time.frameCount > modalClosedFrame;
@@ -147,12 +152,38 @@ namespace RedCliffMystery.Investigation
             view.AddChoice("형주에서 무슨 일을 했는가?", () => BeginSequence("설평", new[] { Testimony }, () => {
                 TestimonyHeard = true;
                 UpdateObjective();
-                SetModal("진술 기록", "형주에서의 경력", "설평은 채모·장윤의 수군 훈련지에서 군량과 훈련 과정을 기록했다고 말했다.\n\n아직 확인되지 않은 본인의 진술이다. 이후 두 사람의 증언과 비교할 필요가 있다.", "진술이 수첩에 추가되었습니다.  ·  E 계속 / Esc 닫기");
+                SetModal("진술 기록 · 미검증", "형주에서의 경력", "설평은 동쪽 수채의 정비 닷새에도 출항 훈련을 직접 보고 기록했다고 말했다.\n\n아직 확인되지 않은 본인의 진술이다. 채모·장윤의 설명과 당시 기록을 확인하자.", "진술이 수첩에 추가되었습니다.  ·  E 계속 / Esc 닫기");
                 view.AddChoice("다른 질문", TalkToSeolpyeong);
                 view.AddChoice("대화 마치기", CloseModal);
                 onAdvance = TalkToSeolpyeong;
             }));
+            if (TestimonyHeard && MaintenanceOrderRead)
+                view.AddChoice("정비 닷새의 현장 경험을 재확인한다", ReconfirmTrainingTestimony);
             view.AddChoice("대화 마치기", CloseModal);
+        }
+
+        void ReconfirmTrainingTestimony()
+        {
+            BeginSequence("설평", new[] {
+                "동쪽 수채의 출입 시설을 정비하던 때를 묻는 것이지요? 정비 전이나 후의 일을 말한 것이 아닙니다.",
+                ReconfirmedTestimony }, () => {
+                TestimonyReconfirmed = true;
+                UpdateObjective();
+                SetModal("재확인 · 미검증 진술", "같은 닷새, 같은 수채", ReconfirmedTestimony + "\n\n진술의 시기·장소·직접 목격 여부를 확인했다. 수첩에서 다른 기록과 비교하자.");
+                view.AddChoice("수첩 열기", ShowJournal);
+                view.AddChoice("대화 마치기", CloseModal);
+                onAdvance = CloseModal;
+            });
+        }
+
+        public void InspectMaintenanceOrder()
+        {
+            MaintenanceOrderRead = true;
+            UpdateObjective();
+            SetModal("자료 확인 · 정비 명령서", "동쪽 수채의 정비 닷새", MaintenanceOrder,
+                "명령서 내용이 수첩에 기록되었습니다.  ·  E / Esc 닫기");
+            view.AddChoice("조사 계속", CloseModal);
+            onAdvance = CloseModal;
         }
 
         public void TalkToDuseok()
@@ -180,12 +211,12 @@ namespace RedCliffMystery.Investigation
             Action talkAgain = caimao ? TalkToCaimao : TalkToZhangyun;
             SetModal("수군 진영", speaker, "“문서고에서 조사를 위해 왔다고 들었소. 무엇을 확인하고 싶소?”");
             view.AddChoice("당시 수군 훈련과 기록에 관해", () => BeginSequence(speaker, new[] {
-                caimao ? "설평이 형주에서 수군 훈련을 기록했다고 말했다는 것이오? 그가 맡았다는 업무부터 차근차근 대조해 봅시다."
-                    : "군량 출납과 훈련 기록을 맡았다는 말만으로는 어느 현장에 있었는지 알기 어렵소.",
+                caimao ? "동쪽 수채의 출입 시설을 정비하던 때 말이오? 중앙 기록 탁자에 당시 정비 명령서가 있소."
+                    : "설평이 말한 동쪽 수채의 정비 닷새에 관해 설명하겠소. 군량과 훈련을 구분해서 들어 주시오.",
                 testimony }, () => {
                 if (caimao) CaimaoTestimonyHeard = true; else ZhangyunTestimonyHeard = true;
                 UpdateObjective();
-                SetModal("진술 기록 · 미검증", speaker + "의 설명", testimony + "\n\n설평의 진술과 함께 수첩에 기록했다. 구체적인 시기와 사건을 대조해야 한다.", "E / Esc 대화 마치기");
+                SetModal("진술 기록 · 미검증", speaker + "의 설명", testimony + "\n\n수첩에서 설평의 진술 및 정비 명령서와 비교할 수 있다.", "E / Esc 대화 마치기");
                 view.AddChoice("다른 질문", () => talkAgain());
                 view.AddChoice("대화 마치기", CloseModal);
                 onAdvance = CloseModal;
@@ -227,26 +258,93 @@ namespace RedCliffMystery.Investigation
 
         void ShowJournalPage(int page)
         {
-            string question = !FirstInvestigationComplete ? "문서의 보관 자리와 담당자의 설명을 확인하자."
-                : !CaimaoTestimonyHeard || !ZhangyunTestimonyHeard ? "채모·장윤에게 당시 훈련과 기록 업무를 물어보자."
-                : "훈련 여부와 군량 지급을 구분해, 설평이 말한 경력의 구체적인 시기와 사건을 대조하자.";
-            string[] titles = { "사실과 확인할 일", "설평의 경력", "두석의 경비", "채모의 설명", "장윤의 설명" };
-            string[] records = {
-                "확인된 사실\n" + (DocumentInspected ? "「화공대비책」이 있어야 할 보관 위치가 비어 있다." : "아직 현장에서 확인한 사실이 없다.") + "\n\n확인할 일\n" + question,
-                TestimonyHeard ? "인물 진술 · 미검증\n“" + Testimony + "”" : "아직 진술을 기록하지 않았다.\n설평에게 형주에서 맡았던 일을 물어보자.",
-                DuseokTestimonyHeard ? "인물 진술 · 미검증\n“" + DuseokTestimony + "”\n\n정확한 시각과 출입자는 추가 확인이 필요하다." : "아직 진술을 기록하지 않았다.\n문서고 입구의 두석에게 경비 상황을 물을 수 있다.",
-                CaimaoTestimonyHeard ? "인물 진술 · 미검증\n“" + CaimaoTestimony + "”" : "아직 진술을 기록하지 않았다.\n수군 진영에서 채모를 만날 수 있다.",
-                ZhangyunTestimonyHeard ? "인물 진술 · 미검증\n“" + ZhangyunTestimony + "”" : "아직 진술을 기록하지 않았다.\n수군 진영에서 장윤을 만날 수 있다."
-            };
-            page = Mathf.Clamp(page, 0, records.Length - 1);
-            int current = page;
-            SetModal("조사 수첩 · " + (page + 1) + " / " + records.Length, titles[page], records[page],
+            page = Mathf.Clamp(page, 0, JournalPageCount - 1);
+            var record = GetJournalPage(page);
+            SetModal("조사 수첩 · " + (page + 1) + " / " + JournalPageCount, record.title, record.body,
                 "사실과 진술을 구분해 기록합니다.  ·  E 다음 기록 / Esc 닫기");
-            view.AddChoice("이전 기록", () => ShowJournalPage((current + records.Length - 1) % records.Length));
-            view.AddChoice("다음 기록", () => ShowJournalPage((current + 1) % records.Length));
-            if (FirstInvestigationComplete) view.AddChoice("다음 조사 선택", ShowStageSelection);
+            if (page > 0) view.AddChoice("이전 기록", () => ShowJournalPage(page - 1));
+            view.AddChoice("다음 기록", () => ShowJournalPage((page + 1) % JournalPageCount));
+            if (page == 0 && FirstInvestigationComplete)
+            {
+                view.AddChoice("진술 비교", ShowTestimonyComparison);
+                view.AddChoice("다음 조사 선택", ShowStageSelection);
+            }
+            if (page > 0) view.AddChoice("수첩 처음으로", ShowJournal);
             view.AddChoice("수첩 닫기", CloseModal);
-            onAdvance = () => ShowJournalPage((current + 1) % records.Length);
+            onAdvance = () => ShowJournalPage((page + 1) % JournalPageCount);
+        }
+
+        (string title, string body) GetJournalPage(int page)
+        {
+            switch (page)
+            {
+                case 0: return ("사실과 확인할 일", "확인된 사실\n" + (DocumentInspected
+                    ? "「화공대비책」이 있어야 할 보관 위치가 비어 있다." : "아직 현장에서 확인한 사실이 없다.")
+                    + "\n\n확인할 일\n" + NextInvestigationStep());
+                case 1: return ("설평의 경력", TestimonyHeard ? "인물 진술 · 미검증\n“" + Testimony + "”"
+                    : "아직 진술을 기록하지 않았다.\n설평에게 형주에서 맡았던 일을 물어보자.");
+                case 2: return ("두석의 경비", DuseokTestimonyHeard ? "인물 진술 · 미검증\n“" + DuseokTestimony + "”\n\n정확한 시각과 출입자는 추가 확인이 필요하다."
+                    : "아직 진술을 기록하지 않았다.\n문서고 입구의 두석에게 경비 상황을 물을 수 있다.");
+                case 3: return ("채모의 설명", CaimaoTestimonyHeard ? "인물 진술 · 미검증\n“" + CaimaoTestimony + "”"
+                    : "아직 진술을 기록하지 않았다.\n수군 진영에서 채모를 만날 수 있다.");
+                case 4: return ("장윤의 설명", ZhangyunTestimonyHeard ? "인물 진술 · 미검증\n“" + ZhangyunTestimony + "”"
+                    : "아직 진술을 기록하지 않았다.\n수군 진영에서 장윤을 만날 수 있다.");
+                case 5: return ("정비 명령서", MaintenanceOrderRead ? "확인한 자료\n" + MaintenanceOrder
+                    : "아직 명령서를 확인하지 않았다.\n수군 진영 중앙 기록 탁자에서 살펴보자.");
+                case 6: return ("설평의 재확인", TestimonyReconfirmed ? "인물 진술 · 미검증\n“" + ReconfirmedTestimony + "”"
+                    : "정비 명령서를 확인한 뒤 설평에게 같은 기간·장소에서 직접 목격했는지 다시 묻자.");
+                default: return ("모순 검토 결과", ContradictionFound
+                    ? "발견한 모순\n중단된 출항 훈련을 설평은 현장에서 직접 기록했다고 주장했다.\n\n경력 서류를 재조사할 이유가 생겼다. 이 모순만으로 첩자나 절도범이라고 단정할 수는 없다."
+                    : "아직 모순을 판정하지 않았다.\n세 사람의 진술, 정비 명령서와 설평의 재확인을 모아 ‘진술 비교’를 열어 보자.");
+            }
+        }
+
+        public void ShowTestimonyComparison()
+        {
+            if (!introductionFinished || !FirstInvestigationComplete) return;
+            if (!CanCompareTestimonies)
+            {
+                SetModal("수첩 · 비교 준비", "출항 훈련 진술 비교",
+                    "같은 사건에 관한 기록을 모으자.\n\n"
+                    + RecordStatus(TestimonyHeard, "설평의 형주 경력 진술")
+                    + RecordStatus(CaimaoTestimonyHeard, "채모의 출항 훈련 설명")
+                    + RecordStatus(ZhangyunTestimonyHeard, "장윤의 군량 지급 설명")
+                    + RecordStatus(MaintenanceOrderRead, "중앙 기록 탁자의 정비 명령서")
+                    + RecordStatus(TestimonyReconfirmed, "설평에게 같은 사건인지 재확인"));
+                view.AddChoice("수첩으로 돌아가기", ShowJournal);
+                view.AddChoice("조사 계속", CloseModal);
+                return;
+            }
+
+            SetModal("수첩 · 진술 비교", "무엇이 모순인가?",
+                "설평은 정비 닷새에 출항 훈련을 직접 기록했다고 한다.\n채모의 증언과 명령서는 그 훈련이 중단됐음을 가리킨다.\n장윤은 보수·육상 훈련 중에도 군량이 지급됐다고 한다.\n\n설평에게 같은 기간·장소에서 직접 목격했는지도 재확인했다.");
+            view.AddChoice("훈련을 중단했으니 군량도 지급할 수 없다", () => ShowComparisonMistake(
+                "병사들은 선박 보수와 육상 훈련을 계속했다. 출항 훈련을 중단했어도 군량을 지급할 수 있다."));
+            view.AddChoice("중단된 출항 훈련을 직접 기록했다고 한다", ConfirmContradiction);
+            view.AddChoice("문서고 서기이므로 절도범이다", () => ShowComparisonMistake(
+                "문서고에서 일한다는 사실만으로 절도를 입증할 수 없다. 같은 닷새에 관한 현장 경험과 기록을 비교하자."));
+            view.AddChoice("수첩으로 돌아가기", ShowJournal);
+        }
+
+        static string RecordStatus(bool recorded, string label) => (recorded ? "확인 · " : "미확인 · ") + label + "\n";
+
+        void ShowComparisonMistake(string reason)
+        {
+            SetModal("비교 다시 생각하기", "기록을 다시 확인하자", reason + "\n\n기록은 그대로 남아 있다. 다시 비교할 수 있다.");
+            view.AddChoice("다시 비교", ShowTestimonyComparison);
+            view.AddChoice("수첩으로 돌아가기", ShowJournal);
+        }
+
+        void ConfirmContradiction()
+        {
+            if (!CanCompareTestimonies) return;
+            ContradictionFound = true;
+            UpdateObjective();
+            SetModal("모순 발견 · 경력 확인", "설평의 경력 재조사 필요",
+                "설평은 중단된 출항 훈련을 같은 기간·장소에서 직접 기록했다고 주장했다. 군량 지급만으로 그 경험을 설명할 수는 없다.\n\n설평의 경력 서류를 재조사할 이유가 생겼다. 아직 그의 정체나 절도를 입증한 것은 아니다.");
+            view.AddChoice("수첩 열기", ShowJournal);
+            view.AddChoice("조사 계속", CloseModal);
+            onAdvance = CloseModal;
         }
 
         public void ShowStageSelection()
@@ -290,17 +388,18 @@ namespace RedCliffMystery.Investigation
             CloseModal();
         }
 
-        void UpdateObjective()
+        void UpdateObjective() => view.SetObjective(NextInvestigationStep());
+
+        string NextInvestigationStep()
         {
-            string objective = !DocumentInspected ? "빈 문서 보관함을 조사하라"
-                : !TestimonyHeard ? "설평에게 형주 시절의 경력을 물어라"
-                : "다음 조사 가능 · J키로 이동 선택 / 문서고 추가 조사";
-            if (route != null && route.AtNavalCamp)
-                objective = !CaimaoTestimonyHeard && !ZhangyunTestimonyHeard ? "채모와 장윤에게 훈련·기록에 관해 물어라 · 조사 순서 자유"
-                    : !CaimaoTestimonyHeard ? "채모의 설명을 들어라"
-                    : !ZhangyunTestimonyHeard ? "장윤의 설명을 들어라"
-                    : "두 사람의 진술 확보 · J키로 기록 검토 / 문서고 재방문";
-            view.SetObjective(objective);
+            if (!DocumentInspected) return "빈 문서 보관함을 조사하라";
+            if (!TestimonyHeard) return "설평에게 형주 시절의 경력을 물어라";
+            if (!CaimaoTestimonyHeard || !ZhangyunTestimonyHeard)
+                return "수군 진영에서 채모·장윤의 설명을 들어라 · J키로 이동 선택";
+            if (!MaintenanceOrderRead) return "수군 진영 중앙 기록 탁자의 정비 명령서를 확인하라";
+            if (!TestimonyReconfirmed) return "문서고의 설평에게 정비 닷새의 현장 경험을 재확인하라 · J키로 이동 선택";
+            if (!ContradictionFound) return "J키로 수첩을 열고 ‘진술 비교’에서 모순을 찾아라";
+            return "모순 발견 · 다음 조사 과제는 설평의 경력 서류 재확인";
         }
     }
 }

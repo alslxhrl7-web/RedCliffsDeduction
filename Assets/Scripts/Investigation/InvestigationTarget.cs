@@ -4,7 +4,7 @@ namespace RedCliffMystery.Investigation
 {
     public sealed class InvestigationTarget : MonoBehaviour
     {
-        public enum TargetKind { MissingDocument = 0, Seolpyeong = 1, Duseok = 2, Caimao = 3, Zhangyun = 4 }
+        public enum TargetKind { MissingDocument = 0, Seolpyeong = 1, Duseok = 2, Caimao = 3, Zhangyun = 4, MaintenanceOrder = 5 }
         public TargetKind kind;
         public string Prompt => kind switch
         {
@@ -13,6 +13,7 @@ namespace RedCliffMystery.Investigation
             TargetKind.Duseok => "E  ·  두석과 대화",
             TargetKind.Caimao => "E  ·  채모와 대화",
             TargetKind.Zhangyun => "E  ·  장윤과 대화",
+            TargetKind.MaintenanceOrder => "E  ·  정비 명령서 확인",
             _ => ""
         };
 
@@ -25,6 +26,7 @@ namespace RedCliffMystery.Investigation
                 case TargetKind.Duseok: session.TalkToDuseok(); break;
                 case TargetKind.Caimao: session.TalkToCaimao(); break;
                 case TargetKind.Zhangyun: session.TalkToZhangyun(); break;
+                case TargetKind.MaintenanceOrder: session.InspectMaintenanceOrder(); break;
             }
         }
     }

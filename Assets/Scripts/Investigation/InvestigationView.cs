@@ -17,31 +17,54 @@ namespace RedCliffMystery.Investigation
         public RectTransform choices;
         public Font font;
         float choiceHeight;
+        UnityEngine.UI.Text location;
+        RectTransform modalPanel;
+        UnityEngine.UI.Image modalShade;
+        GameObject controls;
+        static readonly Color LabelColor = new Color(.97f, .93f, .84f);
+        static readonly Color MutedLabelColor = new Color(.65f, .69f, .68f);
 
         public void SetPlayerIdentity(string playerName, string locationName = "조조군 문서고")
         {
-            var location = transform.Find("ObjectiveBackdrop/Location").GetComponent<UnityEngine.UI.Text>();
+            CacheLayoutReferences();
             location.text = locationName + "  /  " + playerName;
         }
 
         public void SetPrologueLayout(bool prologue)
         {
-            var panel = modal.transform.Find("Panel").GetComponent<RectTransform>();
-            panel.anchorMin = prologue ? new Vector2(.035f,.08f) : new Vector2(.12f,.12f);
-            panel.anchorMax = prologue ? new Vector2(.49f,.86f) : new Vector2(.88f,.86f);
-            panel.offsetMin = panel.offsetMax = Vector2.zero;
-            modal.GetComponent<UnityEngine.UI.Image>().color = new Color(.015f,.025f,.03f,prologue ? .08f : .68f);
+            CacheLayoutReferences();
+            modalPanel.anchorMin = prologue ? new Vector2(.035f,.08f) : new Vector2(.12f,.12f);
+            modalPanel.anchorMax = prologue ? new Vector2(.49f,.86f) : new Vector2(.88f,.86f);
+            modalPanel.offsetMin = modalPanel.offsetMax = Vector2.zero;
+            modalShade.color = new Color(.015f,.025f,.03f,prologue ? .08f : .68f);
             body.fontSize = prologue ? 23 : 25;
             footer.fontSize = prologue ? 15 : 18;
-            transform.Find("Controls").gameObject.SetActive(!prologue);
+            controls.SetActive(!prologue);
         }
 
         void Awake()
         {
             // Windows target: use the installed Korean system font without redistributing it.
             font = Font.CreateDynamicFontFromOSFont(new[] { "Malgun Gothic", "맑은 고딕", "Arial" }, 28);
-            foreach (var label in GetComponentsInChildren<UnityEngine.UI.Text>(true)) label.font = font;
-            foreach (var label in GetComponentsInChildren<UnityEngine.UI.Text>(true)) label.supportRichText = false;
+            foreach (var label in GetComponentsInChildren<UnityEngine.UI.Text>(true))
+            {
+                label.font = font;
+                label.supportRichText = false;
+            }
+            CacheLayoutReferences();
+        }
+
+        void CacheLayoutReferences()
+        {
+            // The Editor builders also call the layout methods before Awake runs.
+            if (location == null)
+                location = transform.Find("ObjectiveBackdrop/Location").GetComponent<UnityEngine.UI.Text>();
+            if (modalPanel == null)
+                modalPanel = modal.transform.Find("Panel").GetComponent<RectTransform>();
+            if (modalShade == null)
+                modalShade = modal.GetComponent<UnityEngine.UI.Image>();
+            if (controls == null)
+                controls = transform.Find("Controls").gameObject;
         }
 
         public void SetObjective(string text) => objective.text = text;
@@ -82,16 +105,7 @@ namespace RedCliffMystery.Investigation
             colors.pressedColor = new Color(.72f, .62f, .42f);
             button.colors = colors;
             if (action != null) button.onClick.AddListener(action);
-            var textGo = new GameObject("Label", typeof(RectTransform), typeof(UnityEngine.UI.Text));
-            textGo.transform.SetParent(go.transform, false);
-            var rect = textGo.GetComponent<RectTransform>();
-            rect.anchorMin = Vector2.zero; rect.anchorMax = Vector2.one;
-            rect.offsetMin = new Vector2(18, 0); rect.offsetMax = new Vector2(-18, 0);
-            var text = textGo.GetComponent<UnityEngine.UI.Text>();
-            text.font = font; text.fontSize = 23;
-            text.color = interactable ? new Color(.97f, .93f, .84f) : new Color(.65f, .69f, .68f);
-            text.alignment = TextAnchor.MiddleLeft; text.text = label; text.raycastTarget = false;
-            text.supportRichText = false;
+            CreateLabel(go.transform, "Label", label, 23, 0, interactable ? LabelColor : MutedLabelColor);
         }
 
         public void AddNameEntry(Action<string> submit)
@@ -108,11 +122,8 @@ namespace RedCliffMystery.Investigation
             input.contentType = UnityEngine.UI.InputField.ContentType.Standard;
             input.customCaretColor = true;
             input.caretColor = new Color(1f,.85f,.5f);
-            var label = InputLabel(go.transform, "Name", "");
-            input.textComponent = label;
-            var placeholder = InputLabel(go.transform, "Placeholder", "이름 입력 (기본: 이름 없는 참모)");
-            placeholder.color = new Color(.65f,.69f,.68f);
-            input.placeholder = placeholder;
+            input.textComponent = CreateLabel(go.transform, "Name", "", 25, 6, LabelColor);
+            input.placeholder = CreateLabel(go.transform, "Placeholder", "이름 입력 (기본: 이름 없는 참모)", 25, 6, MutedLabelColor);
             AddChoice("이 이름으로 시작", () => submit(input.text));
             input.ActivateInputField();
         }
@@ -133,16 +144,16 @@ namespace RedCliffMystery.Investigation
             rect.offsetMax = new Vector2(-40, -145);
         }
 
-        UnityEngine.UI.Text InputLabel(Transform parent, string name, string content)
+        UnityEngine.UI.Text CreateLabel(Transform parent, string name, string content, int fontSize, float verticalPadding, Color color)
         {
             var go = new GameObject(name, typeof(RectTransform), typeof(UnityEngine.UI.Text));
             go.transform.SetParent(parent, false);
             var rect = go.GetComponent<RectTransform>();
             rect.anchorMin = Vector2.zero; rect.anchorMax = Vector2.one;
-            rect.offsetMin = new Vector2(18, 6); rect.offsetMax = new Vector2(-18, -6);
+            rect.offsetMin = new Vector2(18, verticalPadding); rect.offsetMax = new Vector2(-18, -verticalPadding);
             var text = go.GetComponent<UnityEngine.UI.Text>();
-            text.font = font; text.fontSize = 25; text.text = content;
-            text.color = new Color(.97f,.93f,.84f); text.alignment = TextAnchor.MiddleLeft;
+            text.font = font; text.fontSize = fontSize; text.text = content;
+            text.color = color; text.alignment = TextAnchor.MiddleLeft;
             text.supportRichText = false; text.raycastTarget = false;
             return text;
         }
