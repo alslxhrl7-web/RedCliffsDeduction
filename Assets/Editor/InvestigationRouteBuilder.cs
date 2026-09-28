@@ -89,7 +89,10 @@ namespace RedCliffMystery.EditorTools
         static void BuildArchiveEntrance(Transform root)
         {
             var doorway = Group("SouthDoorway", root, new Vector3(0, 0, -5.68f));
-            Box("ClosedDoor", doorway, new Vector3(0, 1.25f, 0), new Vector3(2.22f, 2.5f, .16f), wood);
+            var door = Box("ClosedDoor", doorway, new Vector3(0, 1.25f, 0), new Vector3(2.22f, 2.5f, .16f), wood);
+            var exit = Component<InvestigationTarget>(door);
+            Undo.RecordObject(exit, UndoLabel);
+            exit.kind = InvestigationTarget.TargetKind.NavalCampExit;
             Box("LeftFrame", doorway, new Vector3(-1.23f, 1.4f, .09f), new Vector3(.2f, 2.8f, .25f), darkWood);
             Box("RightFrame", doorway, new Vector3(1.23f, 1.4f, .09f), new Vector3(.2f, 2.8f, .25f), darkWood);
             Box("Lintel", doorway, new Vector3(0, 2.77f, .09f), new Vector3(2.67f, .25f, .25f), darkWood);
@@ -144,6 +147,18 @@ namespace RedCliffMystery.EditorTools
             Box("RightPost", gate, new Vector3(2, 1.6f, 0), new Vector3(.28f, 3.2f, .28f), darkWood);
             Box("Crossbeam", gate, new Vector3(0, 3.15f, 0), new Vector3(4.65f, .3f, .32f), wood);
             Box("EntranceBanner", gate, new Vector3(0, 2.68f, -.02f), new Vector3(2.25f, .58f, .055f), banner, false);
+            // A reachable sign on the camp side of the fence provides the return interaction.
+            var sign = Group("ArchiveReturnSign", root, new Vector3(1.45f, 0, -6.3f));
+            Box("Post", sign, new Vector3(0, .65f, 0), new Vector3(.14f, 1.3f, .14f), darkWood);
+            Box("Board", sign, new Vector3(0, 1.45f, 0), new Vector3(1.15f, .6f, .15f), wood);
+            Box("ArrowShaft", sign, new Vector3(0, 1.45f, .09f), new Vector3(.65f, .065f, .03f), paper, false);
+            Shape("ArrowUpper", PrimitiveType.Cube, sign, new Vector3(-.23f, 1.54f, .09f), new Vector3(.28f, .065f, .03f), paper, false,
+                Quaternion.Euler(0, 0, 40));
+            Shape("ArrowLower", PrimitiveType.Cube, sign, new Vector3(-.23f, 1.36f, .09f), new Vector3(.28f, .065f, .03f), paper, false,
+                Quaternion.Euler(0, 0, -40));
+            var returnTarget = Component<InvestigationTarget>(sign.gameObject);
+            Undo.RecordObject(returnTarget, UndoLabel);
+            returnTarget.kind = InvestigationTarget.TargetKind.ArchiveReturn;
         }
 
         static void BuildMaintenanceOrder(Transform root)
