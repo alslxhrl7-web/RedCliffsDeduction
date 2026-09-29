@@ -21,13 +21,34 @@ namespace RedCliffMystery.Investigation
         RectTransform modalPanel;
         UnityEngine.UI.Image modalShade;
         GameObject controls;
+        string investigationDate = "";
+        string identityName = "";
+        string identityLocation = "조조군 문서고";
+        string modalCategory = "";
         static readonly Color LabelColor = new Color(.97f, .93f, .84f);
         static readonly Color MutedLabelColor = new Color(.65f, .69f, .68f);
 
         public void SetPlayerIdentity(string playerName, string locationName = "조조군 문서고")
         {
             CacheLayoutReferences();
-            location.text = locationName + "  /  " + playerName;
+            identityName = playerName;
+            identityLocation = locationName;
+            RefreshDateLabels();
+        }
+
+        public void SetInvestigationDate(string date)
+        {
+            if (investigationDate == date) return;
+            investigationDate = date;
+            CacheLayoutReferences();
+            RefreshDateLabels();
+        }
+
+        void RefreshDateLabels()
+        {
+            string suffix = string.IsNullOrEmpty(investigationDate) ? "" : "  /  " + investigationDate;
+            location.text = identityLocation + "  /  " + identityName + suffix;
+            eyebrow.text = modalCategory + suffix;
         }
 
         public void SetPrologueLayout(bool prologue)
@@ -68,6 +89,33 @@ namespace RedCliffMystery.Investigation
         }
 
         public void SetObjective(string text) => objective.text = text;
+
+        public System.Collections.IEnumerator FadeEndingToBlack()
+        {
+            var overlay = new GameObject("EndingBlackout", typeof(RectTransform), typeof(UnityEngine.UI.Image));
+            overlay.transform.SetParent(modal.transform.parent, false);
+            overlay.transform.SetAsLastSibling();
+            var rect = overlay.GetComponent<RectTransform>();
+            rect.anchorMin = Vector2.zero;
+            rect.anchorMax = Vector2.one;
+            rect.offsetMin = rect.offsetMax = Vector2.zero;
+            var shade = overlay.GetComponent<UnityEngine.UI.Image>();
+            shade.raycastTarget = true;
+            float elapsed = 0;
+            while (elapsed < 1.2f)
+            {
+                elapsed += Time.unscaledDeltaTime;
+                shade.color = new Color(0, 0, 0, Mathf.Clamp01(elapsed / 1.2f));
+                yield return null;
+            }
+            shade.color = Color.black;
+            yield return new WaitForSecondsRealtime(.8f);
+            CacheLayoutReferences();
+            modalShade.color = Color.black;
+            controls.SetActive(false);
+            modal.transform.SetAsLastSibling();
+            Destroy(overlay);
+        }
         public void SetPrompt(string text) => prompt.text = text;
 
         public void ShowModal(string category, string heading, string content, string hint)
@@ -75,7 +123,8 @@ namespace RedCliffMystery.Investigation
             prompt.text = "";
             crosshair.SetActive(false);
             modal.SetActive(true);
-            eyebrow.text = category;
+            modalCategory = category;
+            RefreshDateLabels();
             title.text = heading;
             body.text = content;
             footer.text = hint;

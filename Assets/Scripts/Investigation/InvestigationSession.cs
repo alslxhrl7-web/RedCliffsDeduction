@@ -6,7 +6,7 @@ namespace RedCliffMystery.Investigation
 {
     public sealed partial class InvestigationSession : MonoBehaviour
     {
-        public const int JournalPageCount = 10;
+        public const int JournalPageCount = 14;
         public const string Testimony = "저는 형주 동쪽 수채의 서리였습니다. 출입 시설을 정비하던 닷새에도 현장에서 출항하는 배를 확인하고 훈련 내용을 기록했습니다. 그동안 군량도 계속 지급됐습니다.";
         public const string DuseokTestimony = "문서고를 지키던 중 잠시 자리를 비운 적은 있습니다. 제가 자리를 비운 동안 누가 드나들었는지는 보지 못했습니다.";
         public const string CaimaoTestimony = "동쪽 수채의 출입 시설을 정비한 닷새 동안, 그곳에서 밖으로 출항하는 훈련은 중단했소. 정박한 배에서의 작업이나 다른 수채의 훈련을 말하는 것이 아니오.";
@@ -73,7 +73,7 @@ namespace RedCliffMystery.Investigation
 
         void ShowInvestigationBrief()
         {
-            SetModal("임무 수령 · 조조군 임시 참모", PlayerName + "의 첫 조사", "사라진 「화공대비책」의 행방과 범인을 밝혀라.\n\n문서고에서 빈 보관함을 확인하고, 서기 설평의 말을 들어보자. 입구를 돌아보면 경비 두석도 만날 수 있다.\n\n확인된 사실과 진술은 J키로 여는 수첩에 기록된다.", "E / Enter 계속 · 문서고로 이동한 뒤 조작 안내가 표시됩니다.");
+            SetModal("임무 수령 · 조조군 임시 참모", PlayerName + "의 첫 조사", "사라진 「화공대비책」의 행방과 범인을 밝혀라.\n\n문서고에서 빈 보관함을 확인하고, 서기 설평의 말을 들어보자. 입구를 돌아보면 경비 두석도 만날 수 있다.\n\nJ키로 수첩을 연다. 새 조사 묶음을 완료하면 오전·오후·밤 순서로 시간이 흐른다. 이동과 재열람은 시간을 쓰지 않는다.", "E / Enter 계속 · 문서고로 이동한 뒤 조작 안내가 표시됩니다.");
             onEscape = null;
             view.AddChoice("명을 받고 문서고로 향한다", FinishIntroduction);
             onAdvance = FinishIntroduction;
@@ -91,6 +91,7 @@ namespace RedCliffMystery.Investigation
 
         void Update()
         {
+            RefreshInvestigationTime();
             if (enteringName || !BlocksMovement || Time.frameCount <= modalOpenedFrame || Keyboard.current == null) return;
             var keyboard = Keyboard.current;
             if (keyboard.escapeKey.wasPressedThisFrame) onEscape?.Invoke();
@@ -101,6 +102,7 @@ namespace RedCliffMystery.Investigation
 
         void SetModal(string eyebrow, string title, string body, string footer = "Esc  닫기")
         {
+            RefreshInvestigationTime();
             BlocksMovement = true;
             modalOpenedFrame = Time.frameCount;
             onAdvance = null;
@@ -131,6 +133,7 @@ namespace RedCliffMystery.Investigation
             view.AddChoice("조사 계속", CloseModal);
             view.AddChoice("수첩 열기", ShowJournal);
             view.AddChoice("장소 이동", ShowTravel);
+            view.AddChoice("날짜와 조사 일정", ShowInvestigationSchedule);
             onAdvance = CloseModal;
         }
 
@@ -162,8 +165,7 @@ namespace RedCliffMystery.Investigation
                 view.AddChoice("대화 마치기", CloseModal);
                 onAdvance = TalkToSeolpyeong;
             }));
-            if (TestimonyHeard && MaintenanceOrderRead)
-                view.AddChoice("정비 닷새의 현장 경험을 재확인한다", ReconfirmTrainingTestimony);
+            view.AddChoice("서류와 개인 물건에 관해", ShowSeolpyeongFollowUp);
             view.AddChoice("대화 마치기", CloseModal);
         }
 
@@ -309,6 +311,10 @@ namespace RedCliffMystery.Investigation
                     : "아직 추가로 확인한 진술이 없다. 누구에게 무엇을 더 물을지는 직접 결정할 수 있다.");
                 case 8: return ("형주 인력 인계 명부", PersonnelRecordRead ? PersonnelRecord : "수군 진영 입구 왼편 기록 탁자에서 확인할 수 있다.");
                 case 9: return ("이전 근무 기록", DutyRecordRead ? DutyRecord + "\n\n" + CareerFinding : "수군 진영 입구 왼편 기록 탁자에서 확인할 수 있다.");
+                case 10: return ("개인 목패", TokenObserved ? TokenDescription : "아직 확인한 개인 물건이 없다.");
+                case 11: return ("신원 대조", HasHouseholdRegistryEvidence ? RegistryFinding : "신고 신원은 아직 대조하지 않았다.");
+                case 12: return ("개인 서류 조사", LetterFound ? SecretLetter : "개인 서류 조사 기록이 없다.");
+                case 13: return ("후속 조사", FollowUpProgress());
                 default: return ("모순 검토 결과", ContradictionFound
                     ? "발견한 모순\n중단된 출항 훈련을 설평은 현장에서 직접 기록했다고 주장했다.\n\n직접 목격했다는 주장에 모순이 있다. 서리로 근무한 경력까지 거짓이라고 단정할 수는 없다."
                     : "아직 모순을 판정하지 않았다.\n기록을 검토한 뒤 추가로 조사할 사람을 고르거나, 현재 기록으로 조사를 정리할 수 있다.");

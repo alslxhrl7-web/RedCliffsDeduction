@@ -50,6 +50,12 @@ namespace RedCliffMystery.Investigation
         void CollectReportEvidence()
         {
             reportEvidence.Clear();
+            if (HasHouseholdRegistryEvidence) reportEvidence.Add(new ReportEvidence("신고 신원 대조 결과",
+                "자료 범위와 이름 표기를 확인했으나 신고 신원을 뒷받침하는 호적 기록이 없었습니다.",
+                "근무 기록과 신고 신원의 확인은 별개로 보아야겠군."));
+            if (HasWuLetterEvidence) reportEvidence.Add(new ReportEvidence("본명 밀서",
+                "밀서에서 설평과 목연의 연결, 오나라 연락 및 화공대비책 인계 지시를 확인했습니다.",
+                "신원 대조 결과와 함께 이 문서가 가리키는 바를 검토하겠다."));
             if (PersonnelRecordRead) reportEvidence.Add(new ReportEvidence("형주 인력 인계 명부", PersonnelRecord,
                 "편입 경로는 확인했군. 신고한 출신지와 실제 신원이 일치하는지는 별도로 확인해야 한다."));
             if (DutyRecordRead) reportEvidence.Add(new ReportEvidence("이전 근무 기록", DutyRecord,
@@ -136,9 +142,9 @@ namespace RedCliffMystery.Investigation
             ReportModal("3 / 3 · 후속 조치", "조조", "“보고는 들었다. 어떤 조치가 필요하다고 보느냐?”\n\n요청은 보고서에 기록된다.");
             AddReportRequest("신원과 경력 기록 확인 요청");
             AddReportRequest("문서 반출 경로와 전달자 조사 요청");
-            // Current playable evidence establishes suspicion, not grounds for recovery.
-            // Unlock custody only when the later decisive-evidence investigation exists.
-            view.AddChoice("신병 확보와 소지품 확인 · 근거 부족", null, false);
+            if (HasDecisiveEvidence && reportSuspect == "설평" && !reportUncertain)
+                AddReportRequest("신병 확보와 소지품 확인 요청");
+            else view.AddChoice("신병 확보와 소지품 확인 · 근거 부족", null, false);
             AddReportRequest("현재 결과로 보고를 마친다");
             view.AddChoice("근거 선택으로 돌아가기", () => ShowReportEvidence(evidencePage));
         }
@@ -160,7 +166,7 @@ namespace RedCliffMystery.Investigation
         void ShowReportConfirmation()
         {
             ReportModal("최종 확인", "이 내용으로 보고를 마치겠습니까?", BuildReportSummary());
-            view.AddChoice("이 내용으로 최종 보고 완료", CompleteFinalReport);
+            view.AddChoice("이 내용으로 보고 완료", CompleteFinalReport);
             view.AddChoice("보고 내용 수정", ShowReportConclusion);
             view.AddChoice("보고를 보류하고 추가 조사", CancelFinalReport);
         }
@@ -168,21 +174,39 @@ namespace RedCliffMystery.Investigation
         void CompleteFinalReport()
         {
             if (!reportActive || FinalReportCompleted) return;
+            if (reportRequest == "신원과 경력 기록 확인 요청" && HasHouseholdRegistryEvidence && ContradictionFound)
+            {
+                ReportModal("중간 보고 · 조사 허가", "조조", "“확인된 근거를 바탕으로 설평의 개인 서류 조사를 허락하겠다. 몸수색과 체포는 별도의 근거가 필요하다.”");
+                view.AddChoice("조사 명령을 받고 돌아간다", () => { SearchAuthorized = true; CancelFinalReport(); });
+                return;
+            }
+            if (reportUncertain || reportSuspect == null
+                || reportRequest == "신원과 경력 기록 확인 요청"
+                || reportRequest == "문서 반출 경로와 전달자 조사 요청")
+            {
+                ReportModal("조사 보고", "조조", "“확인한 내용과 요청은 들었다. 지금은 결론을 확정하지 않고 조사를 이어가도록 하라.”");
+                view.AddChoice("조사로 돌아가기", CancelFinalReport);
+                view.AddChoice("보고 내용 수정", ShowReportConclusion);
+                return;
+            }
             FinalReportSummary = BuildReportSummary();
             FinalReportCompleted = true;
             UpdateObjective();
-            ShowCompletedReport();
+            CurrentEnding = EndingRules.Resolve(reportSuspect, HasHouseholdRegistryEvidence, HasWuLetterEvidence);
+            ShowEndingPage(0);
         }
 
         void ShowCompletedReport()
         {
-            SetModal("최종 보고 완료", "조조", "“그대의 보고를 받았다. 확인된 사실과 아직 밝혀지지 않은 일을 구분해 두겠다.”\n\n최종 보고가 기록되었습니다. 후속 수사와 엔딩은 추후 연결됩니다.", "이번 조사 보고가 완료되었습니다.");
+            SetModal("조사 결과", EndingTitle, EndingOutcome, "이번 조사가 끝났습니다.");
             onEscape = null;
             view.AddChoice("제출한 보고서 보기", () => {
                 SetModal("제출한 최종 보고서", PlayerName + "의 보고", FinalReportSummary, "이번 조사 보고가 완료되었습니다.");
                 onEscape = ShowCompletedReport;
                 view.AddChoice("돌아가기", ShowCompletedReport);
             });
+            view.AddChoice("엔딩 다시 보기", () => ShowEndingPage(0));
+            view.AddChoice("처음부터 다시 시작", ConfirmRestart);
         }
 
         void CancelFinalReport()

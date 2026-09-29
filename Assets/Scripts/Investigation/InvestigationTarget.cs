@@ -5,7 +5,7 @@ namespace RedCliffMystery.Investigation
     public sealed class InvestigationTarget : MonoBehaviour
     {
         public enum TargetKind { MissingDocument = 0, Seolpyeong = 1, Duseok = 2, Caimao = 3, Zhangyun = 4, MaintenanceOrder = 5,
-            NavalCampExit = 6, ArchiveReturn = 7, RecordsClerk = 8, CareerRecords = 9 }
+            NavalCampExit = 6, ArchiveReturn = 7, RecordsClerk = 8, CareerRecords = 9, PersonalToken = 10, PersonalPapers = 11 }
         public TargetKind kind;
         public string Prompt => kind switch
         {
@@ -19,6 +19,8 @@ namespace RedCliffMystery.Investigation
             TargetKind.ArchiveReturn => "E  ·  문서고로 돌아가는 길",
             TargetKind.RecordsClerk => "E  ·  기록 담당자와 대화",
             TargetKind.CareerRecords => "E  ·  경력 서류 조사",
+            TargetKind.PersonalToken => "E  ·  서류 묶음의 목패 확인",
+            TargetKind.PersonalPapers => "E  ·  설평의 개인 서류함 확인",
             _ => ""
         };
 
@@ -34,6 +36,8 @@ namespace RedCliffMystery.Investigation
                 case TargetKind.MaintenanceOrder: session.InspectMaintenanceOrder(); break;
                 case TargetKind.RecordsClerk: session.TalkToRecordsClerk(); break;
                 case TargetKind.CareerRecords: session.ShowCareerRecords(); break;
+                case TargetKind.PersonalToken: session.InspectPersonalToken(); break;
+                case TargetKind.PersonalPapers: session.InspectPersonalPapers(); break;
                 case TargetKind.NavalCampExit:
                 case TargetKind.ArchiveReturn: session.ShowTravel(); break;
             }

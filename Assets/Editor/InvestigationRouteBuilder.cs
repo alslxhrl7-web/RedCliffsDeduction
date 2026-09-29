@@ -15,6 +15,51 @@ namespace RedCliffMystery.EditorTools
         static Material wood, darkWood, paper, brass, canvas, skin, hair, armour;
         static Material earth, path, guardCloth, caimaoCloth, zhangyunCloth, banner;
 
+        [MenuItem("적벽추리/목패와 개인 서류함 연결")]
+        public static void BuildPersonalEvidence()
+        {
+            if (EditorApplication.isPlayingOrWillChangePlaymode) throw new InvalidOperationException("Exit Play Mode first.");
+            var scene = SceneManager.GetActiveScene();
+            if (scene.path != FirstInvestigationBuilder.ScenePath || scene.isDirty)
+                throw new InvalidOperationException("Open and save Investigation scene first.");
+            var room = FindRoot(scene, "ArchiveRoom");
+            if (room == null) throw new InvalidOperationException("ArchiveRoom is required.");
+            Undo.IncrementCurrentGroup();
+            int group = Undo.GetCurrentGroup();
+            try
+            {
+                LoadMaterials();
+                var root = Group("PersonalEvidence", room.transform, Vector3.zero);
+                var token = Group("PersonalToken", root, new Vector3(4, 1.08f, 4.25f));
+                var target = Component<InvestigationTarget>(token.gameObject);
+                Undo.RecordObject(target, UndoLabel);
+                target.kind = InvestigationTarget.TargetKind.PersonalToken;
+                Box("PaperBundle", token, Vector3.zero, new Vector3(.55f, .12f, .48f), paper);
+                Box("WoodenToken", token, new Vector3(0, .09f, 0), new Vector3(.2f, .05f, .34f), wood);
+                for (int i = 0; i < 3; i++)
+                    Box("Notch" + i, token, new Vector3(.085f, .119f, -.12f + i * i * .052f), new Vector3(.055f, .008f, .022f), hair, false);
+                var papers = Group("PersonalPapers", root, new Vector3(4.8f, 1.2f, 4.5f));
+                var paperTarget = Component<InvestigationTarget>(papers.gameObject);
+                Undo.RecordObject(paperTarget, UndoLabel);
+                paperTarget.kind = InvestigationTarget.TargetKind.PersonalPapers;
+                Box("Case", papers, Vector3.zero, new Vector3(.68f, .35f, .6f), darkWood);
+                Box("Lid", papers, new Vector3(0, .2f, 0), new Vector3(.73f, .06f, .65f), wood);
+                Box("Clasp", papers, new Vector3(0, .12f, -.31f), new Vector3(.1f, .15f, .025f), brass, false);
+                EditorSceneManager.MarkSceneDirty(scene);
+                if (!EditorSceneManager.SaveScene(scene)) throw new InvalidOperationException("Scene save failed.");
+                Undo.CollapseUndoOperations(group);
+                Debug.Log("PERSONAL_EVIDENCE_CONNECTED");
+            }
+            catch { Undo.RevertAllDownToGroup(group); throw; }
+        }
+
+        public static void BuildPersonalEvidenceBatch()
+        {
+            EditorSceneManager.OpenScene(FirstInvestigationBuilder.ScenePath);
+            BuildPersonalEvidence();
+            FollowUpConnectionChecks.Verify();
+        }
+
         [MenuItem("적벽추리/경력 기록 탁자 추가")]
         public static void BuildCareerRecords()
         {

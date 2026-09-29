@@ -13,6 +13,7 @@ namespace RedCliffMystery.Investigation
         {
             SetModal("수군 진영 · 기록 담당자", "기록 담당자", "“형주에서 인계된 인력과 근무 기록을 보관하고 있습니다. 앞의 탁자에서 명부와 근무 기록을 함께 살펴보십시오.”");
             view.AddChoice("경력 서류를 살펴본다", ShowCareerRecords);
+            view.AddChoice("신고 출신지의 호적 대조", ShowRegistryComparison);
             view.AddChoice("이 기록으로 무엇을 확인할 수 있나?", () => BeginSequence("기록 담당자", new[] {
                 "근무 기록은 그 이름으로 맡아 온 업무를 확인하는 자료입니다. 인계 명부의 출신지는 본인이 신고한 내용이지요.",
                 "근무 사실과 신원은 구분해서 살펴야 합니다. 출신지와 신원을 확인하려면 해당 지역의 호적을 별도로 대조해야 합니다." }, TalkToRecordsClerk));
@@ -42,6 +43,7 @@ namespace RedCliffMystery.Investigation
         {
             SetModal("서류 조사 결과", "근무 경력과 신고 신원", CareerFinding + "\n\n명부에 신고된 출신지는 형주 남군 강릉이다. 이 기록만으로 가명이나 범행 여부를 판단할 수 없다.");
             view.AddChoice("수첩 확인", ShowJournal);
+            view.AddChoice("기록 담당자에게 신원 대조 요청", ShowRegistryComparison);
             view.AddChoice("조사 계속", CloseModal);
         }
     }
