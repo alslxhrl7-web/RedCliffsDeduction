@@ -15,6 +15,46 @@ namespace RedCliffMystery.EditorTools
         static Material wood, darkWood, paper, brass, canvas, skin, hair, armour;
         static Material earth, path, guardCloth, caimaoCloth, zhangyunCloth, banner;
 
+        [MenuItem("적벽추리/경력 기록 탁자 추가")]
+        public static void BuildCareerRecords()
+        {
+            if (EditorApplication.isPlayingOrWillChangePlaymode)
+                throw new InvalidOperationException("Exit Play Mode first.");
+            var scene = SceneManager.GetActiveScene();
+            if (scene.path != FirstInvestigationBuilder.ScenePath || scene.isDirty)
+                throw new InvalidOperationException("Open and save Investigation scene first.");
+            var routes = FindRoot(scene, "InvestigationRoutes");
+            var camp = routes == null ? null : routes.transform.Find("NavalCamp");
+            if (camp == null) throw new InvalidOperationException("NavalCamp is required.");
+            Undo.IncrementCurrentGroup();
+            int group = Undo.GetCurrentGroup();
+            try
+            {
+                LoadMaterials();
+                var station = Group("CareerRecordsStation", camp, new Vector3(-4.4f, 0, -3.7f));
+                Person("RecordsClerk", station, new Vector3(0, 0, 1.05f), guardCloth, InvestigationTarget.TargetKind.RecordsClerk, false);
+                var table = Group("CareerRecordsTable", station, Vector3.zero);
+                var target = Component<InvestigationTarget>(table.gameObject);
+                Undo.RecordObject(target, UndoLabel);
+                target.kind = InvestigationTarget.TargetKind.CareerRecords;
+                Box("Tabletop", table, new Vector3(0, .94f, 0), new Vector3(2.1f, .12f, 1), wood);
+                foreach (int x in new[] { -1, 1 })
+                    foreach (int z in new[] { -1, 1 })
+                        Box("Leg" + x + z, table, new Vector3(x * .85f, .44f, z * .35f), new Vector3(.12f, .88f, .12f), darkWood);
+                foreach (int side in new[] { -1, 1 })
+                {
+                    Box(side < 0 ? "PersonnelRecord" : "DutyRecord", table, new Vector3(side * .48f, 1.025f, 0), new Vector3(.75f, .05f, .65f), paper);
+                    for (int i = 0; i < 4; i++)
+                        Box("Writing" + side + i, table, new Vector3(side * .48f, 1.053f, -.18f + i * .11f), new Vector3(.5f, .004f, .02f), hair, false);
+                }
+                EditorSceneManager.MarkSceneDirty(scene);
+                if (!EditorSceneManager.SaveScene(scene)) throw new InvalidOperationException("Scene save failed.");
+                Undo.CollapseUndoOperations(group);
+                Debug.Log("CAREER_RECORDS_INSTALLED: clerk and two records at naval entrance left.");
+            }
+            catch { Undo.RevertAllDownToGroup(group); throw; }
+        }
+
         [MenuItem("적벽추리/문서고와 수군 진영 연결")]
         public static void Build()
         {
