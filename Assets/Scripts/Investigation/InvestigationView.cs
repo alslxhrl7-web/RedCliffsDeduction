@@ -17,6 +17,9 @@ namespace RedCliffMystery.Investigation
         public RectTransform choices;
         public Font font;
         float choiceHeight;
+        UnityEngine.UI.ScrollRect bodyScroll;
+        RectTransform bodyScrollRoot;
+        string modalHint = "";
         UnityEngine.UI.Text location;
         RectTransform modalPanel;
         UnityEngine.UI.Image modalShade;
@@ -73,6 +76,34 @@ namespace RedCliffMystery.Investigation
                 label.supportRichText = false;
             }
             CacheLayoutReferences();
+            SetupBodyScroll();
+        }
+
+        void SetupBodyScroll()
+        {
+            if (bodyScroll != null) return;
+            var root = new GameObject("BodyScroll", typeof(RectTransform), typeof(UnityEngine.UI.ScrollRect));
+            root.transform.SetParent(body.transform.parent, false);
+            bodyScrollRoot = root.GetComponent<RectTransform>();
+            var viewport = new GameObject("Viewport", typeof(RectTransform), typeof(UnityEngine.UI.Image), typeof(UnityEngine.UI.Mask));
+            viewport.transform.SetParent(root.transform, false);
+            var viewportRect = viewport.GetComponent<RectTransform>();
+            viewportRect.anchorMin = Vector2.zero; viewportRect.anchorMax = Vector2.one;
+            viewportRect.offsetMin = viewportRect.offsetMax = Vector2.zero;
+            viewport.GetComponent<UnityEngine.UI.Mask>().showMaskGraphic = false;
+            body.transform.SetParent(viewport.transform, false);
+            var content = body.rectTransform;
+            content.anchorMin = new Vector2(0, 1); content.anchorMax = Vector2.one;
+            content.pivot = new Vector2(.5f, 1);
+            content.anchoredPosition = Vector2.zero; content.sizeDelta = Vector2.zero;
+            body.gameObject.AddComponent<UnityEngine.UI.ContentSizeFitter>().verticalFit = UnityEngine.UI.ContentSizeFitter.FitMode.PreferredSize;
+            body.raycastTarget = true;
+            bodyScroll = root.GetComponent<UnityEngine.UI.ScrollRect>();
+            bodyScroll.viewport = viewportRect; bodyScroll.content = content;
+            bodyScroll.horizontal = false; bodyScroll.vertical = true;
+            bodyScroll.movementType = UnityEngine.UI.ScrollRect.MovementType.Clamped;
+            bodyScroll.scrollSensitivity = 30;
+            ResizeChoiceArea();
         }
 
         void CacheLayoutReferences()
@@ -117,6 +148,7 @@ namespace RedCliffMystery.Investigation
             Destroy(overlay);
         }
         public void SetPrompt(string text) => prompt.text = text;
+        public void SetFooterHint(string text) { modalHint = text; footer.text = text; }
 
         public void ShowModal(string category, string heading, string content, string hint)
         {
@@ -127,16 +159,25 @@ namespace RedCliffMystery.Investigation
             RefreshDateLabels();
             title.text = heading;
             body.text = content;
+            modalHint = hint;
             footer.text = hint;
             foreach (Transform child in choices) { child.gameObject.SetActive(false); Destroy(child.gameObject); }
             choiceHeight = 0;
             ResizeChoiceArea();
+            if (bodyScroll != null) { bodyScroll.StopMovement(); bodyScroll.verticalNormalizedPosition = 1; body.rectTransform.anchoredPosition = Vector2.zero; }
         }
 
         public void HideModal()
         {
             modal.SetActive(false);
             crosshair.SetActive(true);
+        }
+
+        void LateUpdate()
+        {
+            if (bodyScroll == null || !modal.activeInHierarchy) return;
+            bool overflow = body.preferredHeight > bodyScroll.viewport.rect.height + 1;
+            footer.text = overflow ? "휠로 본문 스크롤  ·  " + modalHint : modalHint;
         }
 
         public void AddChoice(string label, UnityAction action, bool interactable = true)
@@ -186,7 +227,7 @@ namespace RedCliffMystery.Investigation
         void ResizeChoiceArea()
         {
             choices.offsetMax = new Vector2(choices.offsetMax.x, 62 + choiceHeight);
-            var rect = body.rectTransform;
+            var rect = bodyScrollRoot != null ? bodyScrollRoot : body.rectTransform;
             rect.anchorMin = Vector2.zero;
             rect.anchorMax = Vector2.one;
             rect.offsetMin = new Vector2(40, 80 + choiceHeight);

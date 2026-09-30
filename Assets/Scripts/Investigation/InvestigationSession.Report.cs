@@ -41,8 +41,8 @@ namespace RedCliffMystery.Investigation
             view.SetObjective("조조에게 보고하거나 조사 장소로 돌아갈 수 있다");
             SetModal("조조군 지휘 천막", "조조", "“돌아왔느냐. 확인한 내용을 보고하겠느냐, 아니면 조사를 더 이어가겠느냐?”",
                 "Esc 이전 조사 장소로 복귀 · 이동에는 시간이 소모되지 않습니다.");
-            view.AddChoice(OfficersHeard ? "조사 결과 보고" : "조사 결과 보고 · 채모·장윤 설명 확보 후", BeginFinalReport, OfficersHeard);
-            if (HasHouseholdRegistryEvidence && !SearchAuthorized)
+            view.AddChoice(CanReportNow ? "조사 결과 보고" : "조사 결과 보고 · 채모·장윤 설명 확보 후", BeginFinalReport, CanReportNow);
+            if (HasHouseholdRegistryEvidence && !SearchAuthorized && !investigationTime.DeadlineReached)
                 view.AddChoice("개인 서류 조사 허가 요청", RequestPersonalSearch);
             view.AddChoice("수군 진영으로 돌아가기", () => LeaveCommandTent(true));
             view.AddChoice("문서고로 돌아가기", () => LeaveCommandTent(false));
@@ -60,7 +60,7 @@ namespace RedCliffMystery.Investigation
 
         public void BeginFinalReport()
         {
-            if (!introductionFinished || !OfficersHeard || reportActive || FinalReportCompleted) return;
+            if (!introductionFinished || !CanReportNow || reportActive || FinalReportCompleted) return;
             if (introductionStage == null || introductionStage.player == null
                 || introductionStage.tent == null || introductionStage.tentSpawn == null
                 || introductionStage.archiveSpawn == null || route == null || !route.IsReady)
@@ -70,6 +70,7 @@ namespace RedCliffMystery.Investigation
                 return;
             }
             reportFromNavalCamp = route.AtNavalCamp;
+            if (investigationTime.DeadlineReached) deadlineReportLocked = true;
             visitingCommandTent = false;
             reportActive = true;
             reportSuspect = null;
@@ -87,6 +88,8 @@ namespace RedCliffMystery.Investigation
         void CollectReportEvidence()
         {
             reportEvidence.Clear();
+            if (WorkRouteHeard && AccessAuthorityHeard) reportEvidence.Add(new ReportEvidence("문서 취급 권한과 업무 동선", WorkAccessFinding(),
+                "업무상 접근할 수 있었다는 말이군. 그것만으로 문서를 훔쳤다고 단정하지 않겠다."));
             if (DuseokTimelineComplete) reportEvidence.Add(new ReportEvidence("두석의 경비 시간대 조사", DuseokTimeline,
                 "경비 공백은 확인했군. 그 틈을 이용할 기회와 실제 절도를 저지른 증거는 구분하겠다."));
             if (HasHouseholdRegistryEvidence) reportEvidence.Add(new ReportEvidence("신고 신원 대조 결과",
@@ -121,6 +124,11 @@ namespace RedCliffMystery.Investigation
         void ReportModal(string step, string heading, string text)
         {
             SetModal("최종 보고 · " + step, heading, text, "Esc 보고를 중단하고 조사로 돌아가기");
+            if (deadlineReportLocked)
+            {
+                onEscape = null;
+                view.SetFooterHint("기한 종료 · 보고 내용은 수정할 수 있지만 현장으로 돌아갈 수 없습니다.");
+            }
         }
 
         void ShowReportConclusion()
@@ -129,7 +137,7 @@ namespace RedCliffMystery.Investigation
             view.AddChoice("특정 인물을 지목한다", () => { reportUncertain = false; ShowReportSuspects(); });
             view.AddChoice("의심되는 인물은 있지만 확정하지 못했다", () => { reportUncertain = true; ShowReportSuspects(); });
             view.AddChoice("범인을 밝히지 못했다", () => { reportSuspect = null; reportUncertain = false; ShowReportEvidence(0); });
-            view.AddChoice("추가 조사로 돌아간다", CancelFinalReport);
+            if (!deadlineReportLocked) view.AddChoice("추가 조사로 돌아간다", CancelFinalReport);
         }
 
         void ShowReportSuspects()
@@ -179,8 +187,11 @@ namespace RedCliffMystery.Investigation
         void ShowReportRequest()
         {
             ReportModal("3 / 3 · 후속 조치", "조조", "“보고는 들었다. 어떤 조치가 필요하다고 보느냐?”\n\n요청은 보고서에 기록된다.");
-            AddReportRequest("신원과 경력 기록 확인 요청");
-            AddReportRequest("문서 반출 경로와 전달자 조사 요청");
+            if (!deadlineReportLocked)
+            {
+                AddReportRequest("신원과 경력 기록 확인 요청");
+                AddReportRequest("문서 반출 경로와 전달자 조사 요청");
+            }
             if (HasDecisiveEvidence && reportSuspect == "설평" && !reportUncertain)
                 AddReportRequest("신병 확보와 소지품 확인 요청");
             else view.AddChoice("신병 확보와 소지품 확인 · 근거 부족", null, false);
@@ -207,12 +218,21 @@ namespace RedCliffMystery.Investigation
             ReportModal("최종 확인", "이 내용으로 보고를 마치겠습니까?", BuildReportSummary());
             view.AddChoice("이 내용으로 보고 완료", CompleteFinalReport);
             view.AddChoice("보고 내용 수정", ShowReportConclusion);
-            view.AddChoice("보고를 보류하고 추가 조사", CancelFinalReport);
+            if (!deadlineReportLocked) view.AddChoice("보고를 보류하고 추가 조사", CancelFinalReport);
         }
 
         void CompleteFinalReport()
         {
             if (!reportActive || FinalReportCompleted) return;
+            if (deadlineReportLocked)
+            {
+                FinalReportSummary = BuildReportSummary();
+                FinalReportCompleted = true;
+                CurrentEnding = EndingRules.ResolveFinal(reportSuspect, reportUncertain, true, HasHouseholdRegistryEvidence, HasWuLetterEvidence);
+                UpdateObjective();
+                ShowEndingPage(0);
+                return;
+            }
             if (reportRequest == "신원과 경력 기록 확인 요청" && HasHouseholdRegistryEvidence && ContradictionFound)
             {
                 ReportModal("중간 보고 · 조사 허가", "조조", "“확인된 근거를 바탕으로 설평의 개인 서류 조사를 허락하겠다. 몸수색과 체포는 별도의 근거가 필요하다.”");
@@ -246,11 +266,13 @@ namespace RedCliffMystery.Investigation
             });
             view.AddChoice("엔딩 다시 보기", () => ShowEndingPage(0));
             view.AddChoice("처음부터 다시 시작", ConfirmRestart);
+            view.AddChoice("저장한 조사 불러오기", () => ConfirmLoad(ShowCompletedReport));
         }
 
         void CancelFinalReport()
         {
             if (!reportActive || FinalReportCompleted) return;
+            if (deadlineReportLocked) { ShowReportConclusion(); return; }
             reportActive = false;
             introductionStage.EnterArchive();
             if (reportFromNavalCamp) route.EnterNavalCamp(); else route.EnterArchive();

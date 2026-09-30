@@ -6,6 +6,12 @@ namespace RedCliffMystery.Investigation
 
     public static class EndingRules
     {
+        public static InvestigationEnding ResolveFinal(string suspect, bool uncertain, bool expired, bool registry, bool letter)
+        {
+            if (uncertain || string.IsNullOrEmpty(suspect))
+                return expired ? InvestigationEnding.Unresolved : InvestigationEnding.None;
+            return Resolve(suspect, registry, letter);
+        }
         // Ownership, rather than report checkbox selection, is the agreed condition.
         public static InvestigationEnding Resolve(string suspect, bool registry, bool letter)
         {
@@ -68,19 +74,20 @@ namespace RedCliffMystery.Investigation
 
         string EndingAftermath => CurrentEnding switch
         {
-            InvestigationEnding.True => "군사들이 설평의 몸에 숨겨진 화공대비책을 찾아낸다.\n\n가명으로 실제 서리 경력을 쌓아 온 목연. 오나라를 위해 문서를 훔친 그의 임무는 인계 직전에 막혔다.\n\n당신은 사라진 문서를 되찾았다.",
+            InvestigationEnding.True => "군사들이 설평의 몸에 숨겨진 화공대비책을 찾아낸다.\n\n설평, 본명 목연은 함께 근무하던 두석의 경비 자리가 빈 것을 직접 확인하고 서기의 접근 권한을 이용했다. 두석의 복귀 시각까지 알았던 것은 아니다.\n\n접선은 이달 열닷새, 나흘째 새벽 한 차례. 그 전에 따로 보낼 수 없어 문서를 몸에 지닌 채 기다리던 그의 임무는 예정된 인계 전에 막혔다.\n\n당신은 사라진 문서를 되찾았다.",
             InvestigationEnding.Normal => "보고가 끝난 뒤에도 화공대비책은 돌아오지 않았다.\n\n누구에게 있는지, 어디로 옮겨졌는지 확인되지 않는다.\n\n당신의 조사에는 끝내 메우지 못한 공백이 남았다.",
-            _ => "그 뒤, 시간이 흘렀다.\n\n오나라 측의 책상 위에 한 묶음의 문서가 놓인다. 펼쳐진 표지에는 ‘화공대비책’이라고 적혀 있다.\n\n누가 건넸는지는 보이지 않는다. 조조군의 대비책은 이미 강 건너에 도착했다."
+            _ => "이달 열닷새, 나흘째 새벽의 접선 시각이 지나고.\n\n오나라 측의 책상 위에 한 묶음의 문서가 놓인다. 펼쳐진 표지에는 ‘화공대비책’이라고 적혀 있다.\n\n누가 건넸는지는 보이지 않는다. 조조군의 대비책은 이미 강 건너에 도착했다."
         };
 
         string EndingOutcome => CurrentEnding == InvestigationEnding.True
             ? "범인과 위장 신원 확인\n화공대비책 회수\n오나라 전달 저지"
             : CurrentEnding == InvestigationEnding.Normal
                 ? "설평 지목\n사건 입증 미완료\n문서 행방 불명"
-                : "조사 미해결\n화공대비책 회수 실패\n오나라 전달 완료";
+                : "조사 미해결\n화공대비책 회수 실패\n나흘째 새벽 이후 · 오나라 전달 완료";
 
         void ShowEndingPage(int page)
         {
+            view.SetInvestigationDate(page == 1 && IsBadEnding ? "나흘째 새벽 이후 · 이달 열닷새" : "");
             SetModal("결말 · " + (page + 1) + " / 2", EndingTitle,
                 page == 0 ? EndingJudgment : EndingAftermath, "E / Enter 계속");
             onEscape = null;

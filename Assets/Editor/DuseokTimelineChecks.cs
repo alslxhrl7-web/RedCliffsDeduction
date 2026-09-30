@@ -24,7 +24,7 @@ public static class DuseokTimelineChecks
             var clock = new InvestigationTime();
             for (int i = 0; i < 6; i++) clock.Complete("base" + i, "조사");
             Require(clock.Complete("duseok_timeline", "두석 조사"), "Time not charged");
-            Require(!clock.Complete("duseok_timeline", "두석 조사") && clock.ElapsedSlots == 7 && clock.Label == "셋째 날 · 오후", "Duplicate or wrong time charge");
+            Require(!clock.Complete("duseok_timeline", "두석 조사") && clock.ElapsedSlots == 7 && clock.Label.StartsWith("둘째 날 · 밤"), "Duplicate or wrong time charge");
             Require(EndingRules.Resolve("설평", true, true) == InvestigationEnding.True && !session.DuseokTimelineComplete, "Optional investigation changed ending rules");
             foreach (var pair in new[] {
                 ("InvestigationRoutes/ArchiveEntrance/ReliefGuard", InvestigationTarget.TargetKind.ReliefGuard),

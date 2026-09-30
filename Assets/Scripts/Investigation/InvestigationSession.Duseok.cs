@@ -26,6 +26,7 @@ namespace RedCliffMystery.Investigation
 
         public void TalkToDocumentCourier()
         {
+            if (!EnsureInquiry("courier", "전령 · 문서 확인 시점", TalkToDocumentCourier)) return;
             SetModal("수군 진영 · 문서 전달 전령", "전령", "“사건 당일 대비책을 전달하고 돌려놓은 일을 말씀드리겠습니다.”");
             view.AddChoice("마지막으로 문서를 본 때는?", () => RecordDuseokStatement("전령",
                 "저녁 군량 배급 전에 화공대비책을 사용처에서 받아 지정된 보관함에 돌려놓았습니다. 표제를 확인했습니다. 그 뒤로 보관함을 계속 지켜본 것은 아닙니다.",
@@ -38,6 +39,7 @@ namespace RedCliffMystery.Investigation
 
         public void TalkToReliefGuard()
         {
+            if (!EnsureInquiry("relief_guard", "교대 병사 · 이탈과 복귀", TalkToReliefGuard)) return;
             SetModal("문서고 · 교대 병사", "교대 병사", "“그날 두석과 근무를 교대했습니다. 제가 직접 본 범위에서 답하겠습니다.”");
             view.AddChoice("두석이 떠나는 것을 봤나?", () => RecordDuseokStatement("교대 병사",
                 "배급 북이 울린 뒤 식기를 돌려주러 지나가다가 두석이 경비 자리를 떠나는 것을 봤습니다. 저는 교대 준비를 하러 갔으므로 이후 입구를 계속 감시하지는 못했습니다.",
@@ -50,6 +52,7 @@ namespace RedCliffMystery.Investigation
 
         public void TalkToGamblingSoldier()
         {
+            if (GamblingAdmissionHeard && !EnsureInquiry("gambling_witness", "동석 병사 · 노름 시간 확인", TalkToGamblingSoldier)) return;
             SetModal("수군 진영 · 휴식 중인 병사", "동석 병사", "“어떤 일을 확인하러 오셨습니까?”");
             if (GamblingAdmissionHeard)
                 view.AddChoice("두석과 노름한 때를 확인한다", () => RecordDuseokStatement("동석 병사",
@@ -61,11 +64,9 @@ namespace RedCliffMystery.Investigation
 
         void ShowDuseokTimelineInquiry()
         {
-            SetModal("두석 · 경비 시간대 조사", "경비 공백을 확인한다", "문서고 입구 맞은편의 교대 병사, 수군 진영 입구 부근의 전령과 병사에게 확인할 수 있다.\n\n주변 증언과 재질문을 모두 마친 뒤 결과를 정리하면 한 시간대가 흐른다.");
+            SetModal("두석 · 경비 시간대 조사", "경비 공백을 확인한다", "문서고 입구 맞은편의 교대 병사, 수군 진영 입구 부근의 전령과 병사에게 확인할 수 있다.\n\n각 인물의 새 조사와 두석의 시간대 재질문은 각각 1회를 사용한다. 결과 정리는 무료다.");
             if (DuseokTestimonyHeard && GuardDepartureHeard && GuardReturnHeard)
-                view.AddChoice("배급 북 이후부터 교대 직전까지 어디 있었나?", () => RecordDuseokStatement("두석",
-                    "…수군 진영 입구 옆 빈터에서 병사들과 노름하다 시간을 놓쳤습니다. 그곳에 있던 병사에게 물어보셔도 됩니다. 근무를 비운 벌이 두려워 잠깐이라고 했습니다.",
-                    () => GamblingAdmissionHeard = true, ShowDuseokTimelineInquiry));
+                view.AddChoice("배급 북 이후부터 교대 직전까지 어디 있었나?", StartDuseokRequestion);
             if (DuseokTestimonyHeard)
                 view.AddChoice("이탈 전후 문서고 안에는 누가 있었나?", () => RecordDuseokStatement("두석",
                     "설평은 안에서 서류를 정리하고 있었습니다. 제가 돌아왔을 때도 있었고요. 그사이에 계속 있었는지, 다른 사람이 드나들었는지는 모릅니다.",
@@ -74,8 +75,16 @@ namespace RedCliffMystery.Investigation
                 SetModal("시간대 조사", "확인 상태", DuseokWitnessChecklist());
                 view.AddChoice("두석에게 돌아가기", ShowDuseokTimelineInquiry);
             });
-            view.AddChoice(DuseokTimelineComplete ? "정리한 시간대 다시 보기" : "조사 결과 정리 · 한 시간대 소모", CompleteDuseokTimeline, CanCompleteDuseokTimeline);
+            view.AddChoice(DuseokTimelineComplete ? "정리한 시간대 다시 보기" : "조사 결과 정리 · 무료", CompleteDuseokTimeline, CanCompleteDuseokTimeline);
             view.AddChoice("대화 마치기", CloseModal);
+        }
+
+        void StartDuseokRequestion()
+        {
+            if (!EnsureInquiry("duseok_requestion", "두석 · 시간대 재질문", StartDuseokRequestion)) return;
+            RecordDuseokStatement("두석",
+                    "…수군 진영 입구 옆 빈터에서 병사들과 노름하다 시간을 놓쳤습니다. 그곳에 있던 병사에게 물어보셔도 됩니다. 근무를 비운 벌이 두려워 잠깐이라고 했습니다.",
+                    () => GamblingAdmissionHeard = true, ShowDuseokTimelineInquiry);
         }
 
         void CompleteDuseokTimeline()

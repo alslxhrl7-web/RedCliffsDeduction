@@ -22,6 +22,7 @@ namespace RedCliffMystery.Investigation
 
         public void ShowCareerRecords()
         {
+            if (!EnsureInquiry("career", "기록 담당자 · 경력 확인", ShowCareerRecords)) return;
             SetModal("기록 탁자", "형주 인력의 경력 서류", "인계 명부와 이전 근무 기록이 나란히 놓여 있다. 확인할 서류를 선택하자.");
             view.AddChoice("형주 인력 인계 명부" + (PersonnelRecordRead ? " · 확인함" : ""), () => ReadCareerRecord(true));
             view.AddChoice("이전 근무 기록" + (DutyRecordRead ? " · 확인함" : ""), () => ReadCareerRecord(false));

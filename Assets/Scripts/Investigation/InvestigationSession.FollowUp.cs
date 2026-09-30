@@ -13,7 +13,9 @@ namespace RedCliffMystery.Investigation
         bool registryNamesChecked;
         public const string TokenDescription = "설평의 개인 서류 묶음을 고정하는 오래된 목패. 물결 무늬와 서로 간격이 다른 세 홈이 있다. 이것만으로 용도나 신원을 판단할 수 없다.";
         public const string RegistryFinding = "신고 출신지인 형주 남군 강릉의 이관 호적을 대조했다. 해당 범위의 누락과 이름 표기 차이를 확인했으나 설평의 신고 신원을 뒷받침하는 기록이 없다. 실제 서리 근무 이력과 별개의 문제다.";
-        public const string SecretLetter = "목연에게.\n화공대비책을 확보하라. 인계할 때 지급한 연락패를 지참하라. 수령인은 패의 세 홈과 아래 본을 대조할 것이다. 문서는 인계 전까지 몸에서 떼지 마라.\n\n[확인용 본: 물결 무늬, 비대칭으로 배치된 세 홈]\n이 확인용 본을 인계 때까지 보관하라.\n— 오나라 연락책";
+        public const string SecretLetter = "목연에게.\n화공대비책을 확보하라. 접선은 " + InvestigationTime.ContactDate + ", 약정한 곳에서 한 차례뿐이다. 그 전에 따로 연락하거나 문서를 보내지 마라. 인계할 때 지급한 연락패를 지참하라. 수령인은 패의 세 홈과 아래 본을 대조할 것이다. 문서는 인계 전까지 몸에서 떼지 마라.\n\n[확인용 본: 물결 무늬, 비대칭으로 배치된 세 홈]\n이 확인용 본을 인계 때까지 보관하라.\n— 오나라 연락책";
+
+        public const string ContactScheduleFinding = "조조의 명령: 이달 열이튿날부터 열나흗날 밤까지 사흘.\n밀서의 지시: 이달 열닷새 새벽, 약정한 곳에서 접선.\n\n접선 예정은 조사 나흘째 새벽, 보고 기한 직후다. 밀서는 인계 지시를 보여줄 뿐, 실제 절도나 전달 완료를 입증하지 않는다.";
 
         void FollowUpNotice(string title, string body)
         {
@@ -55,6 +57,7 @@ namespace RedCliffMystery.Investigation
                 FollowUpNotice("신원 대조에 필요한 기록", "인계 명부와 근무 기록을 확인하고, 현장 경험에 관한 진술과 당시 기록을 먼저 대조하자. 근무 경력 자체와 신고 신원은 구분해야 한다.");
                 return;
             }
+            if (!EnsureInquiry("registry", "기록 담당자 · 호적 대조", ShowRegistryComparison)) return;
             SetModal("기록 담당자 · 이관 호적", "형주 남군 강릉의 신고 신원 대조", "형주 인력 편입 때 함께 이관된 호적 등본이다. 이름이 보이지 않는다는 이유만으로 결론 내리지 말고 자료 범위와 표기를 확인하자.");
             view.AddChoice((registryScopeChecked ? "확인함 · " : "") + "지역·시기·누락 여부 확인", () => {
                 registryScopeChecked = true;
@@ -79,6 +82,7 @@ namespace RedCliffMystery.Investigation
         void RequestPersonalSearch()
         {
             if (!HasHouseholdRegistryEvidence || !ContradictionFound) return;
+            if (investigationTime.DeadlineReached) { ShowDeadlineChoice(); return; }
             BeginFinalReport();
             if (!reportActive) return;
             ReportModal("중간 보고 · 조사 허가", "조조", "“근무 이력은 있지만 신고 신원은 확인되지 않는다… 현장 경험에 관한 말도 기록과 맞지 않는다는 것이군.”\n\n“설평의 개인 서류를 조사하도록 허락하겠다. 몸수색이나 체포는 이번 명령에 포함하지 않는다.”");
@@ -98,11 +102,13 @@ namespace RedCliffMystery.Investigation
                 view.AddChoice("조사 계속", CloseModal);
                 return;
             }
+            if (!EnsureInquiry("papers", "허가받은 개인 서류 수색", InspectPersonalPapers)) return;
             SetModal("허가받은 개인 서류 조사", "업무 서신 안쪽의 접지", "설평의 개인 서류함에서 일반 업무 서신과 달리 안쪽에 접어 숨긴 종이를 발견했다. 공용 서신 묶음과 별도로 보관돼 있다.");
             view.AddChoice("안쪽 종이를 펼친다", () => {
                 LetterFound = true;
                 SetModal("발견한 밀서 · 수신인 미확인", "목연에게 내린 지시", SecretLetter);
                 view.AddChoice("목패와 확인용 본 비교", ShowTokenComparison);
+                view.AddChoice("접선 날짜를 조사 일정과 대조", () => FollowUpNotice("기한 다음 날의 접선", ContactScheduleFinding));
                 view.AddChoice("조사 계속", CloseModal);
             });
             view.AddChoice("조사 계속", CloseModal);
@@ -125,6 +131,7 @@ namespace RedCliffMystery.Investigation
         void ShowLetterInterrogation()
         {
             if (!LetterFound || !SearchAuthorized) return;
+            if (!EnsureInquiry("letter_interrogation", "설평 · 밀서 취조", ShowLetterInterrogation)) return;
             SetModal("설평 · 밀서에 관한 질문", "목연은 누구인가?", "개인 서류에서 발견한 지시와 설평의 설명을 대조하자.");
             view.AddChoice("목연과 이 서신에 관해 묻는다", () => BeginSequence("설평", new[] {
                 "목연이라는 자는 모릅니다. 제가 취합하던 서신에 섞여 있었을 것입니다.",

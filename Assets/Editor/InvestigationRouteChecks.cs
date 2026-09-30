@@ -32,6 +32,7 @@ namespace RedCliffMystery.EditorTools
         static void Run(bool documentFirst)
         {
             Require(Application.isPlaying, "Start a fresh Play session first.");
+            Application.runInBackground = true;
             var s = UnityEngine.Object.FindAnyObjectByType<InvestigationSession>();
             Require(s != null && s.route != null && s.route.IsReady, "Investigation route is not connected.");
             Require(!s.DocumentInspected && !s.TestimonyHeard && !s.MaintenanceOrderRead &&
@@ -84,7 +85,7 @@ namespace RedCliffMystery.EditorTools
             s.ShowTestimonyComparison();
             Debug.Log("INVESTIGATION_ROUTE_CHECKS_PASSED: " + (documentFirst ? "document-first" : "testimony-first") +
                 "; optional guard, cancellation, comparison prerequisites, wrong answers, retry, deduction, " +
-                "return travel, eight records, Korean layout and six target raycasts.");
+                "return travel, all journal pages, Korean layout and six core target raycasts.");
         }
 
         static void CheckIntroductionAndArchive(InvestigationSession s, bool documentFirst)
@@ -286,7 +287,7 @@ namespace RedCliffMystery.EditorTools
 
         static void CheckJournal(InvestigationSession s)
         {
-            Require(InvestigationSession.JournalPageCount == 16, "Sixteen journal pages expected.");
+            Require(InvestigationSession.JournalPageCount == 18, "Eighteen journal pages expected.");
             s.ShowJournal();
             string firstTitle = s.view.title.text;
             var pages = new string[InvestigationSession.JournalPageCount];
@@ -318,6 +319,7 @@ namespace RedCliffMystery.EditorTools
             var target = UnityEngine.Object.FindObjectsByType<InvestigationTarget>(FindObjectsSortMode.None)
                 .Single(t => t.kind == kind);
             target.Interact(s);
+            AcceptInvestigationCost(s);
         }
 
         static void CompleteDialogue(InvestigationSession s)
@@ -343,12 +345,20 @@ namespace RedCliffMystery.EditorTools
             var button = Buttons(s).SingleOrDefault(b => b.name == label);
             Require(button != null && button.interactable, "Missing or disabled button: " + label);
             button.onClick.Invoke();
+            AcceptInvestigationCost(s);
+        }
+
+        static void AcceptInvestigationCost(InvestigationSession s)
+        {
+            var confirm = Buttons(s).SingleOrDefault(b => b.name == "조사 시작 · 1회 사용");
+            if (confirm != null) confirm.onClick.Invoke();
         }
 
         static void CheckLayout(InvestigationSession s)
         {
             Canvas.ForceUpdateCanvases();
             var v = s.view;
+            UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(v.body.rectTransform);
             Require(v.body.rectTransform.rect.height > 0, "Body has no height.");
             Require(v.body.preferredHeight <= v.body.rectTransform.rect.height + 3,
                 "Body clips: " + v.title.text + " (" + v.body.preferredHeight + "/" + v.body.rectTransform.rect.height + ")");
@@ -371,7 +381,7 @@ namespace RedCliffMystery.EditorTools
             controller.enabled = false;
             try
             {
-                var targets = UnityEngine.Object.FindObjectsByType<InvestigationTarget>(FindObjectsSortMode.None);
+                var targets = UnityEngine.Object.FindObjectsByType<InvestigationTarget>(FindObjectsSortMode.None).Where(t => (int)t.kind <= (int)InvestigationTarget.TargetKind.MaintenanceOrder).ToArray();
                 Require(targets.Length == 6 && targets.Select(t => t.kind).Distinct().Count() == 6,
                     "Exactly six distinct investigation targets expected.");
                 blocker = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -401,7 +411,7 @@ namespace RedCliffMystery.EditorTools
                     mover.transform.position += approach * 3;
                     mover.viewCamera.transform.LookAt(point);
                     Physics.SyncTransforms();
-                    Require(mover.FindTarget() == null, "Interaction range exceeded: " + target.kind);
+                    Require(mover.FindTarget() != target, "Interaction range exceeded: " + target.kind);
                 }
             }
             finally
