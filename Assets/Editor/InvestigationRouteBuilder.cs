@@ -15,6 +15,35 @@ namespace RedCliffMystery.EditorTools
         static Material wood, darkWood, paper, brass, canvas, skin, hair, armour;
         static Material earth, path, guardCloth, caimaoCloth, zhangyunCloth, banner;
 
+        [MenuItem("적벽추리/두석 시간대 조사 인물 연결")]
+        public static void BuildDuseokWitnesses()
+        {
+            if (EditorApplication.isPlayingOrWillChangePlaymode) throw new InvalidOperationException("Exit Play Mode first.");
+            var scene = SceneManager.GetActiveScene();
+            if (scene.path != FirstInvestigationBuilder.ScenePath || scene.isDirty)
+                throw new InvalidOperationException("Open and save Investigation scene first.");
+            var routes = FindRoot(scene, "InvestigationRoutes");
+            var camp = routes == null ? null : routes.transform.Find("NavalCamp");
+            var entrance = routes == null ? null : routes.transform.Find("ArchiveEntrance");
+            if (camp == null || entrance == null) throw new InvalidOperationException("Existing routes required.");
+            Undo.IncrementCurrentGroup();
+            int group = Undo.GetCurrentGroup();
+            try
+            {
+                LoadMaterials();
+                var guard = Person("ReliefGuard", entrance, new Vector3(-2.4f, 0, -4), guardCloth, InvestigationTarget.TargetKind.ReliefGuard, false);
+                Undo.RecordObject(guard, UndoLabel);
+                guard.localRotation = Quaternion.Euler(0, 180, 0);
+                Person("DocumentCourier", camp, new Vector3(-2.3f, 0, -2.6f), zhangyunCloth, InvestigationTarget.TargetKind.DocumentCourier, false);
+                Person("GamblingSoldier", camp, new Vector3(4.5f, 0, -3.8f), caimaoCloth, InvestigationTarget.TargetKind.GamblingSoldier, false);
+                EditorSceneManager.MarkSceneDirty(scene);
+                if (!EditorSceneManager.SaveScene(scene)) throw new InvalidOperationException("Scene save failed.");
+                Undo.CollapseUndoOperations(group);
+                Debug.Log("DUSEOK_WITNESSES_CONNECTED");
+            }
+            catch { Undo.RevertAllDownToGroup(group); throw; }
+        }
+
         [MenuItem("적벽추리/목패와 개인 서류함 연결")]
         public static void BuildPersonalEvidence()
         {

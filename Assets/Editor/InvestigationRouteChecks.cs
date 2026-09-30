@@ -9,7 +9,7 @@ namespace RedCliffMystery.EditorTools
 {
     public static class InvestigationRouteChecks
     {
-        const string Reconfirmation = "정비 닷새의 현장 경험을 재확인한다";
+        const string Reconfirmation = "정비 닷새의 현장 경험 재확인";
         const string CorrectComparison = "중단된 출항 훈련을 직접 기록했다고 한다";
         const string WrongRations = "훈련을 중단했으니 군량도 지급할 수 없다";
         const string WrongAccusation = "문서고 서기이므로 절도범이다";
@@ -99,13 +99,25 @@ namespace RedCliffMystery.EditorTools
             CompleteDialogue(s);
             Click(s, "명을 받고 문서고로 향한다");
             Require(!s.BlocksMovement, "Introduction did not release movement.");
-            Vector3 archivePosition = s.route.player.transform.position;
             s.EnterNavalCamp();
-            Require(!s.route.AtNavalCamp && s.route.player.transform.position == archivePosition,
-                "Incomplete investigation allowed travel.");
+            Require(s.route.AtNavalCamp && !s.FirstInvestigationComplete,
+                "Early naval travel must not require or award archive evidence.");
+            s.ReturnToArchive();
             s.ShowJournal();
-            Require(!HasChoice(s, "다음 조사 선택") && !HasChoice(s, "진술 비교"), "Premature investigation action.");
+            Require(HasChoice(s, "다음 조사 선택") && HasChoice(s, "진술 비교"), "Journal navigation unavailable before archive completion.");
             s.CloseModal();
+            Interact(s, InvestigationTarget.TargetKind.Seolpyeong);
+            Click(s, "서류와 개인 물건에 관해");
+            Require(!HasChoice(s, "서류 묶음의 목패는 누구의 것인가?") && !s.TokenObserved,
+                "Token question leaked before discovery.");
+            s.CloseModal();
+            Interact(s, InvestigationTarget.TargetKind.PersonalToken);
+            s.CloseModal();
+            Interact(s, InvestigationTarget.TargetKind.Seolpyeong);
+            Click(s, "서류와 개인 물건에 관해");
+            Click(s, "서류 묶음의 목패는 누구의 것인가?");
+            s.CloseModal();
+            Require(!s.TokenOwnershipConfirmed, "Cancelled ownership dialogue was awarded.");
             if (documentFirst)
             {
                 Interact(s, InvestigationTarget.TargetKind.MissingDocument);
@@ -145,17 +157,19 @@ namespace RedCliffMystery.EditorTools
         {
             Interact(s, InvestigationTarget.TargetKind.Seolpyeong);
             CheckLayout(s);
+            Click(s, "서류와 개인 물건에 관해");
             Click(s, Reconfirmation);
             Click(s, "계속");
             s.CloseModal();
             Require(!s.TestimonyReconfirmed, "Cancelled reconfirmation was awarded.");
             CheckComparisonLocked(s, "Reconfirmation was cancelled before its final confirmation.");
             Interact(s, InvestigationTarget.TargetKind.Seolpyeong);
+            Click(s, "서류와 개인 물건에 관해");
             Click(s, Reconfirmation);
             CompleteDialogue(s);
             Require(s.TestimonyReconfirmed, "Completed reconfirmation missing.");
             CheckLayout(s);
-            Click(s, "대화 마치기");
+            s.CloseModal();
         }
 
         static void TalkOfficer(InvestigationSession s, bool caimao, bool cancelFirst)
@@ -175,7 +189,7 @@ namespace RedCliffMystery.EditorTools
             CompleteDialogue(s);
             Require(caimao ? s.CaimaoTestimonyHeard : s.ZhangyunTestimonyHeard, "Officer testimony missing.");
             CheckLayout(s);
-            Click(s, "대화 마치기");
+            s.CloseModal();
         }
 
         static void CheckComparisonLocked(InvestigationSession s, string reason)
@@ -210,7 +224,7 @@ namespace RedCliffMystery.EditorTools
             OpenComparison(s);
             Click(s, CorrectComparison);
             Require(s.ContradictionFound, "Correct comparison was not recorded.");
-            Require(s.view.title.text == "설평의 경력 재조사 필요", "Deduction must lead to career verification.");
+            Require(s.view.title.text == "직접 목격했다는 주장의 모순", "Deduction must distinguish career from eyewitness claims.");
             Require(!s.DuseokTestimonyHeard, "The optional guard was silently awarded or required.");
             CheckLayout(s);
             Click(s, "조사 계속");
@@ -245,9 +259,7 @@ namespace RedCliffMystery.EditorTools
         static void Travel(InvestigationSession s, bool naval)
         {
             if (s.route.AtNavalCamp == naval) return;
-            s.ShowJournal();
-            CheckLayout(s);
-            Click(s, "다음 조사 선택");
+            s.ShowTravel();
             CheckLayout(s);
             Click(s, naval ? "수군 진영으로 이동" : "문서고로 돌아가기");
             Require(s.route.AtNavalCamp == naval && !s.BlocksMovement, "Investigation travel failed.");
@@ -274,13 +286,9 @@ namespace RedCliffMystery.EditorTools
 
         static void CheckJournal(InvestigationSession s)
         {
-            Require(InvestigationSession.JournalPageCount == 8, "Eight journal pages expected.");
+            Require(InvestigationSession.JournalPageCount == 16, "Sixteen journal pages expected.");
             s.ShowJournal();
             string firstTitle = s.view.title.text;
-            Click(s, "이전 기록");
-            Require(s.view.eyebrow.text.Contains("8 / 8"), "Previous from the first record did not wrap.");
-            Click(s, "다음 기록");
-            Require(s.view.title.text == firstTitle, "Journal did not return to its first record.");
             var pages = new string[InvestigationSession.JournalPageCount];
             var titles = new string[pages.Length];
             for (int i = 0; i < pages.Length; i++)
@@ -302,7 +310,7 @@ namespace RedCliffMystery.EditorTools
             Require(pages[5].Contains(InvestigationSession.MaintenanceOrder), "Maintenance order missing from the journal.");
             Require(pages[6].Contains(InvestigationSession.ReconfirmedTestimony) && pages[6].Contains("미검증"),
                 "Reconfirmed testimony missing or labelled as fact.");
-            Require(pages[7].Contains("경력"), "Deduction follow-up missing from the journal.");
+            Require(pages[13].Contains("경력"), "Deduction follow-up missing from the journal.");
         }
 
         static void Interact(InvestigationSession s, InvestigationTarget.TargetKind kind)

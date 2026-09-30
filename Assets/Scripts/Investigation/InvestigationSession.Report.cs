@@ -8,6 +8,8 @@ namespace RedCliffMystery.Investigation
         public string FinalReportSummary { get; private set; }
         bool reportActive;
         bool reportFromNavalCamp;
+        bool visitingCommandTent;
+        bool tentVisitFromNaval;
         bool reportUncertain;
         string reportSuspect;
         string reportRequest;
@@ -22,6 +24,40 @@ namespace RedCliffMystery.Investigation
             { this.title = title; this.text = text; this.response = response; }
         }
 
+        public void VisitCommandTent()
+        {
+            if (!introductionFinished || reportActive || FinalReportCompleted) return;
+            if (introductionStage == null || introductionStage.player == null || introductionStage.tent == null
+                || introductionStage.tentSpawn == null || introductionStage.archiveSpawn == null || route == null || !route.IsReady)
+            {
+                SetModal("이동", "지휘 천막으로 이동할 수 없음", "천막과 이동 경로 연결을 확인해야 합니다. 조사 기록은 유지됩니다.");
+                view.AddChoice("조사 계속", CloseModal);
+                return;
+            }
+            tentVisitFromNaval = route.AtNavalCamp;
+            visitingCommandTent = true;
+            introductionStage.Begin();
+            view.SetPlayerIdentity(PlayerName, LocationName);
+            view.SetObjective("조조에게 보고하거나 조사 장소로 돌아갈 수 있다");
+            SetModal("조조군 지휘 천막", "조조", "“돌아왔느냐. 확인한 내용을 보고하겠느냐, 아니면 조사를 더 이어가겠느냐?”",
+                "Esc 이전 조사 장소로 복귀 · 이동에는 시간이 소모되지 않습니다.");
+            view.AddChoice(OfficersHeard ? "조사 결과 보고" : "조사 결과 보고 · 채모·장윤 설명 확보 후", BeginFinalReport, OfficersHeard);
+            if (HasHouseholdRegistryEvidence && !SearchAuthorized)
+                view.AddChoice("개인 서류 조사 허가 요청", RequestPersonalSearch);
+            view.AddChoice("수군 진영으로 돌아가기", () => LeaveCommandTent(true));
+            view.AddChoice("문서고로 돌아가기", () => LeaveCommandTent(false));
+        }
+
+        void LeaveCommandTent(bool naval)
+        {
+            visitingCommandTent = false;
+            introductionStage.EnterArchive();
+            if (naval) route.EnterNavalCamp(); else route.EnterArchive();
+            view.SetPlayerIdentity(PlayerName, LocationName);
+            UpdateObjective();
+            CloseModal();
+        }
+
         public void BeginFinalReport()
         {
             if (!introductionFinished || !OfficersHeard || reportActive || FinalReportCompleted) return;
@@ -34,6 +70,7 @@ namespace RedCliffMystery.Investigation
                 return;
             }
             reportFromNavalCamp = route.AtNavalCamp;
+            visitingCommandTent = false;
             reportActive = true;
             reportSuspect = null;
             reportUncertain = false;
@@ -50,6 +87,8 @@ namespace RedCliffMystery.Investigation
         void CollectReportEvidence()
         {
             reportEvidence.Clear();
+            if (DuseokTimelineComplete) reportEvidence.Add(new ReportEvidence("두석의 경비 시간대 조사", DuseokTimeline,
+                "경비 공백은 확인했군. 그 틈을 이용할 기회와 실제 절도를 저지른 증거는 구분하겠다."));
             if (HasHouseholdRegistryEvidence) reportEvidence.Add(new ReportEvidence("신고 신원 대조 결과",
                 "자료 범위와 이름 표기를 확인했으나 신고 신원을 뒷받침하는 호적 기록이 없었습니다.",
                 "근무 기록과 신고 신원의 확인은 별개로 보아야겠군."));

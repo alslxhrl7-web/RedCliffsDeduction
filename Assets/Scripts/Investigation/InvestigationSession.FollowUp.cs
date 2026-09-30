@@ -33,9 +33,9 @@ namespace RedCliffMystery.Investigation
         void ShowSeolpyeongFollowUp()
         {
             SetModal("설평 · 추가 질문", "무엇을 확인할까?", "기록과 물건에 관해 질문할 수 있다.");
-            view.AddChoice("서류 묶음의 목패는 누구의 것인가?", () => BeginSequence("설평", new[] {
+            if (TokenObserved)
+                view.AddChoice("서류 묶음의 목패는 누구의 것인가?", () => BeginSequence("설평", new[] {
                 "제 것입니다. 형주에서 일할 때부터 개인 서류를 묶는 데 썼습니다. 다른 서리의 물건과 섞이지 않도록 따로 두고 있지요." }, () => {
-                    TokenObserved = true;
                     TokenOwnershipConfirmed = true;
                     FollowUpNotice("목패의 소유 이력", "설평은 형주 근무 때부터 자신의 목패를 사용했다고 진술했다. 수첩에 기록했다.");
                 }));

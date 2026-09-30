@@ -42,6 +42,7 @@ namespace RedCliffMystery.Investigation
             if (HasHouseholdRegistryEvidence) investigationTime.Complete("registry", "호적 대조");
             if (LetterFound) investigationTime.Complete("papers", "개인 서류 조사");
             if (InterrogationCompleted) investigationTime.Complete("interrogation", "목패 대조와 취조");
+            if (DuseokTimelineComplete) investigationTime.Complete("duseok_timeline", "두석 경비 시간대 조사");
             if (displayedTimeSlots != investigationTime.ElapsedSlots)
             {
                 displayedTimeSlots = investigationTime.ElapsedSlots;

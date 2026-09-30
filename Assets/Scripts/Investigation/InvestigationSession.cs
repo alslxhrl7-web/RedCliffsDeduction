@@ -6,9 +6,9 @@ namespace RedCliffMystery.Investigation
 {
     public sealed partial class InvestigationSession : MonoBehaviour
     {
-        public const int JournalPageCount = 14;
+        public const int JournalPageCount = 16;
         public const string Testimony = "저는 형주 동쪽 수채의 서리였습니다. 출입 시설을 정비하던 닷새에도 현장에서 출항하는 배를 확인하고 훈련 내용을 기록했습니다. 그동안 군량도 계속 지급됐습니다.";
-        public const string DuseokTestimony = "문서고를 지키던 중 잠시 자리를 비운 적은 있습니다. 제가 자리를 비운 동안 누가 드나들었는지는 보지 못했습니다.";
+        public const string DuseokTestimony = "문서고를 지키던 중 잠깐 자리를 비웠을 뿐입니다. 오래 걸리지는 않았습니다. 제가 자리를 비운 동안 누가 드나들었는지는 보지 못했습니다.";
         public const string CaimaoTestimony = "동쪽 수채의 출입 시설을 정비한 닷새 동안, 그곳에서 밖으로 출항하는 훈련은 중단했소. 정박한 배에서의 작업이나 다른 수채의 훈련을 말하는 것이 아니오.";
         public const string ZhangyunTestimony = "그 정비 닷새에도 군량은 지급했소. 동쪽 수채의 병사들은 선박 보수와 육상 훈련을 하고 있었으니까. 군량 지급이 출항 훈련을 했다는 뜻은 아니오.";
         public const string MaintenanceOrder = "동쪽 수채 출입 시설 정비 · 첫날부터 닷새째까지\n\n이 기간 동쪽 수채 밖으로 출항하는 훈련을 중단한다. 병사들은 선박 보수와 육상 훈련을 계속한다.";
@@ -43,7 +43,8 @@ namespace RedCliffMystery.Investigation
         int modalClosedFrame = -1;
         bool enteringName;
         bool introductionFinished;
-        string LocationName => route != null && route.AtNavalCamp ? "조조군 수군 진영" : "조조군 문서고";
+        string LocationName => visitingCommandTent || reportActive ? "조조군 지휘 천막"
+            : route != null && route.AtNavalCamp ? "조조군 수군 진영" : "조조군 문서고";
 
         void Start()
         {
@@ -116,6 +117,7 @@ namespace RedCliffMystery.Investigation
         {
             if (!introductionFinished) return;
             if (reportActive) { CancelFinalReport(); return; }
+            if (visitingCommandTent) { LeaveCommandTent(tentVisitFromNaval); return; }
             onSequenceComplete = null;
             sequence = null;
             onAdvance = null;
@@ -196,6 +198,7 @@ namespace RedCliffMystery.Investigation
         public void TalkToDuseok()
         {
             SetModal("문서고 경비", "두석", "“문서고의 경비를 맡은 두석입니다. 출입 상황에 대해 물으시겠습니까?”");
+            view.AddChoice("경비 시간대를 더 조사한다", ShowDuseokTimelineInquiry);
             view.AddChoice("맡은 경비에 관해", () => BeginSequence("두석", new[] {
                 "문서고 입구에서 경비를 섭니다. 안쪽 문서를 정리하는 일은 서기가 맡습니다." }, TalkToDuseok));
             view.AddChoice("근무 중 자리를 비운 적이 있는가?", () => BeginSequence("두석", new[] { DuseokTestimony }, () => {
@@ -206,8 +209,7 @@ namespace RedCliffMystery.Investigation
                 onAdvance = CloseModal;
             }));
             view.AddChoice("수군 진영으로 가려면?", () => BeginSequence("두석", new[] {
-                FirstInvestigationComplete ? "제 옆의 문을 나서면 수군 진영으로 갈 수 있습니다. 조사를 마치셨다면 출발하셔도 됩니다."
-                    : "제 옆의 문을 나서면 수군 진영으로 갈 수 있습니다. 먼저 빈 보관함과 설평의 경력 진술을 확인해 주십시오.",
+                "제 옆의 문을 나서면 수군 진영으로 갈 수 있습니다. 남은 문서고 조사는 돌아와서 이어가셔도 됩니다.",
                 "진영 입구에서 바라보면 왼쪽 천막 앞에 채모 장군, 오른쪽 천막 앞에 장윤 장군이 계십니다. 돌아오실 때는 입구의 나무 표지를 살펴보십시오." }, ShowTravel));
             view.AddChoice("대화 마치기", CloseModal);
         }
@@ -280,7 +282,7 @@ namespace RedCliffMystery.Investigation
                 "사실과 진술을 구분해 기록합니다.  ·  E 다음 기록 / Esc 닫기");
             if (page > 0) view.AddChoice("이전 기록", () => ShowJournalPage(page - 1));
             view.AddChoice("다음 기록", () => ShowJournalPage((page + 1) % JournalPageCount));
-            if (page == 0 && FirstInvestigationComplete)
+            if (page == 0 && introductionFinished)
             {
                 view.AddChoice("진술 비교", ShowTestimonyComparison);
                 view.AddChoice("다음 조사 선택", OfficersHeard ? ShowFollowUpSelection : ShowStageSelection);
@@ -309,12 +311,14 @@ namespace RedCliffMystery.Investigation
                     : "아직 명령서를 확인하지 않았다.\n수군 진영 중앙 기록 탁자에서 살펴보자.");
                 case 6: return ("추가로 확인한 진술", TestimonyReconfirmed ? "설평의 추가 진술 · 미검증\n“" + ReconfirmedTestimony + "”"
                     : "아직 추가로 확인한 진술이 없다. 누구에게 무엇을 더 물을지는 직접 결정할 수 있다.");
-                case 8: return ("형주 인력 인계 명부", PersonnelRecordRead ? PersonnelRecord : "수군 진영 입구 왼편 기록 탁자에서 확인할 수 있다.");
-                case 9: return ("이전 근무 기록", DutyRecordRead ? DutyRecord + "\n\n" + CareerFinding : "수군 진영 입구 왼편 기록 탁자에서 확인할 수 있다.");
-                case 10: return ("개인 목패", TokenObserved ? TokenDescription : "아직 확인한 개인 물건이 없다.");
-                case 11: return ("신원 대조", HasHouseholdRegistryEvidence ? RegistryFinding : "신고 신원은 아직 대조하지 않았다.");
-                case 12: return ("개인 서류 조사", LetterFound ? SecretLetter : "개인 서류 조사 기록이 없다.");
-                case 13: return ("후속 조사", FollowUpProgress());
+                case 7: return ("형주 인력 인계 명부", PersonnelRecordRead ? PersonnelRecord : "수군 진영 입구 왼편 기록 탁자에서 확인할 수 있다.");
+                case 8: return ("이전 근무 기록", DutyRecordRead ? DutyRecord + "\n\n" + CareerFinding : "수군 진영 입구 왼편 기록 탁자에서 확인할 수 있다.");
+                case 9: return ("개인 목패", TokenObserved ? TokenDescription : "아직 확인한 개인 물건이 없다.");
+                case 10: return ("신원 대조", HasHouseholdRegistryEvidence ? RegistryFinding : "신고 신원은 아직 대조하지 않았다.");
+                case 11: return ("개인 서류 조사", LetterFound ? SecretLetter : "개인 서류 조사 기록이 없다.");
+                case 12: return ("후속 조사", FollowUpProgress());
+                case 14: return ("두석 시간대 조사 · 증언", DuseokWitnessChecklist());
+                case 15: return ("두석 시간대 조사 · 결과", DuseokTimelineComplete ? DuseokTimeline : "주변 증언을 모아 두석에게 재질문하고 결과를 정리할 수 있다. 이 조사는 선택 사항이다.");
                 default: return ("모순 검토 결과", ContradictionFound
                     ? "발견한 모순\n중단된 출항 훈련을 설평은 현장에서 직접 기록했다고 주장했다.\n\n직접 목격했다는 주장에 모순이 있다. 서리로 근무한 경력까지 거짓이라고 단정할 수는 없다."
                     : "아직 모순을 판정하지 않았다.\n기록을 검토한 뒤 추가로 조사할 사람을 고르거나, 현재 기록으로 조사를 정리할 수 있다.");
@@ -323,7 +327,7 @@ namespace RedCliffMystery.Investigation
 
         public void ShowTestimonyComparison()
         {
-            if (!introductionFinished || !FirstInvestigationComplete) return;
+            if (!introductionFinished) return;
             if (!CanCompareTestimonies)
             {
                 SetModal("수첩 · 비교 준비", "출항 훈련 진술 비교",
@@ -380,22 +384,12 @@ namespace RedCliffMystery.Investigation
                 view.AddChoice("조사 계속", CloseModal);
                 return;
             }
-            if (!FirstInvestigationComplete)
-            {
-                SetModal("문서고 출입문", "떠나기 전에 확인할 일", "수군 진영에서 확인할 내용을 먼저 정리하자.\n\n"
-                    + RecordStatus(DocumentInspected, "빈 문서 보관함 조사")
-                    + RecordStatus(TestimonyHeard, "설평에게 형주 시절 경력 질문")
-                    + "\n출입문 옆의 두석에게도 경비 상황을 물을 수 있다.");
-                view.AddChoice("문서고 조사 계속", CloseModal);
-                onAdvance = CloseModal;
-                return;
-            }
             ShowStageSelection();
         }
 
         public void ShowStageSelection()
         {
-            if (!introductionFinished || !FirstInvestigationComplete) return;
+            if (!introductionFinished) return;
             sequence = null;
             onSequenceComplete = null;
             bool atNaval = route != null && route.AtNavalCamp;
@@ -406,11 +400,13 @@ namespace RedCliffMystery.Investigation
             if (atNaval)
             {
                 view.AddChoice("문서고로 돌아가기", ReturnToArchive);
+                view.AddChoice("조조군 지휘 천막으로 이동", VisitCommandTent);
                 view.AddChoice("수군 진영 조사 계속", CloseModal);
             }
             else
             {
                 view.AddChoice("수군 진영으로 이동", EnterNavalCamp, route != null && route.IsReady);
+                view.AddChoice("조조군 지휘 천막으로 이동", VisitCommandTent);
                 view.AddChoice("문서고 추가 조사", CloseModal);
             }
             view.AddChoice("수첩 다시 보기", ShowJournal);
@@ -464,7 +460,7 @@ namespace RedCliffMystery.Investigation
 
         public void EnterNavalCamp()
         {
-            if (!introductionFinished || !FirstInvestigationComplete || route == null || !route.IsReady) return;
+            if (!introductionFinished || route == null || !route.IsReady) return;
             route.EnterNavalCamp();
             view.SetPlayerIdentity(PlayerName, LocationName);
             UpdateObjective();
@@ -488,12 +484,10 @@ namespace RedCliffMystery.Investigation
             if (InvestigationReviewStarted) return "조사 정리 완료 · J 수첩에서 기록 확인 / 추가 조사 선택";
             if (OfficersHeard && !string.IsNullOrEmpty(selectedInvestigationTarget))
                 return "선택한 추가 조사 · " + selectedInvestigationTarget + "에게 대화 / J 수첩에서 조사 대상 변경";
-            if (!DocumentInspected) return "빈 문서 보관함을 조사하라";
-            if (!TestimonyHeard) return "설평에게 형주 시절의 경력을 물어라";
             if (!CaimaoTestimonyHeard || !ZhangyunTestimonyHeard)
                 return route != null && route.AtNavalCamp
                     ? "왼쪽 천막의 채모 · 오른쪽 천막의 장윤에게 E로 대화"
-                    : "입구 두석과 대화하거나 출입문에서 E로 수군 진영 이동";
+                    : "문서고를 살피거나 출입문에서 E로 수군 진영 이동 · 남은 조사는 돌아와서 계속";
             return "J 수첩 → 다음 조사 선택 · 추가로 조사할 사람을 고르거나 조사 정리";
         }
     }
