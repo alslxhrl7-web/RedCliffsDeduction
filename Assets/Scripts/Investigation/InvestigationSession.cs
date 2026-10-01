@@ -327,7 +327,7 @@ namespace RedCliffMystery.Investigation
                 case 10: return ("신원 대조", HasHouseholdRegistryEvidence ? RegistryFinding : "신고 신원은 아직 대조하지 않았다.");
                 case 11: return ("개인 서류 조사", LetterFound ? SecretLetter : "개인 서류 조사 기록이 없다.");
                 case 12: return ("후속 조사", FollowUpProgress());
-                case 14: return ("두석 시간대 조사 · 증언", DuseokWitnessChecklist());
+                case 14: return ("두석 시간대 조사 · 증언", DuseokWitnessChecklist() + "\n\n" + DuseokInvestigationGuide());
                 case 17: return ("밀서의 접선 일정", LetterFound ? ContactScheduleFinding : "아직 접선 날짜가 적힌 자료를 발견하지 않았다.");
                 case 16: return ("문서 취급 권한과 업무 동선", WorkAccessFinding());
                 case 15: return ("두석 시간대 조사 · 결과", DuseokTimelineComplete ? DuseokTimeline : "주변 증언을 모아 두석에게 재질문하고 결과를 정리할 수 있다. 이 조사는 선택 사항이다.");

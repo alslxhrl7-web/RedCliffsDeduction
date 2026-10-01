@@ -61,7 +61,7 @@ namespace RedCliffMystery.Investigation
             if (investigationTime.HasStarted(id)) return true;
             if (investigationTime.DeadlineReached) { ShowDeadlineChoice(); return false; }
             SetModal("조사 시작 전 확인", title,
-                "이 조사를 시작하면 1회를 사용합니다. 같은 주제의 질문과 재방문에는 다시 차감하지 않습니다.\n\n남은 조사: "
+                InquiryPurpose(id) + "\n\n이 조사를 시작하면 1회를 사용합니다. 같은 주제의 질문과 재방문에는 다시 차감하지 않습니다.\n\n남은 조사: "
                 + investigationTime.Remaining + "회" + (investigationTime.Remaining == 1 ? "\n마지막 조사입니다. 질문과 결과 확인을 마친 뒤 최종 보고해야 합니다." : ""));
             view.AddChoice("조사 시작 · 1회 사용", () => {
                 if (!investigationTime.Complete(id, title)) return;
@@ -71,6 +71,22 @@ namespace RedCliffMystery.Investigation
             view.AddChoice("지금은 조사하지 않는다", CloseModal);
             return false;
         }
+        static string InquiryPurpose(string id) => id switch {
+            "seol_initial" => "확인할 질문: 서기가 맡은 업무와 이전 근무 경험은 무엇인가?",
+            "duseok_initial" => "확인할 질문: 문서고 경비 중 자리를 비운 일이 있었는가?",
+            "caimao" => "확인할 질문: 당시 수군 훈련은 어떻게 진행되었는가?",
+            "zhangyun" => "확인할 질문: 당시 군량 지급과 병사들의 작업은 어떤 관계였는가?",
+            "seol_reconfirm" => "확인할 질문: 설평의 설명은 기록과 같은 시기·장소이며 직접 목격한 일인가?",
+            "career" => "확인할 질문: 인계 명부와 근무 기록에는 어떤 담당 업무가 적혀 있는가?",
+            "registry" => "확인할 질문: 신고한 신원이 해당 지역의 호적 기록과 일치하는가?",
+            "papers" => "확인할 질문: 허가받은 개인 서류에서 사건과 관련된 자료를 찾을 수 있는가?",
+            "letter_interrogation" => "확인할 질문: 발견한 밀서와 개인 물건에 관해 설평은 어떻게 설명하는가?",
+            "courier" => "확인할 질문: 문서를 마지막으로 확인한 때와 없어진 것을 알게 된 때는 언제인가?",
+            "relief_guard" => "확인할 질문: 교대 병사가 직접 본 두석의 이탈·복귀 시점은 언제인가?",
+            "duseok_requestion" => "확인할 질문: 교대 병사의 설명을 바탕으로 두석에게 이탈 이유와 행적을 다시 묻는다.",
+            "gambling_witness" => "확인할 질문: 두석이 말한 노름 시간과 동석 여부가 병사의 설명과 맞는가?",
+            _ => "확인할 질문을 정하고 조사를 시작하자."
+        };
         void BeginPaidSequence(string id, string title, string speaker, string[] lines, Action complete) {
             if (!EnsureInquiry(id, title, () => BeginPaidSequence(id, title, speaker, lines, complete))) return;
             BeginSequence(speaker, lines, complete);

@@ -42,6 +42,15 @@ namespace RedCliffMystery.Investigation
         public bool DutyRecordRead;
         public bool registryScopeChecked;
         public bool registryNamesChecked;
+        public string PreviewSummary() {
+            Validate();
+            var clock = new InvestigationTime();
+            clock.Restore(inquiryIds, inquiryTitles);
+            return "참모: " + playerName + "\n조사 일정: " + clock.Label
+                + "\n저장 장소: " + (navalCamp ? "조조군 수군 진영" : "조조군 문서고")
+                + "\n저장 시각: " + (string.IsNullOrWhiteSpace(savedAt) ? "시각 기록 없음" : savedAt)
+                + (clock.DeadlineReached ? "\n기한 종료: 이미 시작한 조사 확인 또는 최종 보고로 이어집니다." : "");
+        }
         public void Validate() {
             if (version != 1 || string.IsNullOrWhiteSpace(playerName) || playerName.Length > 16
                 || inquiryIds == null || inquiryTitles == null || inquiryIds.Length != inquiryTitles.Length
@@ -114,11 +123,13 @@ namespace RedCliffMystery.Investigation
             registryNamesChecked = registryNamesChecked,
         };
         void ShowSaveMenu() {
-            SetModal("조사 기록 보관", "저장 / 불러오기", "수동 저장 슬롯은 하나입니다.\n단서·진술·조사 횟수·수색 허가를 저장합니다.\n불러오면 저장한 장소의 입구에서 이어갑니다.");
+            ReadSavePreview(out var stored, out var preview);
+            SetModal("조사 기록 보관", "저장 / 불러오기", "수동 저장 슬롯 1\n\n" + preview + "\n\n불러오면 저장한 장소의 입구에서 이어갑니다.");
             onEscape = ShowPause;
             view.AddChoice("현재 조사 저장", () => {
                 if (File.Exists(InvestigationSaveStore.SavePath)) {
-                    SetModal("저장 확인", "기존 기록을 덮어쓸까요?", "이전 저장 기록이 현재 조사로 바뀝니다.");
+                    ReadSavePreview(out var previous, out var previousPreview);
+                    SetModal("저장 확인", "기존 기록을 덮어쓸까요?", "덮어쓸 저장 기록\n" + previousPreview + "\n\n이전 저장 기록이 현재 조사로 바뀝니다.");
                     onEscape = ShowSaveMenu;
                     view.AddChoice("덮어쓰기", SaveInvestigation);
                     view.AddChoice("취소", ShowSaveMenu);
@@ -140,15 +151,33 @@ namespace RedCliffMystery.Investigation
             view.AddChoice("돌아가기", ShowSaveMenu);
         }
         void ConfirmLoad(Action back) {
-            SetModal("불러오기 확인", "저장한 조사로 돌아갈까요?", "저장하지 않은 진행은 사라집니다. 저장 당시 장소의 입구에서 이어집니다.");
+            if (!ReadSavePreview(out var data, out var preview)) {
+                SetModal("불러오기 안내", "저장 기록을 확인해 주세요", preview + "\n현재 진행은 유지됩니다.");
+                onEscape = back;
+                view.AddChoice("돌아가기", () => back());
+                return;
+            }
+            SetModal("불러오기 확인", "저장한 조사로 돌아갈까요?", preview + "\n\n저장하지 않은 진행은 사라집니다. 저장 당시 장소의 입구에서 이어집니다.");
             onEscape = back;
-            view.AddChoice("불러오기", () => LoadInvestigation(back));
+            view.AddChoice("불러오기", () => LoadInvestigation(back, data));
             view.AddChoice("취소", () => back());
         }
-        void LoadInvestigation(Action back) {
-            InvestigationSaveData data;
+        static bool ReadSavePreview(out InvestigationSaveData data, out string preview) {
+            data = null;
             try {
                 data = InvestigationSaveStore.Read(InvestigationSaveStore.SavePath);
+                preview = data.PreviewSummary();
+                return true;
+            } catch (FileNotFoundException) { preview = "아직 저장한 조사 기록이 없습니다."; }
+              catch (DirectoryNotFoundException) { preview = "아직 저장한 조사 기록이 없습니다."; }
+              catch (Exception) { preview = "저장 기록을 읽을 수 없습니다. 파일 손상·버전 또는 접근 권한을 확인해 주세요."; }
+            data = null;
+            return false;
+        }
+        void LoadInvestigation(Action back, InvestigationSaveData data) {
+            try {
+                // Restore exactly the validated snapshot shown in the confirmation.
+                data.Validate();
                 if (route == null || !route.IsReady || introductionStage == null)
                     throw new InvalidOperationException("장소 연결이 준비되지 않았습니다.");
             } catch (Exception e) {

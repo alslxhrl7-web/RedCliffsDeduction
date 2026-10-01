@@ -64,7 +64,8 @@ namespace RedCliffMystery.Investigation
 
         void ShowDuseokTimelineInquiry()
         {
-            SetModal("두석 · 경비 시간대 조사", "경비 공백을 확인한다", "문서고 입구 맞은편의 교대 병사, 수군 진영 입구 부근의 전령과 병사에게 확인할 수 있다.\n\n각 인물의 새 조사와 두석의 시간대 재질문은 각각 1회를 사용한다. 결과 정리는 무료다.");
+            SetModal("두석 · 경비 시간대 조사", "경비 공백을 확인한다", DuseokInvestigationGuide()
+                + "\n\n교대 병사는 문서고 입구 맞은편, 전령과 병사는 수군 진영 입구 부근에 있다. 새 조사와 시간대 재질문은 각각 1회, 결과 정리는 무료다.");
             if (DuseokTestimonyHeard && GuardDepartureHeard && GuardReturnHeard)
                 view.AddChoice("배급 북 이후부터 교대 직전까지 어디 있었나?", StartDuseokRequestion);
             if (DuseokTestimonyHeard)
@@ -72,7 +73,7 @@ namespace RedCliffMystery.Investigation
                     "설평은 안에서 서류를 정리하고 있었습니다. 제가 돌아왔을 때도 있었고요. 그사이에 계속 있었는지, 다른 사람이 드나들었는지는 모릅니다.",
                     () => ArchivePresenceHeard = true, ShowDuseokTimelineInquiry));
             view.AddChoice("확인한 증언 목록", () => {
-                SetModal("시간대 조사", "확인 상태", DuseokWitnessChecklist());
+                SetModal("시간대 조사", "확인 상태", DuseokWitnessChecklist() + "\n\n" + DuseokInvestigationGuide());
                 view.AddChoice("두석에게 돌아가기", ShowDuseokTimelineInquiry);
             });
             view.AddChoice(DuseokTimelineComplete ? "정리한 시간대 다시 보기" : "조사 결과 정리 · 무료", CompleteDuseokTimeline, CanCompleteDuseokTimeline);
@@ -102,5 +103,30 @@ namespace RedCliffMystery.Investigation
             + RecordStatus(DuseokTestimonyHeard && GamblingAdmissionHeard, "두석 · 이탈 이유 재질문")
             + RecordStatus(GamblingWitnessHeard, "동석 병사 · 노름 시간 확인")
             + RecordStatus(ArchivePresenceHeard, "두석 · 이탈 전후 문서고 상황");
+
+        string DuseokInvestigationGuide()
+        {
+            string known = GuardDepartureHeard && GuardReturnHeard
+                ? "교대 병사의 목격 진술로 두석의 이탈·복귀 시점과 경비 공백을 확인했다."
+                : GuardDepartureHeard ? "교대 병사는 배급 북 이후 두석이 떠나는 것을 봤다고 말했다. 복귀 시점은 아직 확인하지 않았다."
+                : GuardReturnHeard ? "교대 병사는 두석이 교대 직전에 돌아왔다고 말했다. 이탈 시점은 아직 확인하지 않았다."
+                : DuseokTestimonyHeard ? "두석은 자리를 비웠다고 말했다. 이탈·복귀 시점은 주변 진술과 대조해야 한다."
+                : "두석의 경비 상황과 주변 목격 진술을 확인할 수 있다.";
+            string next = GamblingWitnessHeard ? "동석 병사의 설명도 확보했다. 각 진술에서 목격한 범위를 구분해 보자."
+                : GamblingAdmissionHeard ? "두석이 말한 노름 시간과 동석 여부를 병사에게 확인할 수 있다."
+                : DuseokTestimonyHeard && GuardDepartureHeard && GuardReturnHeard
+                    ? "두석에게 이탈 이유와 그동안의 행적을 다시 물을 수 있다."
+                    : "두석과 교대 병사가 각각 어느 시간대를 직접 보았는지 확인할 수 있다.";
+            string other = ContradictionFound
+                ? "\n\n다른 조사 기록: 현장 경험 진술과 기록의 모순을 발견했다. 수첩에서 경력·신원 조사 진행도 함께 검토할 수 있다."
+                : CanCompareTestimonies
+                    ? "\n\n다른 조사 기록: 훈련에 관한 진술과 자료가 모였다. 수첩에서 직접 비교할 수 있다."
+                    : TestimonyHeard && (CaimaoTestimonyHeard || ZhangyunTestimonyHeard || MaintenanceOrderRead)
+                        ? "\n\n다른 조사 기록: 설평의 경험 설명과 수군 관련 자료를 확보했다. 수첩에서 아직 확인하지 않은 비교 자료를 살펴볼 수 있다." : "";
+            return "지금까지 확인한 범위\n" + known
+                + "\n\n아직 모르는 점\n경비 공백만으로 그동안 누가 문서를 가져갔는지는 판단할 수 없다."
+                + "\n\n더 확인할 수 있는 내용\n" + next + other
+                + "\n\n계속할 조사와 순서는 직접 선택한다. 수첩 재검토와 이동에는 조사 횟수가 들지 않는다.";
+        }
     }
 }

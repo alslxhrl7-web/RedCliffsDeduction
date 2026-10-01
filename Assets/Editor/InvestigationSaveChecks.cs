@@ -21,6 +21,16 @@ public static class InvestigationSaveChecks
             data.playerName = "검증 참모";
             data.inquiryIds = new[] { "seol_initial", "career", "registry" };
             data.inquiryTitles = new[] { "설평", "경력", "호적" };
+            string preview = data.PreviewSummary();
+            if (!preview.Contains("검증 참모") || !preview.Contains("남은 조사 9회") || !preview.Contains("수군 진영") || !preview.Contains("첫째 날"))
+                throw new Exception("Preview does not describe saved state");
+            var expired = JsonUtility.FromJson<InvestigationSaveData>(JsonUtility.ToJson(data));
+            expired.inquiryIds = new[] { "seol_initial", "duseok_initial", "caimao", "zhangyun", "career", "seol_reconfirm", "registry", "papers", "letter_interrogation", "relief_guard", "courier", "duseok_requestion" };
+            expired.inquiryTitles = expired.inquiryIds;
+            expired.navalCamp = false; expired.savedAt = null;
+            preview = expired.PreviewSummary();
+            if (!preview.Contains("남은 조사 0회") || !preview.Contains("열나흗날") || !preview.Contains("문서고") || !preview.Contains("기한 종료") || !preview.Contains("시각 기록 없음"))
+                throw new Exception("Deadline/legacy preview failed");
             InvestigationSaveStore.Write(path, data);
             var loaded = InvestigationSaveStore.Read(path);
             typeof(InvestigationSession).GetMethod("RestoreSave", flags).Invoke(session, new object[] { loaded });

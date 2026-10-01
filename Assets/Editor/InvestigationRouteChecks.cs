@@ -356,6 +356,7 @@ namespace RedCliffMystery.EditorTools
 
         static void CheckLayout(InvestigationSession s)
         {
+            if (!s.view.modal.activeInHierarchy) return;
             Canvas.ForceUpdateCanvases();
             var v = s.view;
             UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(v.body.rectTransform);

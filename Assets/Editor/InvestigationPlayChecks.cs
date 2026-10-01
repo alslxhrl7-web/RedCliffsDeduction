@@ -80,11 +80,19 @@ namespace RedCliffMystery.EditorTools
                 if (S.view.title.text.Contains("덮어쓸")) Click("덮어쓰기");
                 Require(S.view.title.text.Contains("보관"), "Save failed");
                 Click("돌아가기"); S.CloseModal(); S.ReturnToArchive();
-                S.ShowPause(); Click("저장 / 불러오기"); Click("저장한 조사 불러오기"); Click("불러오기");
+                S.ShowPause(); Click("저장 / 불러오기"); Click("저장한 조사 불러오기");
+                Require(S.view.body.text.Contains(S.PlayerName) && S.view.body.text.Contains(date) && S.view.body.text.Contains("수군 진영") && S.view.body.text.Contains("저장 시각"), "Preview missing saved details");
+                Click("취소"); Require(!S.route.AtNavalCamp && S.InvestigationDate == date, "Preview cancel altered gameplay");
+                Click("저장한 조사 불러오기"); Click("불러오기");
                 Require(S.route.AtNavalCamp && S.WorkRouteHeard && S.AccessAuthorityHeard && S.HasWuLetterEvidence && S.InvestigationDate == date, "Save restore lost state");
                 S.ReturnToArchive(); S.TalkToSeolpyeong();
                 Require(S.InvestigationDate == date, "Repeated inquiry charged after load");
                 S.CloseModal();
+                File.WriteAllText(paths[0], "{}");
+                S.ShowPause(); Click("저장 / 불러오기"); Click("저장한 조사 불러오기");
+                Require(!S.view.choices.GetComponentsInChildren<UnityEngine.UI.Button>().Any(b => b.gameObject.activeSelf && b.name == "불러오기"), "Invalid save can be loaded");
+                Require(S.HasWuLetterEvidence && S.InvestigationDate == date, "Invalid preview altered progress");
+                Click("돌아가기"); S.CloseModal();
                 Debug.Log("PLAY_SAVE_PASS: UI save/load, location, new flags, paid investigations; original save restored");
             } finally {
                 for (int i=0;i<paths.Length;i++) { if (old[i] != null) File.WriteAllBytes(paths[i], old[i]); else if (File.Exists(paths[i])) File.Delete(paths[i]); }
