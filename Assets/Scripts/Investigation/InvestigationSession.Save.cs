@@ -9,6 +9,8 @@ namespace RedCliffMystery.Investigation
     {
         public int version;
         public string playerName, target, savedAt;
+        public string resumePoint;
+        public InvestigationReportSave report;
         public bool navalCamp;
         public bool WorkRouteHeard, AccessAuthorityHeard;
         public string[] inquiryIds, inquiryTitles;
@@ -48,6 +50,7 @@ namespace RedCliffMystery.Investigation
             clock.Restore(inquiryIds, inquiryTitles);
             return "참모: " + playerName + "\n조사 일정: " + clock.Label
                 + "\n저장 장소: " + (navalCamp ? "조조군 수군 진영" : "조조군 문서고")
+                + "\n저장 지점: " + (report != null ? "보고 선택" : string.IsNullOrEmpty(resumePoint) || resumePoint == "field" ? "현장 조사" : "조사 선택 화면")
                 + "\n저장 시각: " + (string.IsNullOrWhiteSpace(savedAt) ? "시각 기록 없음" : savedAt)
                 + (clock.DeadlineReached ? "\n기한 종료: 이미 시작한 조사 확인 또는 최종 보고로 이어집니다." : "");
         }
@@ -57,15 +60,26 @@ namespace RedCliffMystery.Investigation
                 || inquiryIds.Length > InvestigationTime.Budget)
                 throw new InvalidDataException("지원하지 않거나 손상된 저장 기록입니다.");
             var known = new HashSet<string> { "seol_initial", "duseok_initial", "caimao", "zhangyun", "career", "seol_reconfirm", "registry", "papers", "letter_interrogation", "relief_guard", "courier", "duseok_requestion", "gambling_witness" };
+            for (int slot = 0; slot < InvestigationTime.Budget; slot++) known.Add("wait_" + slot);
+            known.UnionWith(new[] { "document", "maintenance", "token" });
             foreach (var id in inquiryIds)
                 if (id == null || !known.Remove(id)) throw new InvalidDataException("조사 기록이 손상되었습니다.");
             foreach (var title in inquiryTitles)
                 if (string.IsNullOrWhiteSpace(title)) throw new InvalidDataException("조사 제목이 없습니다.");
+            if (!InvestigationSession.IsKnownSavePoint(resumePoint)) throw new InvalidDataException("알 수 없는 저장 지점입니다.");
+            if (resumePoint != null && resumePoint.StartsWith("report_") && report == null)
+                throw new InvalidDataException("보고 분기에 필요한 선택 기록이 없습니다.");
+            if (report != null) report.Validate();
         }
     }
     public static class InvestigationSaveStore
     {
         public static string SavePath => Path.Combine(Application.persistentDataPath, "investigation-save.json");
+        public static string AutoSavePath => Path.Combine(Application.persistentDataPath, "investigation-autosave.json");
+        public static string ManualPath(int slot) {
+            if (slot < 1 || slot > 3) throw new ArgumentOutOfRangeException(nameof(slot));
+            return slot == 1 ? SavePath : Path.Combine(Application.persistentDataPath, "investigation-save-" + slot + ".json");
+        }
         public static InvestigationSaveData Read(string path) {
             var data = JsonUtility.FromJson<InvestigationSaveData>(File.ReadAllText(path));
             if (data == null) throw new InvalidDataException("저장 기록이 비어 있습니다.");
@@ -88,6 +102,8 @@ namespace RedCliffMystery.Investigation
     {
         InvestigationSaveData CaptureSave() => new InvestigationSaveData {
             version = 1, playerName = PlayerName, target = selectedInvestigationTarget,
+            resumePoint = saveResumePoint,
+            report = CaptureReportSave(),
             savedAt = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), navalCamp = route.AtNavalCamp,
             inquiryIds = investigationTime.SavedIds, inquiryTitles = investigationTime.SavedTitles,
             WorkRouteHeard = WorkRouteHeard, AccessAuthorityHeard = AccessAuthorityHeard,
@@ -123,49 +139,39 @@ namespace RedCliffMystery.Investigation
             registryNamesChecked = registryNamesChecked,
         };
         void ShowSaveMenu() {
-            ReadSavePreview(out var stored, out var preview);
-            SetModal("조사 기록 보관", "저장 / 불러오기", "수동 저장 슬롯 1\n\n" + preview + "\n\n불러오면 저장한 장소의 입구에서 이어갑니다.");
-            onEscape = ShowPause;
-            view.AddChoice("현재 조사 저장", () => {
-                if (File.Exists(InvestigationSaveStore.SavePath)) {
-                    ReadSavePreview(out var previous, out var previousPreview);
-                    SetModal("저장 확인", "기존 기록을 덮어쓸까요?", "덮어쓸 저장 기록\n" + previousPreview + "\n\n이전 저장 기록이 현재 조사로 바뀝니다.");
-                    onEscape = ShowSaveMenu;
-                    view.AddChoice("덮어쓰기", SaveInvestigation);
-                    view.AddChoice("취소", ShowSaveMenu);
-                } else SaveInvestigation();
-            });
-            view.AddChoice("저장한 조사 불러오기", () => ConfirmLoad(ShowSaveMenu));
-            view.AddChoice("돌아가기", ShowPause);
+            OpenManualSaveSlots();
         }
         void SaveInvestigation() {
-            if (!introductionFinished || reportActive || FinalReportCompleted || deadlineReportLocked) return;
+            if (pendingManualSave == null) return;
             try {
-                InvestigationSaveStore.Write(InvestigationSaveStore.SavePath, CaptureSave());
-                SetModal("저장 완료", "조사 기록을 보관했습니다", PlayerName + " · " + InvestigationDate + "\n" + LocationName);
+                InvestigationSaveStore.Write(InvestigationSaveStore.ManualPath(selectedSaveSlot), pendingManualSave);
+                SetModal("저장 완료", "슬롯 " + selectedSaveSlot + "에 저장했습니다", pendingManualSave.PreviewSummary());
             } catch (Exception e) {
                 Debug.LogWarning("조사 저장 실패: " + e.Message);
                 SetModal("저장 실패", "기록을 저장하지 못했습니다", "저장 공간과 폴더 접근 권한을 확인해 주세요.");
             }
-            onEscape = ShowSaveMenu;
-            view.AddChoice("돌아가기", ShowSaveMenu);
+            onEscape = ReturnFromSaveMenu;
+            view.AddChoice("저장한 분기에서 계속", ReturnFromSaveMenu);
         }
         void ConfirmLoad(Action back) {
-            if (!ReadSavePreview(out var data, out var preview)) {
+            ShowLoadSlots(back);
+        }
+        void ConfirmLoadPath(string path, Action back) {
+            if (!ReadSavePreview(out var data, out var preview, path)) {
                 SetModal("불러오기 안내", "저장 기록을 확인해 주세요", preview + "\n현재 진행은 유지됩니다.");
                 onEscape = back;
                 view.AddChoice("돌아가기", () => back());
                 return;
             }
-            SetModal("불러오기 확인", "저장한 조사로 돌아갈까요?", preview + "\n\n저장하지 않은 진행은 사라집니다. 저장 당시 장소의 입구에서 이어집니다.");
+            SetModal("불러오기 확인", "이 저장 지점으로 돌아갈까요?", preview + "\n\n현재 진행을 이 기록으로 바꾸고 저장한 선택 지점에서 이어갑니다.");
             onEscape = back;
             view.AddChoice("불러오기", () => LoadInvestigation(back, data));
             view.AddChoice("취소", () => back());
         }
-        static bool ReadSavePreview(out InvestigationSaveData data, out string preview) {
+        static bool ReadSavePreview(out InvestigationSaveData data, out string preview, string path = null) {
             data = null;
             try {
-                data = InvestigationSaveStore.Read(InvestigationSaveStore.SavePath);
+                data = InvestigationSaveStore.Read(path ?? InvestigationSaveStore.SavePath);
                 preview = data.PreviewSummary();
                 return true;
             } catch (FileNotFoundException) { preview = "아직 저장한 조사 기록이 없습니다."; }
@@ -194,10 +200,14 @@ namespace RedCliffMystery.Investigation
             view.SetPlayerIdentity(PlayerName, LocationName);
             RefreshInvestigationTime();
             UpdateObjective();
-            CloseModal();
+            RestoreReportSave(data.report);
+            ResumeSavedPoint();
+            lastAutoSaveSignature = SaveSignature(CaptureSave());
         }
         void RestoreSave(InvestigationSaveData data) {
             data.Validate();
+            if (dayTransition != null) dayTransition.Cancel();
+            dayTransitionActive = false;
             WorkRouteHeard = data.WorkRouteHeard; AccessAuthorityHeard = data.AccessAuthorityHeard;
             DocumentInspected = data.DocumentInspected;
             TestimonyHeard = data.TestimonyHeard;
@@ -242,6 +252,10 @@ namespace RedCliffMystery.Investigation
             submittedEvidence.Clear(); reportEvidence.Clear();
             sequence = null; onSequenceComplete = null; onAdvance = null; onEscape = null;
             displayedTimeSlots = -1;
+            saveResumePoint = string.IsNullOrEmpty(data.resumePoint) ? "field" : data.resumePoint;
+            saveMenuOpen = false;
+            pendingManualSave = null;
+            failedAutoSaveSignature = null;
         }
     }
 }

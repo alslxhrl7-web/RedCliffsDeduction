@@ -26,6 +26,7 @@ namespace RedCliffMystery.Investigation
 
         public void VisitCommandTent()
         {
+            SetSavePoint("tent");
             if (!introductionFinished || reportActive || FinalReportCompleted) return;
             if (introductionStage == null || introductionStage.player == null || introductionStage.tent == null
                 || introductionStage.tentSpawn == null || introductionStage.archiveSpawn == null || route == null || !route.IsReady)
@@ -127,12 +128,13 @@ namespace RedCliffMystery.Investigation
             if (deadlineReportLocked)
             {
                 onEscape = null;
-                view.SetFooterHint("기한 종료 · 보고 내용은 수정할 수 있지만 현장으로 돌아갈 수 없습니다.");
+                view.SetFooterHint("기한 종료 · 보고 내용 수정 가능 · F5 저장 / F9 불러오기");
             }
         }
 
         void ShowReportConclusion()
         {
+            SetSavePoint("report_conclusion");
             ReportModal("1 / 3 · 조사 결과", "조조", "“문서는 찾았느냐. 누가 가져갔는지 밝혔느냐?”");
             view.AddChoice("특정 인물을 지목한다", () => { reportUncertain = false; ShowReportSuspects(); });
             view.AddChoice("의심되는 인물은 있지만 확정하지 못했다", () => { reportUncertain = true; ShowReportSuspects(); });
@@ -142,6 +144,7 @@ namespace RedCliffMystery.Investigation
 
         void ShowReportSuspects()
         {
+            SetSavePoint("report_suspects");
             ReportModal("1 / 3 · 대상 선택", reportUncertain ? "누구를 의심하는가?" : "누구를 지목하는가?",
                 "이후 단계에서 근거를 제출한다. 보고 완료 전에는 선택을 수정할 수 있다.");
             foreach (string name in new[] { "채모", "장윤", "설평", "두석" })
@@ -157,6 +160,7 @@ namespace RedCliffMystery.Investigation
 
         void ShowReportEvidence(int page)
         {
+            SetSavePoint("report_evidence");
             evidencePage = reportEvidence.Count == 0 ? 0 : page % reportEvidence.Count;
             if (reportEvidence.Count == 0)
             {
@@ -186,6 +190,7 @@ namespace RedCliffMystery.Investigation
 
         void ShowReportRequest()
         {
+            SetSavePoint("report_request");
             ReportModal("3 / 3 · 후속 조치", "조조", "“보고는 들었다. 어떤 조치가 필요하다고 보느냐?”\n\n요청은 보고서에 기록된다.");
             if (!deadlineReportLocked)
             {
@@ -215,6 +220,7 @@ namespace RedCliffMystery.Investigation
 
         void ShowReportConfirmation()
         {
+            SetSavePoint("report_confirm");
             ReportModal("최종 확인", "이 내용으로 보고를 마치겠습니까?", BuildReportSummary());
             view.AddChoice("이 내용으로 보고 완료", CompleteFinalReport);
             view.AddChoice("보고 내용 수정", ShowReportConclusion);

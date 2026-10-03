@@ -25,7 +25,9 @@ namespace RedCliffMystery.Investigation
 
         public void InspectPersonalToken()
         {
+            SetSavePoint("token");
             if (FinalReportCompleted) return;
+            if (!TokenObserved && !EnsureInquiry("token", "서류 묶음의 목패 조사", InspectPersonalToken)) return;
             TokenObserved = true;
             SetModal("개인 물건 · 수첩 기록", "서류 묶음의 목패", TokenDescription);
             if (LetterFound) view.AddChoice("밀서의 확인용 본과 비교", ShowTokenComparison);
@@ -34,6 +36,7 @@ namespace RedCliffMystery.Investigation
 
         void ShowSeolpyeongFollowUp()
         {
+            SetSavePoint("seol_followup");
             SetModal("설평 · 추가 질문", "무엇을 확인할까?", "기록과 물건에 관해 질문할 수 있다.");
             if (TokenObserved)
                 view.AddChoice("서류 묶음의 목패는 누구의 것인가?", () => BeginSequence("설평", new[] {
@@ -52,6 +55,7 @@ namespace RedCliffMystery.Investigation
 
         public void ShowRegistryComparison()
         {
+            SetSavePoint("registry");
             if (!ContradictionFound || !PersonnelRecordRead || !DutyRecordRead)
             {
                 FollowUpNotice("신원 대조에 필요한 기록", "인계 명부와 근무 기록을 확인하고, 현장 경험에 관한 진술과 당시 기록을 먼저 대조하자. 근무 경력 자체와 신고 신원은 구분해야 한다.");
@@ -73,7 +77,7 @@ namespace RedCliffMystery.Investigation
                 if (!registryScopeChecked || !registryNamesChecked) return;
                 RecordVerifiedKeyEvidence("clue_household_registry_no_record");
                 SetModal("신원 대조 완료", "신고 신원을 확인할 수 없음", RegistryFinding);
-                view.AddChoice("조조에게 개인 서류 조사 허가 요청", RequestPersonalSearch);
+                view.AddChoice("수첩 확인", ShowJournal);
                 view.AddChoice("조사 계속", CloseModal);
             }, registryScopeChecked && registryNamesChecked);
             view.AddChoice("조사 계속", CloseModal);
@@ -86,6 +90,7 @@ namespace RedCliffMystery.Investigation
             BeginFinalReport();
             if (!reportActive) return;
             ReportModal("중간 보고 · 조사 허가", "조조", "“근무 이력은 있지만 신고 신원은 확인되지 않는다… 현장 경험에 관한 말도 기록과 맞지 않는다는 것이군.”\n\n“설평의 개인 서류를 조사하도록 허락하겠다. 몸수색이나 체포는 이번 명령에 포함하지 않는다.”");
+            SetSavePoint("search_permission");
             view.AddChoice("조사 명령을 받고 돌아간다", () => {
                 SearchAuthorized = true;
                 CancelFinalReport();
@@ -94,6 +99,7 @@ namespace RedCliffMystery.Investigation
 
         public void InspectPersonalPapers()
         {
+            SetSavePoint("papers");
             if (FinalReportCompleted) return;
             if (!SearchAuthorized)
             {
@@ -116,6 +122,7 @@ namespace RedCliffMystery.Investigation
 
         void ShowTokenComparison()
         {
+            SetSavePoint("token_compare");
             if (!LetterFound) return;
             if (!TokenObserved) { FollowUpNotice("대조할 물건이 필요하다", "밀서에는 수신인이 이미 지닌 연락패의 본이 있다. 문서고의 개인 물건을 살펴보자."); return; }
             SetModal("물건 대조", "밀서와 무엇을 비교할까?", "그림은 물결 무늬와 비대칭인 세 홈을 나타낸다. 어떤 기록 또는 물건이 수신인을 연결하는가?");
@@ -130,6 +137,7 @@ namespace RedCliffMystery.Investigation
 
         void ShowLetterInterrogation()
         {
+            SetSavePoint("letter");
             if (!LetterFound || !SearchAuthorized) return;
             if (!EnsureInquiry("letter_interrogation", "설평 · 밀서 취조", ShowLetterInterrogation)) return;
             SetModal("설평 · 밀서에 관한 질문", "목연은 누구인가?", "개인 서류에서 발견한 지시와 설평의 설명을 대조하자.");

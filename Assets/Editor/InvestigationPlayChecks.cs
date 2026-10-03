@@ -16,6 +16,12 @@ namespace RedCliffMystery.EditorTools
         static void Call(string method, params object[] args) => typeof(InvestigationRouteChecks).GetMethod(method, BindingFlags.NonPublic | BindingFlags.Static).Invoke(null, args);
         static void Layout() => Call("CheckLayout", S);
         static void Click(string label) { Call("Click", S, label); Layout(); }
+        static void ClickPrefix(string prefix) {
+            var button = S.view.choices.GetComponentsInChildren<UnityEngine.UI.Button>()
+                .Single(b => b.gameObject.activeSelf && b.name.StartsWith(prefix));
+            Require(button.interactable, "Disabled: " + prefix);
+            button.onClick.Invoke(); Layout();
+        }
         static void Dialogue() => Call("CompleteDialogue", S);
         static void Cost() => Call("AcceptInvestigationCost", S);
         static void Private(string name) => typeof(InvestigationSession).GetMethod(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance).Invoke(S, null);
@@ -37,10 +43,10 @@ namespace RedCliffMystery.EditorTools
             S.EnterNavalCamp(); S.ShowCareerRecords(); Cost(); Layout();
             Click("형주 인력 인계 명부"); Click("다른 서류 확인");
             Click("이전 근무 기록"); Click("확인한 내용 정리");
-            Click("기록 담당자에게 신원 대조 요청");
+            Click("기록 담당자와 대화"); Click("신고 출신지의 호적 대조");
             Click("지역·시기·누락 여부 확인"); Click("대조 계속");
             Click("이름 표기와 가구 항목 확인"); Click("대조 계속");
-            Click("대조 결과 기록"); Click("조조에게 개인 서류 조사 허가 요청");
+            Click("대조 결과 기록"); S.CloseModal(); S.VisitCommandTent(); Click("개인 서류 조사 허가 요청");
             Click("조사 명령을 받고 돌아간다"); Require(S.SearchAuthorized, "Search permission missing");
             S.ReturnToArchive(); S.InspectPersonalPapers(); Cost();
             Click("안쪽 종이를 펼친다");
@@ -76,20 +82,20 @@ namespace RedCliffMystery.EditorTools
             var old = paths.Select(p => File.Exists(p) ? File.ReadAllBytes(p) : null).ToArray();
             try {
                 string date = S.InvestigationDate;
-                S.CloseModal(); S.EnterNavalCamp(); S.ShowPause(); Click("저장 / 불러오기"); Click("현재 조사 저장");
-                if (S.view.title.text.Contains("덮어쓸")) Click("덮어쓰기");
-                Require(S.view.title.text.Contains("보관"), "Save failed");
-                Click("돌아가기"); S.CloseModal(); S.ReturnToArchive();
-                S.ShowPause(); Click("저장 / 불러오기"); Click("저장한 조사 불러오기");
+                S.CloseModal(); S.EnterNavalCamp(); S.ShowPause(); Click("저장 / 불러오기"); ClickPrefix("슬롯 1에 저장");
+                if (S.view.title.text.Contains("바꿀")) Click("덮어쓰기");
+                Require(S.view.title.text.Contains("저장했습니다"), "Save failed");
+                Click("저장한 분기에서 계속"); S.CloseModal(); S.ReturnToArchive();
+                S.ShowPause(); Click("저장 / 불러오기"); Click("불러올 기록 선택"); ClickPrefix("수동 슬롯 1");
                 Require(S.view.body.text.Contains(S.PlayerName) && S.view.body.text.Contains(date) && S.view.body.text.Contains("수군 진영") && S.view.body.text.Contains("저장 시각"), "Preview missing saved details");
                 Click("취소"); Require(!S.route.AtNavalCamp && S.InvestigationDate == date, "Preview cancel altered gameplay");
-                Click("저장한 조사 불러오기"); Click("불러오기");
+                ClickPrefix("수동 슬롯 1"); Click("불러오기");
                 Require(S.route.AtNavalCamp && S.WorkRouteHeard && S.AccessAuthorityHeard && S.HasWuLetterEvidence && S.InvestigationDate == date, "Save restore lost state");
                 S.ReturnToArchive(); S.TalkToSeolpyeong();
                 Require(S.InvestigationDate == date, "Repeated inquiry charged after load");
                 S.CloseModal();
                 File.WriteAllText(paths[0], "{}");
-                S.ShowPause(); Click("저장 / 불러오기"); Click("저장한 조사 불러오기");
+                S.ShowPause(); Click("저장 / 불러오기"); Click("불러올 기록 선택");
                 Require(!S.view.choices.GetComponentsInChildren<UnityEngine.UI.Button>().Any(b => b.gameObject.activeSelf && b.name == "불러오기"), "Invalid save can be loaded");
                 Require(S.HasWuLetterEvidence && S.InvestigationDate == date, "Invalid preview altered progress");
                 Click("돌아가기"); S.CloseModal();
@@ -156,13 +162,7 @@ namespace RedCliffMystery.EditorTools
         [MenuItem("적벽추리/플레이 검증/기한 만료")]
         public static void Deadline() {
             Require(Application.isPlaying && S.HasWuLetterEvidence, "Complete follow-up first");
-            S.CloseModal(); S.ReturnToArchive(); S.TalkToReliefGuard(); Cost();
-            Click("두석이 떠나는 것을 봤나?"); Dialogue(); Click("다른 질문");
-            Click("두석은 언제 돌아왔나?"); Dialogue(); S.CloseModal();
-            S.EnterNavalCamp(); S.TalkToDocumentCourier(); Cost(); S.CloseModal();
-            S.ReturnToArchive(); S.TalkToDuseok(); Click("경비 시간대를 더 조사한다");
-            Click("배급 북 이후부터 교대 직전까지 어디 있었나?"); Dialogue();
-            Require(S.GamblingAdmissionHeard && S.InvestigationDate.Contains("남은 조사 0회"), "Last inquiry interrupted or budget wrong");
+            Require(S.InterrogationCompleted && S.InvestigationDate.Contains("남은 조사 0회"), "Full route should complete the last interrogation within twelve slots");
             S.CloseModal(); Click("마지막 조사의 남은 내용 확인");
             S.TalkToGamblingSoldier();
             Require(S.view.title.text == "조조의 호출", "Thirteenth inquiry was allowed");

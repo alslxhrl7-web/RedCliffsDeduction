@@ -4,6 +4,7 @@ using RedCliffMystery.Investigation;
 
 public static class InvestigationBudgetChecks
 {
+    [UnityEditor.MenuItem("적벽추리/플레이 검증/조사 시간 계산")]
     public static void Verify()
     {
         var clock = new InvestigationTime();
@@ -17,6 +18,21 @@ public static class InvestigationBudgetChecks
         }
         Require(clock.DeadlineReached && !clock.Complete("thirteenth", "추가") && clock.HasStarted("inquiry11"), "Deadline/revisit policy");
         Require(clock.HistoryPages == 2 && !string.IsNullOrEmpty(clock.HistoryPage(1)), "History pagination");
+        for (int initial = 0; initial < InvestigationTime.Budget; initial++)
+        {
+            var waiting = new InvestigationTime();
+            for (int i = 0; i < initial; i++) waiting.Complete("inquiry" + i, "조사");
+            int expected = (initial / 4 + 1) * 4;
+            waiting.FinishDay();
+            Require(waiting.ElapsedSlots == expected, "Finish day boundary " + initial);
+            var restored = new InvestigationTime();
+            restored.Restore(waiting.SavedIds, waiting.SavedTitles);
+            Require(restored.ElapsedSlots == expected && restored.Label == waiting.Label, "Wait save round trip " + initial);
+            if (expected == InvestigationTime.Budget) {
+                waiting.FinishDay();
+                Require(waiting.ElapsedSlots == InvestigationTime.Budget, "Wait exceeds deadline");
+            }
+        }
         Require(EndingRules.ResolveFinal(null, false, false, false, false) == InvestigationEnding.None, "Early unresolved report");
         Require(EndingRules.ResolveFinal(null, false, true, false, false) == InvestigationEnding.Unresolved, "Expired unresolved report");
         Require(EndingRules.ResolveFinal("설평", true, true, true, true) == InvestigationEnding.Unresolved, "Suspicion is not accusation");

@@ -50,6 +50,7 @@ namespace RedCliffMystery.Investigation
 
         void Start()
         {
+            Application.runInBackground = true;
             if (introductionStage != null) introductionStage.Begin();
             view.SetPrologueLayout(true);
             view.SetPlayerIdentity("알현 대기", "조조군 지휘 천막");
@@ -77,7 +78,7 @@ namespace RedCliffMystery.Investigation
 
         void ShowInvestigationBrief()
         {
-            SetModal("임무 수령 · 조조군 임시 참모", PlayerName + "의 첫 조사", "사라진 「화공대비책」의 행방과 범인을 밝혀라.\n\n문서고에서 빈 보관함을 확인하고, 서기 설평의 말을 들어보자. 입구를 돌아보면 경비 두석도 만날 수 있다.\n\nJ키로 수첩을 연다. 새 인물·주제 조사를 시작할 때 1회를 쓴다. 하루 오전·오후·저녁·밤, 사흘 총 12회다. 같은 주제 재방문과 이동은 무료다.", "E / Enter 계속 · 문서고로 이동한 뒤 조작 안내가 표시됩니다.");
+            SetModal("임무 수령 · 조조군 임시 참모", PlayerName + "의 첫 조사", "사라진 「화공대비책」의 행방과 범인을 밝혀라.\n\n문서고에서 빈 보관함을 확인하고, 서기 설평의 말을 들어보자. 입구를 돌아보면 경비 두석도 만날 수 있다.\n\nJ키로 수첩을 연다. 인물과 자료 모두 새 조사 주제를 시작할 때 1회를 쓴다. 하루 오전·오후·저녁·밤, 사흘 총 12회다. 확보한 기록을 다시 읽는 데는 중복 차감하지 않는다.", "E / Enter 계속 · 문서고로 이동한 뒤 조작 안내가 표시됩니다.");
             onEscape = null;
             view.AddChoice("명을 받고 문서고로 향한다", FinishIntroduction);
             onAdvance = FinishIntroduction;
@@ -96,7 +97,8 @@ namespace RedCliffMystery.Investigation
         void Update()
         {
             RefreshInvestigationTime();
-            if (enteringName || !BlocksMovement || Time.frameCount <= modalOpenedFrame || Keyboard.current == null) return;
+            if (HandleSaveShortcuts()) return;
+            if (!Application.isFocused || dayTransitionActive || enteringName || !BlocksMovement || Time.frameCount <= modalOpenedFrame || Keyboard.current == null) return;
             var keyboard = Keyboard.current;
             if (keyboard.escapeKey.wasPressedThisFrame) onEscape?.Invoke();
             else if (keyboard.eKey.wasPressedThisFrame || keyboard.enterKey.wasPressedThisFrame) onAdvance?.Invoke();
@@ -114,15 +116,19 @@ namespace RedCliffMystery.Investigation
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
             view.ShowModal(eyebrow, title, body, footer);
+            if (introductionFinished && !FinalReportCompleted)
+                view.SetFooterHint(footer + "  ·  F5 저장 / F9 불러오기");
         }
 
         public void CloseModal()
         {
+            if (dayTransitionActive) return;
             if (!introductionFinished) return;
             if (reportActive) { CancelFinalReport(); return; }
             if (visitingCommandTent) { LeaveCommandTent(tentVisitFromNaval); return; }
             if (investigationTime.DeadlineReached && !skipDeadlinePrompt) { ShowDeadlineChoice(); return; }
             skipDeadlinePrompt = false;
+            saveResumePoint = "field";
             onSequenceComplete = null;
             sequence = null;
             onAdvance = null;
@@ -140,13 +146,15 @@ namespace RedCliffMystery.Investigation
             view.AddChoice("조사 계속", CloseModal);
             view.AddChoice("수첩 열기", ShowJournal);
             view.AddChoice("장소 이동", ShowTravel);
-            view.AddChoice("날짜와 조사 일정", ShowInvestigationSchedule);
+            view.AddChoice("날짜와 조사 일정 / 시간 보내기", ShowInvestigationSchedule);
             view.AddChoice("저장 / 불러오기", ShowSaveMenu);
             onAdvance = CloseModal;
         }
 
         public void InspectDocument()
         {
+            SetSavePoint("document");
+            if (!DocumentInspected && !EnsureInquiry("document", "문서 보관함 조사", InspectDocument)) return;
             DocumentInspected = true;
             UpdateObjective();
             SetModal("현장 조사 · 문서 보관함", "사라진 화공대비책", "「화공대비책」이 있어야 할 보관 위치가 비어 있다.\n\n확인된 사실은 문서가 사라졌다는 것이다. 이 사실만으로 가져간 사람을 특정할 수는 없다.", "조사 기록이 수첩에 추가되었습니다.  ·  E / Esc 닫기");
@@ -156,6 +164,7 @@ namespace RedCliffMystery.Investigation
 
         public void TalkToSeolpyeong()
         {
+            SetSavePoint("seol");
             if (!EnsureInquiry("seol_initial", "설평 · 업무와 경력", TalkToSeolpyeong)) return;
             SetModal("문서고 서기", "설평", DocumentInspected
                 ? "“화공대비책이 사라졌다고요? 무엇을 확인하고 싶으십니까?”"
@@ -195,6 +204,8 @@ namespace RedCliffMystery.Investigation
 
         public void InspectMaintenanceOrder()
         {
+            SetSavePoint("maintenance");
+            if (!MaintenanceOrderRead && !EnsureInquiry("maintenance", "정비 명령서 조사", InspectMaintenanceOrder)) return;
             MaintenanceOrderRead = true;
             UpdateObjective();
             SetModal("자료 확인 · 정비 명령서", "동쪽 수채의 정비 닷새", MaintenanceOrder,
@@ -205,6 +216,7 @@ namespace RedCliffMystery.Investigation
 
         public void TalkToDuseok()
         {
+            SetSavePoint("duseok");
             SetModal("문서고 경비", "두석", "“문서고의 경비를 맡은 두석입니다. 출입 상황에 대해 물으시겠습니까?”");
             view.AddChoice("경비 시간대를 더 조사한다", ShowDuseokTimelineInquiry);
             view.AddChoice("맡은 경비에 관해", () => BeginSequence("두석", new[] {
@@ -228,6 +240,7 @@ namespace RedCliffMystery.Investigation
 
         void TalkToNavalOfficer(bool caimao)
         {
+            SetSavePoint(caimao ? "caimao" : "zhangyun");
             if (!EnsureInquiry(caimao ? "caimao" : "zhangyun", caimao ? "채모 · 훈련 설명" : "장윤 · 군량 설명", () => TalkToNavalOfficer(caimao))) return;
             string speaker = caimao ? "채모" : "장윤";
             string testimony = caimao ? CaimaoTestimony : ZhangyunTestimony;
@@ -317,18 +330,18 @@ namespace RedCliffMystery.Investigation
                     : "아직 진술을 기록하지 않았다.\n수군 진영에서 채모를 만날 수 있다.");
                 case 4: return ("장윤의 설명", ZhangyunTestimonyHeard ? "인물 진술 · 미검증\n“" + ZhangyunTestimony + "”"
                     : "아직 진술을 기록하지 않았다.\n수군 진영에서 장윤을 만날 수 있다.");
-                case 5: return ("정비 명령서", MaintenanceOrderRead ? "확인한 자료\n" + MaintenanceOrder
-                    : "아직 명령서를 확인하지 않았다.\n수군 진영 중앙 기록 탁자에서 살펴보자.");
+                case 5: return (MaintenanceOrderRead ? "정비 명령서" : "현장 자료 기록", MaintenanceOrderRead ? "확인한 자료\n" + MaintenanceOrder
+                    : "아직 이 항목에 기록한 자료가 없다.");
                 case 6: return ("추가로 확인한 진술", TestimonyReconfirmed ? "설평의 추가 진술 · 미검증\n“" + ReconfirmedTestimony + "”"
                     : "아직 추가로 확인한 진술이 없다. 누구에게 무엇을 더 물을지는 직접 결정할 수 있다.");
-                case 7: return ("형주 인력 인계 명부", PersonnelRecordRead ? PersonnelRecord : "수군 진영 입구 왼편 기록 탁자에서 확인할 수 있다.");
-                case 8: return ("이전 근무 기록", DutyRecordRead ? DutyRecord + "\n\n" + CareerFinding : "수군 진영 입구 왼편 기록 탁자에서 확인할 수 있다.");
+                case 7: return (PersonnelRecordRead ? "형주 인력 인계 명부" : "인력 자료 기록", PersonnelRecordRead ? PersonnelRecord : "아직 이 항목에 기록한 자료가 없다.");
+                case 8: return (DutyRecordRead ? "이전 근무 기록" : "업무 자료 기록", DutyRecordRead ? DutyRecord + "\n\n" + CareerFinding : "아직 이 항목에 기록한 자료가 없다.");
                 case 9: return ("개인 목패", TokenObserved ? TokenDescription : "아직 확인한 개인 물건이 없다.");
                 case 10: return ("신원 대조", HasHouseholdRegistryEvidence ? RegistryFinding : "신고 신원은 아직 대조하지 않았다.");
-                case 11: return ("개인 서류 조사", LetterFound ? SecretLetter : "개인 서류 조사 기록이 없다.");
+                case 11: return (LetterFound ? "개인 서류 조사" : "추가 자료 기록", LetterFound ? SecretLetter : "아직 이 항목에 기록한 자료가 없다.");
                 case 12: return ("후속 조사", FollowUpProgress());
                 case 14: return ("두석 시간대 조사 · 증언", DuseokWitnessChecklist() + "\n\n" + DuseokInvestigationGuide());
-                case 17: return ("밀서의 접선 일정", LetterFound ? ContactScheduleFinding : "아직 접선 날짜가 적힌 자료를 발견하지 않았다.");
+                case 17: return (LetterFound ? "밀서의 접선 일정" : "일정 대조 기록", LetterFound ? ContactScheduleFinding : "아직 대조한 일정이 없다.");
                 case 16: return ("문서 취급 권한과 업무 동선", WorkAccessFinding());
                 case 15: return ("두석 시간대 조사 · 결과", DuseokTimelineComplete ? DuseokTimeline : "주변 증언을 모아 두석에게 재질문하고 결과를 정리할 수 있다. 이 조사는 선택 사항이다.");
                 default: return ("모순 검토 결과", ContradictionFound
@@ -344,23 +357,19 @@ namespace RedCliffMystery.Investigation
 
         public void ShowTestimonyComparison()
         {
+            SetSavePoint("comparison");
             if (!introductionFinished) return;
             if (!CanCompareTestimonies)
             {
                 SetModal("수첩 · 비교 준비", "출항 훈련 진술 비교",
-                    "비교에 필요한 자료를 더 확인하자.\n\n"
-                    + RecordStatus(TestimonyHeard, "설평의 형주 경력 진술")
-                    + RecordStatus(CaimaoTestimonyHeard, "채모의 출항 훈련 설명")
-                    + RecordStatus(ZhangyunTestimonyHeard, "장윤의 군량 지급 설명")
-                    + RecordStatus(MaintenanceOrderRead, "정비 명령서")
-                    + RecordStatus(TestimonyReconfirmed, "시기·장소·목격 여부 재확인"));
+                    "아직 같은 사건에 관한 설명을 비교할 만큼 기록이 모이지 않았다. 들은 말과 확인한 자료를 수첩에서 살펴보고, 무엇을 더 확인할지 결정하자.");
                 view.AddChoice("수첩으로 돌아가기", ShowJournal);
                 view.AddChoice("조사 계속", CloseModal);
                 return;
             }
 
             SetModal("수첩 · 진술 비교", "무엇이 모순인가?",
-                "설평은 정비 닷새에 출항 훈련을 직접 기록했다고 한다.\n채모의 증언과 명령서는 그 훈련이 중단됐음을 가리킨다.\n장윤은 보수·육상 훈련 중에도 군량이 지급됐다고 한다.\n\n설평에게 같은 기간·장소에서 직접 목격했는지도 재확인했다.");
+                "같은 기간과 장소에 관한 진술과 기록을 확보했다. 수첩에 적힌 각자의 설명을 바탕으로, 함께 성립하기 어려운 주장을 선택하자.");
             view.AddChoice("훈련을 중단했으니 군량도 지급할 수 없다", () => ShowComparisonMistake(
                 "병사들은 선박 보수와 육상 훈련을 계속했다. 출항 훈련을 중단했어도 군량을 지급할 수 있다."));
             view.AddChoice("중단된 출항 훈련을 직접 기록했다고 한다", ConfirmContradiction);
@@ -406,6 +415,7 @@ namespace RedCliffMystery.Investigation
 
         public void ShowStageSelection()
         {
+            SetSavePoint("travel");
             if (!introductionFinished) return;
             sequence = null;
             onSequenceComplete = null;
@@ -432,6 +442,7 @@ namespace RedCliffMystery.Investigation
 
         public void ShowFollowUpSelection()
         {
+            SetSavePoint("followup");
             if (!introductionFinished) return;
             SetModal("조사 방향 선택", "누구를 더 조사하겠습니까?",
                 "추가로 확인할 사람을 고르거나 현재 기록으로 조사를 정리할 수 있다. 확인하지 않은 진술과 증거는 미확인 상태로 남는다.");
@@ -460,6 +471,7 @@ namespace RedCliffMystery.Investigation
 
         void ShowInvestigationReview()
         {
+            SetSavePoint("review");
             InvestigationReviewStarted = true;
             selectedInvestigationTarget = null;
             UpdateObjective();
@@ -502,11 +514,7 @@ namespace RedCliffMystery.Investigation
             if (InvestigationReviewStarted) return "조사 정리 완료 · J 수첩에서 기록 확인 / 추가 조사 선택";
             if (!string.IsNullOrEmpty(selectedInvestigationTarget))
                 return "선택한 추가 조사 · " + selectedInvestigationTarget + "에게 대화 / J 수첩에서 조사 대상 변경";
-            if (!CaimaoTestimonyHeard || !ZhangyunTestimonyHeard)
-                return route != null && route.AtNavalCamp
-                    ? "채모·장윤에게 E로 대화 · J → 다음 조사 선택에서 현재 기록으로 보고 가능"
-                    : "문서고를 살피거나 출입문에서 E로 수군 진영 이동 · 남은 조사는 돌아와서 계속";
-            return "J 수첩 → 다음 조사 선택 · 추가로 조사할 사람을 고르거나 조사 정리";
+            return "누구의 말과 어떤 자료를 확인할지 결정하자 · J 기록 / Esc 이동·일정·보고";
         }
     }
 }

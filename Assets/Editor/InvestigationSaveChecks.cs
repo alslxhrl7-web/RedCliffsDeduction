@@ -45,6 +45,28 @@ public static class InvestigationSaveChecks
             InvestigationSaveStore.Write(path, loaded);
             if (InvestigationSaveStore.Read(path).playerName != "두 번째 저장" || InvestigationSaveStore.Read(path + ".bak").playerName != "검증 참모")
                 throw new Exception("Replacement/backup failed");
+            loaded.resumePoint = "report_confirm";
+            loaded.report = new InvestigationReportSave {
+                uncertain = true, deadlineLocked = true, fromNaval = true,
+                suspect = "설평", request = "현재 결과로 보고를 마친다", page = 2, evidence = new[] { 0, 2 }
+            };
+            InvestigationSaveStore.Write(path, loaded);
+            var branch = InvestigationSaveStore.Read(path);
+            if (branch.resumePoint != "report_confirm" || branch.report.suspect != "설평"
+                || !branch.report.deadlineLocked || branch.report.evidence.Length != 2)
+                throw new Exception("Report branch round trip failed");
+            branch.resumePoint = "unknown_branch";
+            bool invalidBranchRejected = false;
+            try { branch.Validate(); } catch (InvalidDataException) { invalidBranchRejected = true; }
+            if (!invalidBranchRejected) throw new Exception("Unknown branch accepted");
+            branch.resumePoint = "report_confirm"; branch.report = null;
+            invalidBranchRejected = false;
+            try { branch.Validate(); } catch (InvalidDataException) { invalidBranchRejected = true; }
+            if (!invalidBranchRejected) throw new Exception("Report branch without report state accepted");
+            if (InvestigationSaveStore.ManualPath(1) != InvestigationSaveStore.SavePath
+                || InvestigationSaveStore.ManualPath(2) == InvestigationSaveStore.AutoSavePath
+                || InvestigationSaveStore.ManualPath(3) == InvestigationSaveStore.ManualPath(2))
+                throw new Exception("Save slot paths overlap or legacy path changed");
             loaded.inquiryIds = new[] { "career", "career", "registry" };
             bool rejected = false;
             try { InvestigationSaveStore.Write(path, loaded); } catch (InvalidDataException) { rejected = true; }
@@ -53,7 +75,7 @@ public static class InvestigationSaveChecks
             rejected = false;
             try { InvestigationSaveStore.Read(path); } catch (InvalidDataException) { rejected = true; }
             if (!rejected || session.PlayerName != "검증 참모") throw new Exception("Invalid load changed session");
-            return "PASS: progress flags, Korean name, paid inquiries, overwrite, backup, invalid data rejection";
+            return "PASS: progress flags, Korean name, paid inquiries, overwrite, backup, report branch, slot separation, invalid data rejection";
         } finally {
             UnityEngine.Object.DestroyImmediate(root);
             foreach (string file in new[] { path, path + ".tmp", path + ".bak" }) if (File.Exists(file)) File.Delete(file);

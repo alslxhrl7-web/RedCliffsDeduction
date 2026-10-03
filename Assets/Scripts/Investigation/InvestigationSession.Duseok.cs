@@ -26,6 +26,7 @@ namespace RedCliffMystery.Investigation
 
         public void TalkToDocumentCourier()
         {
+            SetSavePoint("courier");
             if (!EnsureInquiry("courier", "전령 · 문서 확인 시점", TalkToDocumentCourier)) return;
             SetModal("수군 진영 · 문서 전달 전령", "전령", "“사건 당일 대비책을 전달하고 돌려놓은 일을 말씀드리겠습니다.”");
             view.AddChoice("마지막으로 문서를 본 때는?", () => RecordDuseokStatement("전령",
@@ -39,6 +40,7 @@ namespace RedCliffMystery.Investigation
 
         public void TalkToReliefGuard()
         {
+            SetSavePoint("relief");
             if (!EnsureInquiry("relief_guard", "교대 병사 · 이탈과 복귀", TalkToReliefGuard)) return;
             SetModal("문서고 · 교대 병사", "교대 병사", "“그날 두석과 근무를 교대했습니다. 제가 직접 본 범위에서 답하겠습니다.”");
             view.AddChoice("두석이 떠나는 것을 봤나?", () => RecordDuseokStatement("교대 병사",
@@ -52,6 +54,7 @@ namespace RedCliffMystery.Investigation
 
         public void TalkToGamblingSoldier()
         {
+            SetSavePoint("gambling");
             if (GamblingAdmissionHeard && !EnsureInquiry("gambling_witness", "동석 병사 · 노름 시간 확인", TalkToGamblingSoldier)) return;
             SetModal("수군 진영 · 휴식 중인 병사", "동석 병사", "“어떤 일을 확인하러 오셨습니까?”");
             if (GamblingAdmissionHeard)
@@ -64,8 +67,9 @@ namespace RedCliffMystery.Investigation
 
         void ShowDuseokTimelineInquiry()
         {
+            SetSavePoint("duseok_timeline");
             SetModal("두석 · 경비 시간대 조사", "경비 공백을 확인한다", DuseokInvestigationGuide()
-                + "\n\n교대 병사는 문서고 입구 맞은편, 전령과 병사는 수군 진영 입구 부근에 있다. 새 조사와 시간대 재질문은 각각 1회, 결과 정리는 무료다.");
+                + "\n\n교대 병사는 문서고 입구 맞은편, 전령과 병사는 수군 진영 입구 부근에 있다. 새 조사와 시간대 재질문은 각각 1회다. 확보한 증언은 수첩에서 정리할 수 있다.");
             if (DuseokTestimonyHeard && GuardDepartureHeard && GuardReturnHeard)
                 view.AddChoice("배급 북 이후부터 교대 직전까지 어디 있었나?", StartDuseokRequestion);
             if (DuseokTestimonyHeard)
@@ -76,7 +80,7 @@ namespace RedCliffMystery.Investigation
                 SetModal("시간대 조사", "확인 상태", DuseokWitnessChecklist() + "\n\n" + DuseokInvestigationGuide());
                 view.AddChoice("두석에게 돌아가기", ShowDuseokTimelineInquiry);
             });
-            view.AddChoice(DuseokTimelineComplete ? "정리한 시간대 다시 보기" : "조사 결과 정리 · 무료", CompleteDuseokTimeline, CanCompleteDuseokTimeline);
+            view.AddChoice(DuseokTimelineComplete ? "정리한 시간대 다시 보기" : "조사 결과 정리", CompleteDuseokTimeline, CanCompleteDuseokTimeline);
             view.AddChoice("대화 마치기", CloseModal);
         }
 

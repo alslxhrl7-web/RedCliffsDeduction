@@ -98,7 +98,8 @@ namespace RedCliffMystery.Investigation
 
         void OnApplicationFocus(bool focused)
         {
-            if (!focused && session != null && !session.BlocksMovement) session.ShowPause();
+            if (!focused) { Cursor.lockState = CursorLockMode.None; Cursor.visible = true; }
+            else if (session != null && !session.BlocksMovement) { Cursor.lockState = CursorLockMode.Locked; Cursor.visible = false; }
         }
 
         void OnDisable()

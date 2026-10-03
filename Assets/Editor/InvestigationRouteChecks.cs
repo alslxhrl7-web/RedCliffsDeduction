@@ -352,6 +352,7 @@ namespace RedCliffMystery.EditorTools
         {
             var confirm = Buttons(s).SingleOrDefault(b => b.name == "조사 시작 · 1회 사용");
             if (confirm != null) confirm.onClick.Invoke();
+            s.view.GetComponent<InvestigationDayTransition>()?.FinishForEditorCheck();
         }
 
         static void CheckLayout(InvestigationSession s)
