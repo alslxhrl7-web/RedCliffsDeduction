@@ -47,7 +47,7 @@ namespace RedCliffMystery.Investigation
         bool deadlineReportLocked;
         bool skipDeadlinePrompt;
         public string InvestigationDate => investigationTime.Label;
-        bool CanReportNow => OfficersHeard || investigationTime.DeadlineReached;
+        bool CanReportNow => introductionFinished && !FinalReportCompleted;
 
         void RefreshInvestigationTime() {
             if (!introductionFinished || FinalReportCompleted) return;

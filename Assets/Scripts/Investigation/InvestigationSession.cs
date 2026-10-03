@@ -426,14 +426,15 @@ namespace RedCliffMystery.Investigation
                 view.AddChoice("조조군 지휘 천막으로 이동", VisitCommandTent);
                 view.AddChoice("문서고 추가 조사", CloseModal);
             }
+            view.AddChoice("현재 기록으로 조사 정리", ShowInvestigationReview);
             view.AddChoice("수첩 다시 보기", ShowJournal);
         }
 
         public void ShowFollowUpSelection()
         {
-            if (!introductionFinished || !OfficersHeard) return;
+            if (!introductionFinished) return;
             SetModal("조사 방향 선택", "누구를 더 조사하겠습니까?",
-                "채모와 장윤의 설명을 모두 들었다. 추가로 확인할 사람을 고르거나 현재 기록으로 조사를 정리할 수 있다.");
+                "추가로 확인할 사람을 고르거나 현재 기록으로 조사를 정리할 수 있다. 확인하지 않은 진술과 증거는 미확인 상태로 남는다.");
             view.AddChoice("채모 · 출항 훈련", () => SelectInvestigationTarget("채모"));
             view.AddChoice("장윤 · 군량과 일과", () => SelectInvestigationTarget("장윤"));
             view.AddChoice("설평 · 서기 업무와 경력", () => SelectInvestigationTarget("설평"));
@@ -499,11 +500,11 @@ namespace RedCliffMystery.Investigation
         {
             if (FinalReportCompleted) return "최종 보고 완료";
             if (InvestigationReviewStarted) return "조사 정리 완료 · J 수첩에서 기록 확인 / 추가 조사 선택";
-            if (OfficersHeard && !string.IsNullOrEmpty(selectedInvestigationTarget))
+            if (!string.IsNullOrEmpty(selectedInvestigationTarget))
                 return "선택한 추가 조사 · " + selectedInvestigationTarget + "에게 대화 / J 수첩에서 조사 대상 변경";
             if (!CaimaoTestimonyHeard || !ZhangyunTestimonyHeard)
                 return route != null && route.AtNavalCamp
-                    ? "왼쪽 천막의 채모 · 오른쪽 천막의 장윤에게 E로 대화"
+                    ? "채모·장윤에게 E로 대화 · J → 다음 조사 선택에서 현재 기록으로 보고 가능"
                     : "문서고를 살피거나 출입문에서 E로 수군 진영 이동 · 남은 조사는 돌아와서 계속";
             return "J 수첩 → 다음 조사 선택 · 추가로 조사할 사람을 고르거나 조사 정리";
         }

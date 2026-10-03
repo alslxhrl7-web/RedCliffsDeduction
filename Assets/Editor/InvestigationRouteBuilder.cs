@@ -59,7 +59,7 @@ namespace RedCliffMystery.EditorTools
             {
                 LoadMaterials();
                 var root = Group("PersonalEvidence", room.transform, Vector3.zero);
-                var token = Group("PersonalToken", root, new Vector3(4, 1.08f, 4.25f));
+                var token = Group("PersonalToken", root, new Vector3(3.95f, 1.08f, 4.12f));
                 var target = Component<InvestigationTarget>(token.gameObject);
                 Undo.RecordObject(target, UndoLabel);
                 target.kind = InvestigationTarget.TargetKind.PersonalToken;

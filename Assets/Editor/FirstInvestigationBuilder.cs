@@ -57,11 +57,11 @@ namespace RedCliffMystery.EditorTools
             }
             for (int i=0; i<3; i++) Shelf(new Vector3(-5.5f,0,-2.5f+i*3), room);
             Table(new Vector3(0,0,2.4f), room);
-            var tray = Box("MissingDocumentTray", new Vector3(0,1.06f,2.4f), new Vector3(1.45f,.12f,.9f), darkWood, room);
+            var tray = Box("MissingDocumentTray", new Vector3(0,1.08f,2.4f), new Vector3(1.45f,.12f,.9f), darkWood, room);
             tray.AddComponent<InvestigationTarget>().kind = InvestigationTarget.TargetKind.MissingDocument;
-            Box("TrayBack", new Vector3(0,1.18f,2.82f), new Vector3(1.45f,.2f,.06f), gold, tray.transform);
-            Box("TrayLeft", new Vector3(-.7f,1.18f,2.4f), new Vector3(.05f,.2f,.9f), gold, tray.transform);
-            Box("TrayRight", new Vector3(.7f,1.18f,2.4f), new Vector3(.05f,.2f,.9f), gold, tray.transform);
+            Box("TrayBack", new Vector3(0,1.24f,2.82f), new Vector3(1.45f,.2f,.06f), gold, tray.transform);
+            Box("TrayLeft", new Vector3(-.7f,1.24f,2.37f), new Vector3(.05f,.2f,.84f), gold, tray.transform);
+            Box("TrayRight", new Vector3(.7f,1.24f,2.37f), new Vector3(.05f,.2f,.84f), gold, tray.transform);
             // Children are positioned in world space; preserve their scale under a scaled tray.
             for (int i=0;i<3;i++) Box("AdjacentRecords", new Vector3(1.08f,1.09f+i*.07f,2.4f), new Vector3(.4f,.055f,.65f), paper, room);
 

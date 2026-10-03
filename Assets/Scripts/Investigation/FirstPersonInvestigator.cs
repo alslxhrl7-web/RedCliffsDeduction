@@ -14,6 +14,7 @@ namespace RedCliffMystery.Investigation
         CharacterController controller;
         float pitch;
         float verticalSpeed;
+        readonly RaycastHit[] nearbyHits = new RaycastHit[32];
 
         void Awake() => controller = GetComponent<CharacterController>();
 
@@ -50,10 +51,35 @@ namespace RedCliffMystery.Investigation
 
         public InvestigationTarget FindTarget()
         {
-            if (Physics.Raycast(viewCamera.transform.position, viewCamera.transform.forward,
-                out RaycastHit hit, interactionDistance, ~0, QueryTriggerInteraction.Ignore))
-                return hit.collider.GetComponentInParent<InvestigationTarget>();
-            return null;
+            if (viewCamera == null) return null;
+            Vector3 origin = viewCamera.transform.position;
+            Vector3 direction = viewCamera.transform.forward;
+            if (Physics.Raycast(origin, direction, out RaycastHit direct, interactionDistance, ~0, QueryTriggerInteraction.Ignore))
+            {
+                var exact = direct.collider.GetComponentInParent<InvestigationTarget>();
+                if (exact != null) return exact;
+            }
+
+            // Thin tabletop clues allow a small aim margin, but must still be visible.
+            int count = Physics.SphereCastNonAlloc(origin, .10f, direction, nearbyHits,
+                interactionDistance, ~0, QueryTriggerInteraction.Ignore);
+            InvestigationTarget nearest = null;
+            float nearestDistance = interactionDistance;
+            for (int i = 0; i < count; i++)
+            {
+                var hit = nearbyHits[i];
+                var candidate = hit.collider.GetComponentInParent<InvestigationTarget>();
+                if (candidate == null || hit.distance <= 0) continue;
+                Vector3 toPoint = hit.point - origin;
+                float distance = toPoint.magnitude;
+                if (distance > nearestDistance) continue;
+                if (!Physics.Raycast(origin, toPoint.normalized, out RaycastHit visible,
+                    distance + .01f, ~0, QueryTriggerInteraction.Ignore)
+                    || visible.collider.GetComponentInParent<InvestigationTarget>() != candidate) continue;
+                nearest = candidate;
+                nearestDistance = distance;
+            }
+            return nearest;
         }
 
         public void TeleportTo(Transform arrival)

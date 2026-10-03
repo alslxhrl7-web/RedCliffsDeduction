@@ -41,7 +41,7 @@ namespace RedCliffMystery.Investigation
             view.SetObjective("조조에게 보고하거나 조사 장소로 돌아갈 수 있다");
             SetModal("조조군 지휘 천막", "조조", "“돌아왔느냐. 확인한 내용을 보고하겠느냐, 아니면 조사를 더 이어가겠느냐?”",
                 "Esc 이전 조사 장소로 복귀 · 이동에는 시간이 소모되지 않습니다.");
-            view.AddChoice(CanReportNow ? "조사 결과 보고" : "조사 결과 보고 · 채모·장윤 설명 확보 후", BeginFinalReport, CanReportNow);
+            view.AddChoice("조사 결과 보고", BeginFinalReport, CanReportNow);
             if (HasHouseholdRegistryEvidence && !SearchAuthorized && !investigationTime.DeadlineReached)
                 view.AddChoice("개인 서류 조사 허가 요청", RequestPersonalSearch);
             view.AddChoice("수군 진영으로 돌아가기", () => LeaveCommandTent(true));

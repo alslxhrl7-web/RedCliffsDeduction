@@ -3175,8 +3175,8 @@ Transform:
   m_GameObject: {fileID: 120926232}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.48275858, y: 1.0000001, z: 0}
-  m_LocalScale: {x: 0.03448276, y: 1.6666667, z: 1}
+  m_LocalPosition: {x: -0.4827586, y: 1.3333331, z: -0.03333357}
+  m_LocalScale: {x: 0.03448276, y: 1.6666667, z: 0.93333334}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1371770421}
@@ -10225,7 +10225,7 @@ Transform:
   m_GameObject: {fileID: 352658642}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4, y: 1.08, z: 4.25}
+  m_LocalPosition: {x: 3.95, y: 1.08, z: 4.12}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -12122,7 +12122,7 @@ Transform:
   m_GameObject: {fileID: 430264034}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.0000001, z: 0.46666652}
+  m_LocalPosition: {x: 0, y: 1.3333331, z: 0.46666652}
   m_LocalScale: {x: 1, y: 1.6666667, z: 0.06666667}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -29171,8 +29171,8 @@ Transform:
   m_GameObject: {fileID: 1055502854}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.48275858, y: 1.0000001, z: 0}
-  m_LocalScale: {x: 0.03448276, y: 1.6666667, z: 1}
+  m_LocalPosition: {x: 0.4827586, y: 1.3333331, z: -0.03333357}
+  m_LocalScale: {x: 0.03448276, y: 1.6666667, z: 0.93333334}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1371770421}
@@ -35981,7 +35981,7 @@ Transform:
   m_GameObject: {fileID: 1371770420}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.06, z: 2.4}
+  m_LocalPosition: {x: 0, y: 1.08, z: 2.4}
   m_LocalScale: {x: 1.45, y: 0.12, z: 0.9}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -39205,7 +39205,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1515964745}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 1.65, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
