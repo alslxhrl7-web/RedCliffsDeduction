@@ -20,6 +20,8 @@ namespace RedCliffMystery.EditorTools
         [MenuItem("적벽추리/조사 동선 검사 (진술 먼저)")]
         public static void RunTestimonyFirst() => Run(false);
 
+        public static void RunElevenSlotBase() => Run(true, false);
+
         [MenuItem("적벽추리/현재 게임 화면 저장")]
         public static void CaptureGameView()
         {
@@ -29,7 +31,7 @@ namespace RedCliffMystery.EditorTools
             ScreenCapture.CaptureScreenshot("Temp/InvestigationPreview.png");
         }
 
-        static void Run(bool documentFirst)
+        static void Run(bool documentFirst, bool optionalGuard = true)
         {
             Require(Application.isPlaying, "Start a fresh Play session first.");
             Application.runInBackground = true;
@@ -73,7 +75,7 @@ namespace RedCliffMystery.EditorTools
                 "Comparison must require all five records but not Duseok.");
             CheckComparisonChoices(s);
             CheckReturnTravel(s);
-            CheckOptionalGuard(s);
+            if (optionalGuard) CheckOptionalGuard(s);
             Interact(s, InvestigationTarget.TargetKind.MissingDocument);
             Interact(s, InvestigationTarget.TargetKind.MissingDocument);
             s.CloseModal();
@@ -305,9 +307,10 @@ namespace RedCliffMystery.EditorTools
                 "Journal lost fact/question separation.");
             string[] statements = { InvestigationSession.Testimony, InvestigationSession.DuseokTestimony,
                 InvestigationSession.CaimaoTestimony, InvestigationSession.ZhangyunTestimony };
+            bool[] heard = { s.TestimonyHeard, s.DuseokTestimonyHeard, s.CaimaoTestimonyHeard, s.ZhangyunTestimonyHeard };
             for (int i = 0; i < statements.Length; i++)
-                Require(pages[i + 1].Contains(statements[i]) && pages[i + 1].Contains("미검증"),
-                    "Statement missing or labelled as fact.");
+                Require(heard[i] ? pages[i + 1].Contains(statements[i]) && pages[i + 1].Contains("미검증")
+                    : !pages[i + 1].Contains(statements[i]), "Statement missing, leaked before discovery, or labelled as fact.");
             Require(pages[5].Contains(InvestigationSession.MaintenanceOrder), "Maintenance order missing from the journal.");
             Require(pages[6].Contains(InvestigationSession.ReconfirmedTestimony) && pages[6].Contains("미검증"),
                 "Reconfirmed testimony missing or labelled as fact.");

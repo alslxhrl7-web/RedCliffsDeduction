@@ -9,6 +9,28 @@ namespace RedCliffMystery.EditorTools
 {
     public static class DemoReleaseBuilder
     {
+        // Batch review builds exercise Unity's real JSON save round trip before packaging.
+        public static void BuildChecked()
+        {
+            if (Application.isPlaying) throw new InvalidOperationException("Exit Play Mode first");
+            Debug.Log("SAVE_CHECKS: " + InvestigationSaveChecks.Verify());
+            InvestigationBudgetChecks.Verify();
+            var args = Environment.GetCommandLineArgs();
+            int outputIndex = Array.IndexOf(args, "-buildOutput");
+            if (outputIndex < 0 || outputIndex + 1 >= args.Length)
+                throw new InvalidOperationException("Pass -buildOutput with an executable path");
+            string executable = Path.GetFullPath(args[outputIndex + 1]);
+            Directory.CreateDirectory(Path.GetDirectoryName(executable));
+            var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions {
+                scenes = new[] { FirstInvestigationBuilder.ScenePath },
+                locationPathName = executable, target = BuildTarget.StandaloneWindows64,
+                options = BuildOptions.None
+            });
+            if (report.summary.result != BuildResult.Succeeded)
+                throw new InvalidOperationException("Review build failed: " + report.summary.result);
+            Debug.Log("REVIEW_BUILD_PASS: " + executable);
+        }
+
         [MenuItem("적벽추리/데모 수정/수정 데모 빌드")]
         public static void Build()
         {

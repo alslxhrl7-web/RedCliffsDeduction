@@ -96,9 +96,10 @@ namespace RedCliffMystery.EditorTools
                 S.CloseModal();
                 File.WriteAllText(paths[0], "{}");
                 S.ShowPause(); Click("저장 / 불러오기"); Click("불러올 기록 선택");
-                Require(!S.view.choices.GetComponentsInChildren<UnityEngine.UI.Button>().Any(b => b.gameObject.activeSelf && b.name == "불러오기"), "Invalid save can be loaded");
+                Require(S.view.choices.GetComponentsInChildren<UnityEngine.UI.Button>()
+                    .Any(b => b.gameObject.activeSelf && b.name.StartsWith("수동 슬롯 1") && !b.interactable), "Invalid save can be selected for loading");
                 Require(S.HasWuLetterEvidence && S.InvestigationDate == date, "Invalid preview altered progress");
-                Click("돌아가기"); S.CloseModal();
+                Click("돌아가기"); Click("원래 선택 화면으로"); S.CloseModal();
                 Debug.Log("PLAY_SAVE_PASS: UI save/load, location, new flags, paid investigations; original save restored");
             } finally {
                 for (int i=0;i<paths.Length;i++) { if (old[i] != null) File.WriteAllBytes(paths[i], old[i]); else if (File.Exists(paths[i])) File.Delete(paths[i]); }
@@ -164,7 +165,7 @@ namespace RedCliffMystery.EditorTools
             Require(Application.isPlaying && S.HasWuLetterEvidence, "Complete follow-up first");
             Require(S.InterrogationCompleted && S.InvestigationDate.Contains("남은 조사 0회"), "Full route should complete the last interrogation within twelve slots");
             S.CloseModal(); Click("마지막 조사의 남은 내용 확인");
-            S.TalkToGamblingSoldier();
+            S.TalkToDocumentCourier();
             Require(S.view.title.text == "조조의 호출", "Thirteenth inquiry was allowed");
             Click("조사를 마치고 최종 보고");
             Require(!S.view.choices.GetComponentsInChildren<UnityEngine.UI.Button>().Any(b => b.gameObject.activeSelf && b.name == "추가 조사로 돌아간다"), "Locked report allows return");

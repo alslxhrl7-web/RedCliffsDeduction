@@ -16,7 +16,7 @@ namespace RedCliffMystery.Investigation
         public void Validate() {
             if (page < 0 || page > 32 || evidence == null || evidence.Length > 32)
                 throw new InvalidDataException("보고 선택 기록이 손상되었습니다.");
-            if (suspect != null && suspect != "채모" && suspect != "장윤" && suspect != "설평" && suspect != "두석")
+            if (!string.IsNullOrEmpty(suspect) && suspect != "채모" && suspect != "장윤" && suspect != "설평" && suspect != "두석")
                 throw new InvalidDataException("보고 대상 기록이 손상되었습니다.");
             if (request != "신원과 경력 기록 확인 요청" && request != "문서 반출 경로와 전달자 조사 요청"
                 && request != "신병 확보와 소지품 확인 요청" && request != "현재 결과로 보고를 마친다")
@@ -72,7 +72,7 @@ namespace RedCliffMystery.Investigation
         void ReturnFromSaveMenu() => ResumeSavedPoint();
 
         bool HandleSaveShortcuts() {
-            if (!Application.isFocused || Keyboard.current == null || dayTransitionActive || enteringName
+            if (!Application.isFocused || Keyboard.current == null || !introductionFinished || dayTransitionActive || enteringName
                 || FinalReportCompleted || Time.frameCount <= modalOpenedFrame) return false;
             if (Keyboard.current.f5Key.wasPressedThisFrame) { OpenManualSaveSlots(); return true; }
             if (Keyboard.current.f9Key.wasPressedThisFrame) {
@@ -162,7 +162,7 @@ namespace RedCliffMystery.Investigation
             reportActive = true;
             visitingCommandTent = false;
             reportUncertain = saved.uncertain;
-            reportSuspect = saved.suspect;
+            reportSuspect = string.IsNullOrEmpty(saved.suspect) ? null : saved.suspect;
             reportRequest = saved.request;
             deadlineReportLocked = saved.deadlineLocked || investigationTime.DeadlineReached;
             reportFromNavalCamp = saved.fromNaval;

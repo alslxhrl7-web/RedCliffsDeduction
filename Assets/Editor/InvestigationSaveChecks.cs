@@ -33,6 +33,7 @@ public static class InvestigationSaveChecks
                 throw new Exception("Deadline/legacy preview failed");
             InvestigationSaveStore.Write(path, data);
             var loaded = InvestigationSaveStore.Read(path);
+            if (loaded.report != null) throw new Exception("Absent report became an empty report after Unity serialization");
             typeof(InvestigationSession).GetMethod("RestoreSave", flags).Invoke(session, new object[] { loaded });
             var captured = (InvestigationSaveData)typeof(InvestigationSession).GetMethod("CaptureSave", flags).Invoke(session, null);
             foreach (var field in typeof(InvestigationSaveData).GetFields())
@@ -55,6 +56,12 @@ public static class InvestigationSaveChecks
             if (branch.resumePoint != "report_confirm" || branch.report.suspect != "설평"
                 || !branch.report.deadlineLocked || branch.report.evidence.Length != 2)
                 throw new Exception("Report branch round trip failed");
+            var unselected = JsonUtility.FromJson<InvestigationSaveData>(JsonUtility.ToJson(loaded));
+            unselected.resumePoint = "report_conclusion";
+            unselected.report.suspect = null;
+            InvestigationSaveStore.Write(path, unselected);
+            if (!string.IsNullOrEmpty(InvestigationSaveStore.Read(path).report.suspect))
+                throw new Exception("Unselected report suspect changed after Unity serialization");
             branch.resumePoint = "unknown_branch";
             bool invalidBranchRejected = false;
             try { branch.Validate(); } catch (InvalidDataException) { invalidBranchRejected = true; }

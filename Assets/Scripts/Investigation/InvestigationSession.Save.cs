@@ -55,6 +55,11 @@ namespace RedCliffMystery.Investigation
                 + (clock.DeadlineReached ? "\n기한 종료: 이미 시작한 조사 확인 또는 최종 보고로 이어집니다." : "");
         }
         public void Validate() {
+            // Unity can turn a null nested serializable object into an empty instance.
+            // Every actual report has a request, even before a suspect is selected.
+            if (report != null && string.IsNullOrEmpty(report.suspect) && string.IsNullOrEmpty(report.request)
+                && !report.uncertain && !report.deadlineLocked && !report.fromNaval && report.page == 0
+                && (report.evidence == null || report.evidence.Length == 0)) report = null;
             if (version != 1 || string.IsNullOrWhiteSpace(playerName) || playerName.Length > 16
                 || inquiryIds == null || inquiryTitles == null || inquiryIds.Length != inquiryTitles.Length
                 || inquiryIds.Length > InvestigationTime.Budget)
@@ -74,11 +79,20 @@ namespace RedCliffMystery.Investigation
     }
     public static class InvestigationSaveStore
     {
-        public static string SavePath => Path.Combine(Application.persistentDataPath, "investigation-save.json");
-        public static string AutoSavePath => Path.Combine(Application.persistentDataPath, "investigation-autosave.json");
+        static string DirectoryPath {
+            get {
+#if UNITY_EDITOR
+                return UnityEditor.SessionState.GetString("RedCliffMystery.TestSaveDirectory", Application.persistentDataPath);
+#else
+                return Application.persistentDataPath;
+#endif
+            }
+        }
+        public static string SavePath => Path.Combine(DirectoryPath, "investigation-save.json");
+        public static string AutoSavePath => Path.Combine(DirectoryPath, "investigation-autosave.json");
         public static string ManualPath(int slot) {
             if (slot < 1 || slot > 3) throw new ArgumentOutOfRangeException(nameof(slot));
-            return slot == 1 ? SavePath : Path.Combine(Application.persistentDataPath, "investigation-save-" + slot + ".json");
+            return slot == 1 ? SavePath : Path.Combine(DirectoryPath, "investigation-save-" + slot + ".json");
         }
         public static InvestigationSaveData Read(string path) {
             var data = JsonUtility.FromJson<InvestigationSaveData>(File.ReadAllText(path));
