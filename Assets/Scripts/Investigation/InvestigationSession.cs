@@ -108,6 +108,9 @@ namespace RedCliffMystery.Investigation
 
         void SetModal(string eyebrow, string title, string body, string footer = "Esc  닫기")
         {
+            VarcoIdleMotion.StopSpeech();
+            int quote = body.IndexOf('“'), endQuote = body.LastIndexOf('”');
+            if (quote >= 0 && endQuote > quote) VarcoIdleMotion.Speak(title, body.Substring(quote + 1, endQuote - quote - 1));
             RefreshInvestigationTime();
             BlocksMovement = true;
             modalOpenedFrame = Time.frameCount;
@@ -134,6 +137,7 @@ namespace RedCliffMystery.Investigation
             onAdvance = null;
             onEscape = null;
             view.HideModal();
+            VarcoIdleMotion.StopSpeech();
             BlocksMovement = false;
             modalClosedFrame = Time.frameCount;
             Cursor.lockState = CursorLockMode.Locked;
@@ -267,8 +271,10 @@ namespace RedCliffMystery.Investigation
             view.AddChoice("대화 마치기", CloseModal);
         }
 
-        void BeginSequence(string speaker, string[] lines, Action complete)
+        bool sequenceIsPlayer;
+        void BeginSequence(string speaker, string[] lines, Action complete, bool playerSpeaking = false)
         {
+            sequenceIsPlayer = playerSpeaking;
             sequence = lines;
             sequenceSpeaker = speaker;
             lineIndex = 0;
@@ -281,12 +287,14 @@ namespace RedCliffMystery.Investigation
             SetModal(introductionFinished ? "대화" : "서막 · 조조의 명령", sequenceSpeaker, "“" + sequence[lineIndex] + "”",
                 $"{lineIndex + 1} / {sequence.Length}  ·  E / Enter 계속" + (introductionFinished ? " · Esc 대화 종료" : ""));
             view.AddChoice(lineIndex == sequence.Length - 1 ? (introductionFinished ? "진술 확인" : "명을 받들겠습니다") : "계속", AdvanceDialogue);
+            if (sequenceIsPlayer) VarcoIdleMotion.StopSpeech();
             onAdvance = AdvanceDialogue;
         }
 
         public void AdvanceDialogue()
         {
             if (sequence == null) return;
+            VarcoIdleMotion.StopSpeech();
             lineIndex++;
             if (lineIndex < sequence.Length) { ShowLine(); return; }
             var complete = onSequenceComplete;

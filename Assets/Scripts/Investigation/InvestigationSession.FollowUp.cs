@@ -157,7 +157,7 @@ namespace RedCliffMystery.Investigation
                             InterrogationCompleted = true;
                             RecordVerifiedKeyEvidence("clue_wu_secret_letter_true_name");
                             FollowUpNotice("밀서의 수신인 연결 확인", "신고 신원 대조, 개인 서류의 출처, 목패의 소유 이력과 확인용 본을 함께 기록했다. 신병 확보와 수색을 요청할 근거가 마련됐다. 절도의 실행과 문서 행방은 아직 확인되지 않았다.");
-                        }));
+                        }), true);
             }, TokenMatched && TokenOwnershipConfirmed && LetterDenialHeard);
             view.AddChoice("물건·진술 확인 상태", () => FollowUpNotice("취조 준비", RecordStatus(TokenMatched, "목패와 본 대조") + RecordStatus(TokenOwnershipConfirmed, "목패의 소유 이력 질문") + RecordStatus(LetterDenialHeard, "밀서에 관한 설평의 해명")));
             view.AddChoice("대화 마치기", CloseModal);

@@ -12,7 +12,9 @@ namespace RedCliffMystery.EditorTools
     public static class VarcoCharacterInstaller
     {
         const string Root = "Assets/Art/Characters/Varco";
-        static readonly string[] Characters = { "CaoCao", "Seolpyeong", "Duseok", "Caimao", "Zhangyun" };
+        static readonly string[] AdditionalCharacters = { "RecordsClerk", "DocumentCourier", "ReliefGuard", "GamblingSoldier" };
+        static readonly string[] Characters = new[] { "CaoCao", "Seolpyeong", "Duseok", "Caimao", "Zhangyun" }
+            .Concat(AdditionalCharacters).ToArray();
 
         public static void ApplyAvailableBatch()
         {
@@ -22,7 +24,12 @@ namespace RedCliffMystery.EditorTools
         }
 
         [MenuItem("적벽추리/바르코 인물 모델 적용")]
-        public static void ApplyAvailable()
+        public static void ApplyAvailable() => ApplyCharacters(Characters);
+
+        [MenuItem("적벽추리/바르코 추가 조사 인물만 적용")]
+        public static void ApplyAdditionalAvailable() => ApplyCharacters(AdditionalCharacters);
+
+        static void ApplyCharacters(string[] characters)
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode)
                 throw new InvalidOperationException("Exit Play Mode before importing characters.");
@@ -30,7 +37,8 @@ namespace RedCliffMystery.EditorTools
             if (scene.path != FirstInvestigationBuilder.ScenePath || scene.isDirty)
                 throw new InvalidOperationException("Open and save the Investigation scene first.");
             AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
-            foreach (string character in Characters)
+            bool applied = false;
+            foreach (string character in characters)
             {
                 string folder = Root + "/" + character;
                 string modelPath = folder + "/" + character + ".fbx";
@@ -38,6 +46,7 @@ namespace RedCliffMystery.EditorTools
                 var npc = scene.GetRootGameObjects().SelectMany(r => r.GetComponentsInChildren<Transform>(true))
                     .Single(t => t.name == character);
                 var prefab = ImportVisual(character, folder, modelPath);
+                bool preserveInteraction = AdditionalCharacters.Contains(character);
                 var oldVisual = npc.Find("VarcoVisual");
                 if (oldVisual != null) Undo.DestroyObjectImmediate(oldVisual.gameObject);
                 foreach (var renderer in npc.GetComponentsInChildren<Renderer>(true))
@@ -46,10 +55,14 @@ namespace RedCliffMystery.EditorTools
                     renderer.enabled = character == "Duseok"
                         && (renderer.name == "SpearShaft" || renderer.name == "SpearHead");
                 }
-                foreach (var collider in npc.GetComponentsInChildren<Collider>(true))
+                // Additional witnesses keep the original investigation hit volumes and components.
+                if (!preserveInteraction)
                 {
-                    Undo.RecordObject(collider, "Replace prototype collision");
-                    collider.enabled = false;
+                    foreach (var collider in npc.GetComponentsInChildren<Collider>(true))
+                    {
+                        Undo.RecordObject(collider, "Replace prototype collision");
+                        collider.enabled = false;
+                    }
                 }
                 var visual = (GameObject)PrefabUtility.InstantiatePrefab(prefab, npc);
                 Undo.RegisterCreatedObjectUndo(visual, "Import Varco character");
@@ -57,17 +70,22 @@ namespace RedCliffMystery.EditorTools
                 visual.transform.localRotation = Quaternion.identity;
                 visual.transform.localPosition = character == "CaoCao"
                     ? npc.InverseTransformPoint(new Vector3(41.4f, 0, .95f)) : Vector3.zero;
-                var capsule = npc.GetComponent<CapsuleCollider>();
-                if (capsule == null) capsule = Undo.AddComponent<CapsuleCollider>(npc.gameObject);
-                Undo.RecordObject(capsule, "Set character interaction capsule");
-                capsule.enabled = true;
-                capsule.isTrigger = false;
-                capsule.height = character == "CaoCao" ? 2.1f : 1.9f;
-                capsule.radius = .43f;
-                capsule.direction = 1;
-                capsule.center = visual.transform.localPosition + Vector3.up * capsule.height * .5f;
+                if (!preserveInteraction)
+                {
+                    var capsule = npc.GetComponent<CapsuleCollider>();
+                    if (capsule == null) capsule = Undo.AddComponent<CapsuleCollider>(npc.gameObject);
+                    Undo.RecordObject(capsule, "Set character interaction capsule");
+                    capsule.enabled = true;
+                    capsule.isTrigger = false;
+                    capsule.height = character == "CaoCao" ? 2.1f : 1.9f;
+                    capsule.radius = .43f;
+                    capsule.direction = 1;
+                    capsule.center = visual.transform.localPosition + Vector3.up * capsule.height * .5f;
+                }
+                applied = true;
                 Debug.Log("VARCO_APPLIED " + character);
             }
+            if (!applied) return;
             EditorSceneManager.MarkSceneDirty(scene);
             AssetDatabase.SaveAssets();
             if (!EditorSceneManager.SaveScene(scene)) throw new IOException("Could not save Investigation scene.");
@@ -107,7 +125,7 @@ namespace RedCliffMystery.EditorTools
                 if (renderers.Length == 0) throw new InvalidOperationException("No mesh in " + modelPath);
                 var bounds = renderers[0].bounds;
                 foreach (var renderer in renderers) bounds.Encapsulate(renderer.bounds);
-                float height = character == "CaoCao" ? 2.15f : character == "Seolpyeong" ? 1.83f : 1.95f;
+                float height = character == "CaoCao" ? 2.15f : IsClothCharacter(character) ? 1.83f : 1.95f;
                 if (bounds.size.y < .001f) throw new InvalidOperationException("Invalid mesh bounds: " + character);
                 float scale = height / bounds.size.y;
                 instance.transform.localScale *= scale;
@@ -165,10 +183,13 @@ namespace RedCliffMystery.EditorTools
             finally { UnityEngine.Object.DestroyImmediate(wrapper); }
         }
 
-        static float SurfaceSmoothness(string character) => character == "Seolpyeong" ? .16f
+        static bool IsClothCharacter(string character) => character == "Seolpyeong"
+            || character == "RecordsClerk" || character == "DocumentCourier" || character == "GamblingSoldier";
+
+        static float SurfaceSmoothness(string character) => IsClothCharacter(character) ? .16f
             : character == "Duseok" ? .28f : .38f;
 
-        static float SurfaceNormalStrength(string character) => character == "Seolpyeong" ? .18f : .28f;
+        static float SurfaceNormalStrength(string character) => IsClothCharacter(character) ? .18f : .28f;
 
         [MenuItem("적벽추리/바르코 인물 표면 다듬기")]
         public static void PolishSurfaceMaterials()
@@ -212,7 +233,8 @@ namespace RedCliffMystery.EditorTools
                     // URP: metallic in R, occlusion in G, smoothness in A.
                     // AI-generated metal masks can spill onto skin and cloth. Reduce that response;
                     // the clerk's entire outfit is non-metallic.
-                    float metalStrength = character == "Seolpyeong" ? 0 : character == "Duseok" ? .35f : .65f;
+                    float metalStrength = IsClothCharacter(character) ? 0
+                        : character == "Duseok" || character == "ReliefGuard" ? .35f : .65f;
                     pixels[i] = new Color32((byte)(orm.b * metalStrength), orm.r, 0, (byte)(255 - orm.g));
                 }
                 texture.SetPixels32(pixels);
