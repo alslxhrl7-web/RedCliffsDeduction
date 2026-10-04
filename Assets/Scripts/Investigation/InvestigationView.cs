@@ -28,6 +28,7 @@ namespace RedCliffMystery.Investigation
         string identityName = "";
         string identityLocation = "조조군 문서고";
         string modalCategory = "";
+        EvidenceDocumentView documentView;
         static readonly Color LabelColor = new Color(.97f, .93f, .84f);
         static readonly Color MutedLabelColor = new Color(.65f, .69f, .68f);
 
@@ -163,6 +164,8 @@ namespace RedCliffMystery.Investigation
             footer.text = hint;
             foreach (Transform child in choices) { child.gameObject.SetActive(false); Destroy(child.gameObject); }
             choiceHeight = 0;
+            if (documentView == null) documentView = GetComponent<EvidenceDocumentView>();
+            if (documentView != null) documentView.Show(heading, modalPanel, font);
             ResizeChoiceArea();
             if (bodyScroll != null) { bodyScroll.StopMovement(); bodyScroll.verticalNormalizedPosition = 1; body.rectTransform.anchoredPosition = Vector2.zero; }
         }
@@ -198,6 +201,32 @@ namespace RedCliffMystery.Investigation
             CreateLabel(go.transform, "Label", label, 23, 0, interactable ? LabelColor : MutedLabelColor);
         }
 
+        public void AddVolumeSlider(string label, float value, Action<float> changed)
+        {
+            ReserveChoiceHeight(76);
+            var row=new GameObject(label,typeof(RectTransform),typeof(UnityEngine.UI.LayoutElement));
+            row.transform.SetParent(choices,false); row.GetComponent<UnityEngine.UI.LayoutElement>().preferredHeight=76;
+            var caption=CreateLabel(row.transform,"Label",label+"  "+Mathf.RoundToInt(value*100)+"%",21,0,LabelColor);
+            caption.rectTransform.anchorMin=new Vector2(0,.5f); caption.rectTransform.anchorMax=Vector2.one;
+            var track=new GameObject("VolumeSlider",typeof(RectTransform),typeof(UnityEngine.UI.Image),typeof(UnityEngine.UI.Slider));
+            track.transform.SetParent(row.transform,false);
+            var rect=track.GetComponent<RectTransform>(); rect.anchorMin=new Vector2(0,0); rect.anchorMax=new Vector2(1,.38f); rect.offsetMin=new Vector2(18,4); rect.offsetMax=new Vector2(-18,-4);
+            track.GetComponent<UnityEngine.UI.Image>().color=new Color(.15f,.21f,.22f);
+            var fill=new GameObject("Fill",typeof(RectTransform),typeof(UnityEngine.UI.Image)); fill.transform.SetParent(track.transform,false);
+            var fillRect=fill.GetComponent<RectTransform>(); fillRect.anchorMin=Vector2.zero; fillRect.anchorMax=Vector2.one; fillRect.offsetMin=fillRect.offsetMax=Vector2.zero;
+            fill.GetComponent<UnityEngine.UI.Image>().color=new Color(.64f,.55f,.34f); fill.GetComponent<UnityEngine.UI.Image>().raycastTarget=false;
+            var handle=new GameObject("Handle",typeof(RectTransform),typeof(UnityEngine.UI.Image)); handle.transform.SetParent(track.transform,false);
+            var handleRect=handle.GetComponent<RectTransform>(); handleRect.sizeDelta=new Vector2(16,0);
+            handle.GetComponent<UnityEngine.UI.Image>().color=LabelColor;
+            var slider=track.GetComponent<UnityEngine.UI.Slider>(); slider.fillRect=fillRect; slider.handleRect=handleRect; slider.targetGraphic=handle.GetComponent<UnityEngine.UI.Image>();
+            slider.minValue=0; slider.maxValue=1; slider.SetValueWithoutNotify(value);
+            slider.onValueChanged.AddListener(v=> { caption.text=label+"  "+Mathf.RoundToInt(v*100)+"%"; changed(v); });
+            // Flush on pointer release; Esc also saves when returning to the pause menu.
+            var events=track.AddComponent<UnityEngine.EventSystems.EventTrigger>();
+            var release=new UnityEngine.EventSystems.EventTrigger.Entry {eventID=UnityEngine.EventSystems.EventTriggerType.PointerUp};
+            release.callback.AddListener(_=>InvestigationAudioSettings.Save()); events.triggers.Add(release);
+        }
+
         public void AddNameEntry(Action<string> submit)
         {
             ReserveChoiceHeight(58);
@@ -229,9 +258,10 @@ namespace RedCliffMystery.Investigation
             choices.offsetMax = new Vector2(choices.offsetMax.x, 62 + choiceHeight);
             var rect = bodyScrollRoot != null ? bodyScrollRoot : body.rectTransform;
             rect.anchorMin = Vector2.zero;
-            rect.anchorMax = Vector2.one;
+            rect.anchorMax = documentView != null && documentView.Visible ? new Vector2(.59f,1) : Vector2.one;
             rect.offsetMin = new Vector2(40, 80 + choiceHeight);
             rect.offsetMax = new Vector2(-40, -145);
+            if (documentView != null) documentView.Resize(choiceHeight);
         }
 
         UnityEngine.UI.Text CreateLabel(Transform parent, string name, string content, int fontSize, float verticalPadding, Color color)

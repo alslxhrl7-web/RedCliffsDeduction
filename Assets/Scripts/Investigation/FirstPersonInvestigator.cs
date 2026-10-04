@@ -14,14 +14,15 @@ namespace RedCliffMystery.Investigation
         CharacterController controller;
         float pitch;
         float verticalSpeed;
+        DistanceFootsteps footsteps;
         readonly RaycastHit[] nearbyHits = new RaycastHit[32];
 
-        void Awake() => controller = GetComponent<CharacterController>();
+        void Awake() { controller = GetComponent<CharacterController>(); footsteps=GetComponent<DistanceFootsteps>(); }
 
         void Update()
         {
             if (session == null || viewCamera == null || !session.CanProcessInvestigationInput || !Application.isFocused)
-                return;
+            { if(footsteps!=null && !footsteps.ExternalMotion) footsteps.ResetMotion(); return; }
             var keyboard = Keyboard.current;
             var mouse = Mouse.current;
             if (keyboard == null) return;
@@ -44,6 +45,7 @@ namespace RedCliffMystery.Investigation
             if (controller.isGrounded && verticalSpeed < 0) verticalSpeed = -2;
             verticalSpeed += -18 * Time.deltaTime;
             controller.Move((movement * moveSpeed + Vector3.up * verticalSpeed) * Time.deltaTime);
+            if(footsteps!=null) footsteps.RecordMovement(controller.isGrounded,session.route!=null && session.route.OnOutdoorGround);
             InvestigationTarget target = FindTarget();
             session.SetPrompt(target == null ? "" : target.Prompt);
             if (target != null && keyboard.eKey.wasPressedThisFrame) target.Interact(session);
@@ -94,6 +96,7 @@ namespace RedCliffMystery.Investigation
             viewCamera.transform.localRotation = Quaternion.identity;
             controller.enabled = wasEnabled;
             Physics.SyncTransforms();
+            if(footsteps!=null) footsteps.ResetMotion();
         }
 
         void OnApplicationFocus(bool focused)

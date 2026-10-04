@@ -147,6 +147,8 @@ public static class InvestigationRegressionRun
         throw new Exception("Missing button: " + label);
     }
     static void Check(string label, Action action) {
+        // Branch checks run synchronously; the travel presentation has its own timed play test.
+        if(Application.isPlaying && S!=null && S.route!=null) S.route.animateDeparture=false;
         try { action(); results.AppendLine("PASS " + label); }
         catch (Exception error) {
             failures++; while (error.InnerException != null) error = error.InnerException;
@@ -172,6 +174,10 @@ public static class InvestigationRegressionRun
     }
     static void Tick() {
         if (!EditorApplication.isPlaying || EditorApplication.timeSinceStartup < nextAt) return;
+        // Coroutine completion is observed on the next rendered frame. A fixed
+        // two-second Editor timer can race the ending's two-second fade.
+        if(steps.Count>0 && steps.Peek().label=="Normal ending fade" && S!=null && S.view.title.text!="엔딩?"
+            && EditorApplication.timeSinceStartup<nextAt+6) return;
         if (steps.Count == 0) {
             results.AppendLine("COMPLETE failures=" + failures);
             File.WriteAllText(ReportPath, results.ToString());

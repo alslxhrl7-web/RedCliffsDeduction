@@ -33,7 +33,7 @@ namespace RedCliffMystery.Investigation
             && MaintenanceOrderRead && TestimonyReconfirmed;
         public string PlayerName { get; private set; } = "이름 없는 참모";
         public bool BlocksMovement { get; private set; } = true;
-        public bool CanProcessInvestigationInput => !BlocksMovement && Time.frameCount > modalClosedFrame;
+        public bool CanProcessInvestigationInput => !BlocksMovement && (route==null || !route.IsTravelling) && Time.frameCount > modalClosedFrame;
         public bool FirstInvestigationComplete => DocumentInspected && TestimonyHeard;
         string[] sequence;
         string sequenceSpeaker;
@@ -46,7 +46,7 @@ namespace RedCliffMystery.Investigation
         bool enteringName;
         bool introductionFinished;
         string LocationName => visitingCommandTent || reportActive ? "조조군 지휘 천막"
-            : route != null && route.AtNavalCamp ? "조조군 수군 진영" : "조조군 문서고";
+            : route != null && route.AtNavalCamp ? "조조군 수군 진영" : route!=null && route.connectedWalkway && route.OnOutdoorGround ? "수군 진영 연결 길" : "조조군 문서고";
 
         void Start()
         {
@@ -96,6 +96,7 @@ namespace RedCliffMystery.Investigation
 
         void Update()
         {
+            if(route!=null && route.IsTravelling) return;
             RefreshInvestigationTime();
             if (HandleSaveShortcuts()) return;
             if (!Application.isFocused || dayTransitionActive || enteringName || !BlocksMovement || Time.frameCount <= modalOpenedFrame || Keyboard.current == null) return;
@@ -152,6 +153,7 @@ namespace RedCliffMystery.Investigation
             view.AddChoice("장소 이동", ShowTravel);
             view.AddChoice("날짜와 조사 일정 / 시간 보내기", ShowInvestigationSchedule);
             view.AddChoice("저장 / 불러오기", ShowSaveMenu);
+            view.AddChoice("소리 설정", ShowAudioSettings);
             onAdvance = CloseModal;
         }
 
@@ -499,6 +501,16 @@ namespace RedCliffMystery.Investigation
         public void EnterNavalCamp()
         {
             if (!introductionFinished || route == null || !route.IsReady) return;
+            if(route.IsTravelling) return;
+            if(route.animateDeparture && route.curtain!=null && !route.AtNavalCamp)
+            {
+                view.HideModal(); VarcoIdleMotion.StopSpeech();
+                route.DepartThroughCurtain(() => {
+                    view.SetPlayerIdentity(PlayerName,LocationName); CloseModal();
+                    view.SetObjective("열린 천막을 지나 등불이 있는 수군 진영 입구로 걸어가자");
+                });
+                return;
+            }
             route.EnterNavalCamp();
             view.SetPlayerIdentity(PlayerName, LocationName);
             UpdateObjective();
@@ -507,7 +519,11 @@ namespace RedCliffMystery.Investigation
 
         public void ReturnToArchive()
         {
+            if(route!=null && route.IsTravelling) return;
             if (!introductionFinished || route == null || !route.IsReady) return;
+            if(route.connectedWalkway && route.animateDeparture) {
+                route.BeginReturnWalk(); CloseModal(); view.SetObjective("연결 길을 따라 문서고의 열린 천막으로 돌아가자"); return;
+            }
             route.EnterArchive();
             view.SetPlayerIdentity(PlayerName, LocationName);
             UpdateObjective();
@@ -515,6 +531,7 @@ namespace RedCliffMystery.Investigation
         }
 
         void UpdateObjective() => view.SetObjective(NextInvestigationStep());
+        public void RefreshWalkLocation() { view.SetPlayerIdentity(PlayerName,LocationName); UpdateObjective(); }
 
         string NextInvestigationStep()
         {

@@ -41,11 +41,11 @@ namespace RedCliffMystery.EditorTools
             try
             {
                 PlayerSettings.productName = "RedCliffsDeduction Test Demo";
-                PlayerSettings.bundleVersion = "0.1.0-demo.2";
+                PlayerSettings.bundleVersion = "0.1.0-demo.3";
                 PlayerSettings.defaultScreenWidth = 1280;
                 PlayerSettings.defaultScreenHeight = 720;
                 PlayerSettings.fullScreenMode = FullScreenMode.Windowed;
-                string output = "Builds/RedCliffsDeduction-0.1.0-demo.2-windows-x64";
+                string output = "Builds/RedCliffsDeduction-0.1.0-demo.3-windows-x64";
                 Directory.CreateDirectory(output);
                 var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions {
                     scenes = new[] { FirstInvestigationBuilder.ScenePath },

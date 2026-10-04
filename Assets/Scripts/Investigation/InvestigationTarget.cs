@@ -16,7 +16,7 @@ namespace RedCliffMystery.Investigation
             TargetKind.Caimao => "E  ·  채모와 대화",
             TargetKind.Zhangyun => "E  ·  장윤과 대화",
             TargetKind.MaintenanceOrder => "E  ·  정비 명령서 확인",
-            TargetKind.NavalCampExit => "E  ·  수군 진영으로 가는 문",
+            TargetKind.NavalCampExit => "E  ·  천막을 젖히고 수군 진영으로 나가기",
             TargetKind.ArchiveReturn => "E  ·  문서고 / 조조군 지휘 천막으로 이동",
             TargetKind.RecordsClerk => "E  ·  기록 담당자와 대화",
             TargetKind.CareerRecords => "E  ·  경력 서류 조사",
@@ -45,7 +45,7 @@ namespace RedCliffMystery.Investigation
                 case TargetKind.DocumentCourier: session.TalkToDocumentCourier(); break;
                 case TargetKind.ReliefGuard: session.TalkToReliefGuard(); break;
                 case TargetKind.GamblingSoldier: session.TalkToGamblingSoldier(); break;
-                case TargetKind.NavalCampExit:
+                case TargetKind.NavalCampExit: session.EnterNavalCamp(); break;
                 case TargetKind.ArchiveReturn: session.ShowTravel(); break;
             }
         }
