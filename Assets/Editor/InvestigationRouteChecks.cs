@@ -92,6 +92,8 @@ namespace RedCliffMystery.EditorTools
 
         static void CheckIntroductionAndArchive(InvestigationSession s, bool documentFirst)
         {
+            var titleScreen = UnityEngine.Object.FindAnyObjectByType<InvestigationTitleScreen>();
+            if (titleScreen != null) titleScreen.StartButton.onClick.Invoke();
             string introTitle = s.view.title.text;
             s.ShowStageSelection();
             Require(s.view.title.text == introTitle, "Selection interrupted the introduction.");

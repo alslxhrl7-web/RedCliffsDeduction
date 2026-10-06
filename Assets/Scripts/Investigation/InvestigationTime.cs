@@ -55,6 +55,8 @@ namespace RedCliffMystery.Investigation
         bool skipDeadlinePrompt;
         bool dayTransitionActive;
         InvestigationDayTransition dayTransition;
+        string justStartedInquiry;
+        string pendingInquiryNotice;
         public string InvestigationDate => investigationTime.Label;
         bool CanReportNow => introductionFinished && !FinalReportCompleted;
 
@@ -68,7 +70,13 @@ namespace RedCliffMystery.Investigation
         }
         bool EnsureInquiry(string id, string title, Action resume) {
             if (FinalReportCompleted || deadlineReportLocked) return false;
-            if (investigationTime.HasStarted(id)) return true;
+            if (investigationTime.HasStarted(id)) {
+                pendingInquiryNotice = justStartedInquiry == id
+                    ? "조사 1회 사용 · 남은 조사 " + investigationTime.Remaining + "회"
+                    : "이미 시작한 조사 · 추가 시간 소모 없음";
+                justStartedInquiry = null;
+                return true;
+            }
             if (investigationTime.DeadlineReached) { ShowDeadlineChoice(); return false; }
             SetModal("조사 시작 전 확인", title,
                 InquiryPurpose(id) + "\n\n이 조사를 시작하면 1회를 사용합니다. 같은 주제의 질문과 재방문에는 다시 차감하지 않습니다.\n\n남은 조사: "
@@ -76,6 +84,7 @@ namespace RedCliffMystery.Investigation
             view.AddChoice("조사 시작 · 1회 사용", () => {
                 int previousDay = investigationTime.DayIndex;
                 if (!investigationTime.Complete(id, title)) return;
+                justStartedInquiry = id;
                 RefreshInvestigationTime();
                 if (investigationTime.DayIndex != previousDay) ShowNewDay(resume);
                 else resume();

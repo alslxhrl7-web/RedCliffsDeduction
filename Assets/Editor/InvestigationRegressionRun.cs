@@ -47,6 +47,7 @@ public static class InvestigationRegressionRun
         Check("Unity save serialization", () => Debug.Log(InvestigationSaveChecks.Verify()));
         Check("Budget and ending rules", () => { InvestigationBudgetChecks.Verify(); EndingRuleChecks.Verify(); });
         Check("Scene connections and evidence guards", () => { FollowUpConnectionChecks.Verify(); DuseokTimelineChecks.Verify(); });
+        Add("Title screen and buttons", InvestigationTitleChecks.Capture);
         Add("Document-first base route", InvestigationRouteChecks.RunDocumentFirst);
         Add("Follow-up route, 12 slots", InvestigationPlayChecks.FollowUp);
         Add("Manual save UI restore", InvestigationPlayChecks.SaveLoad);
@@ -115,10 +116,52 @@ public static class InvestigationRegressionRun
             Require(!S.FinalReportCompleted && !S.BlocksMovement && Capture().inquiryIds.Length == 0,
                 "Empty evidence report blocks further investigation or consumes time");
         });
+        Add("New inquiry HUD after early report, revisit and save/load", CheckInquiryDisplay);
         EditorApplication.isPlaying = true;
     }
 
     static void Add(string label, Action check, double delay = .25) => steps.Enqueue((label, check, delay));
+    [MenuItem("적벽추리/플레이 검증/보고 후 새 조사 시간 표시")]
+    public static void BeginInquiryTimeCheck() {
+        Begin();
+        steps.Clear();
+        Add("New inquiry HUD after early report, revisit and save/load", CheckInquiryDisplay);
+    }
+    static void CheckInquiryDisplay() {
+        var title = UnityEngine.Object.FindAnyObjectByType<InvestigationTitleScreen>();
+        if (title != null) title.StartButton.onClick.Invoke();
+        // Reproduce the reported first-night / nine-remaining state through UI choices.
+        Call("LoadInvestigation", (Action)(() => {}), new InvestigationSaveData {
+            version = 1, playerName = "시간 표시 검증", resumePoint = "field",
+            DocumentInspected = true, TokenObserved = true,
+            inquiryIds = new[] { "document", "token", "seol_initial" },
+            inquiryTitles = new[] { "보관함", "목패", "설평" }
+        });
+        S.BeginFinalReport(); Click("범인을 밝히지 못했다");
+        Click("이 기록을 근거로 제출한다"); Click("후속 조치 선택"); Click("현재 결과로 보고를 마친다");
+        Click("이 내용으로 보고 완료"); Click("조사로 돌아가기");
+        Require(Capture().inquiryIds.Length == 3, "Early report changed inquiry count");
+        S.TalkToCaimao(); Click("조사 시작 · 1회 사용");
+        UnityEngine.Object.FindFirstObjectByType<InvestigationDayTransition>().FinishForEditorCheck();
+        CheckTime(4, "둘째 날 · 오전", "조사 1회 사용");
+        S.CloseModal(); S.TalkToCaimao();
+        CheckTime(4, "둘째 날 · 오전", "이미 시작한 조사");
+        S.CloseModal(); S.TalkToZhangyun(); Click("조사 시작 · 1회 사용");
+        CheckTime(5, "둘째 날 · 오후", "조사 1회 사용");
+        var snapshot = Capture();
+        Call("LoadInvestigation", (Action)(() => {}), snapshot);
+        S.CloseModal(); S.ShowCareerRecords(); Click("조사 시작 · 1회 사용");
+        CheckTime(6, "둘째 날 · 저녁", "조사 1회 사용");
+        ScreenCapture.CaptureScreenshot("Logs/PlayRegression/inquiry-time.png");
+    }
+    static void CheckTime(int spent, string phase, string notice) {
+        Require(Capture().inquiryIds.Length == spent, "Incorrect count after new inquiry");
+        string remaining = "남은 조사 " + (12 - spent) + "회";
+        var hud = S.view.transform.Find("ObjectiveBackdrop/Location").GetComponent<UnityEngine.UI.Text>();
+        Require(hud.text.Contains(phase) && hud.text.Contains(remaining), "HUD time stale");
+        Require(S.view.eyebrow.text.Contains(phase) && S.view.eyebrow.text.Contains(remaining), "Modal time stale");
+        Require(S.view.body.text.Contains(notice), "Missing inquiry cost explanation");
+    }
     static void CheckReportCheckpoint() {
         Call("LoadInvestigation", (Action)(() => {}), new InvestigationSaveData {
             version = 1, playerName = "보고 검증", resumePoint = "field", DocumentInspected = true,

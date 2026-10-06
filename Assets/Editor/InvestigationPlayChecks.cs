@@ -156,7 +156,7 @@ namespace RedCliffMystery.EditorTools
         }
         [MenuItem("적벽추리/플레이 검증/재시작 확인")]
         public static void CheckRestart() {
-            Require(!S.FinalReportCompleted && !S.DocumentInspected && S.view.choices.GetComponentInChildren<UnityEngine.UI.InputField>() != null, "Restart did not reset to intro");
+            Require(!S.FinalReportCompleted && !S.DocumentInspected && UnityEngine.Object.FindAnyObjectByType<InvestigationTitleScreen>() != null, "Restart did not reset to title");
             Debug.Log("PLAY_RESTART_PASS");
         }
 

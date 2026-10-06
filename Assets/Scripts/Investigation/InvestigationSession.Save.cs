@@ -256,6 +256,8 @@ namespace RedCliffMystery.Investigation
             PlayerName = data.playerName;
             selectedInvestigationTarget = data.target;
             investigationTime.Restore(data.inquiryIds, data.inquiryTitles);
+            justStartedInquiry = null;
+            pendingInquiryNotice = null;
             enteringName = false; introductionFinished = true;
             reportActive = false; visitingCommandTent = false;
             deadlineReportLocked = false; skipDeadlinePrompt = false;

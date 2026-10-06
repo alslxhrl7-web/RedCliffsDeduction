@@ -44,6 +44,7 @@ namespace RedCliffMystery.Investigation
         int modalOpenedFrame;
         int modalClosedFrame = -1;
         bool enteringName;
+        bool titleScreenActive;
         bool introductionFinished;
         string LocationName => visitingCommandTent || reportActive ? "조조군 지휘 천막"
             : route != null && route.AtNavalCamp ? "조조군 수군 진영" : route!=null && route.connectedWalkway && route.OnOutdoorGround ? "수군 진영 연결 길" : "조조군 문서고";
@@ -51,6 +52,17 @@ namespace RedCliffMystery.Investigation
         void Start()
         {
             Application.runInBackground = true;
+            titleScreenActive = true;
+            view.gameObject.SetActive(false);
+            InvestigationTitleScreen.Show(view.font, () => {
+                titleScreenActive = false;
+                view.gameObject.SetActive(true);
+                ShowOpening();
+            });
+        }
+
+        void ShowOpening()
+        {
             if (introductionStage != null) introductionStage.Begin();
             view.SetPrologueLayout(true);
             view.SetPlayerIdentity("알현 대기", "조조군 지휘 천막");
@@ -59,7 +71,7 @@ namespace RedCliffMystery.Investigation
             enteringName = true;
             onEscape = null;
             view.AddNameEntry(BeginIntroduction);
-            view.AddChoice("저장한 조사 불러오기", () => ConfirmLoad(Start));
+            view.AddChoice("저장한 조사 불러오기", () => ConfirmLoad(ShowOpening));
         }
 
         public void BeginIntroduction(string enteredName)
@@ -96,6 +108,7 @@ namespace RedCliffMystery.Investigation
 
         void Update()
         {
+            if (titleScreenActive) return;
             if(route!=null && route.IsTravelling) return;
             RefreshInvestigationTime();
             if (HandleSaveShortcuts()) return;
@@ -119,6 +132,10 @@ namespace RedCliffMystery.Investigation
             onEscape = reportActive ? CancelFinalReport : introductionFinished ? CloseModal : null;
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
+            if (!string.IsNullOrEmpty(pendingInquiryNotice)) {
+                body = pendingInquiryNotice + "\n\n" + body;
+                pendingInquiryNotice = null;
+            }
             view.ShowModal(eyebrow, title, body, footer);
             if (introductionFinished && !FinalReportCompleted)
                 view.SetFooterHint(footer + "  ·  F5 저장 / F9 불러오기");

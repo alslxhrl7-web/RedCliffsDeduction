@@ -126,7 +126,12 @@ namespace RedCliffMystery.EditorTools
             finally { EditorSceneManager.ClosePreviewScene(preview); }
         }
         [MenuItem("적벽추리/추가 인물 직책 포즈 적용")]
-        public static void Apply()
+        public static void Apply() => Apply(false);
+
+        [MenuItem("적벽추리/서기 팔 자세 수정")]
+        public static void ApplyClerkPoses() => Apply(true);
+
+        static void Apply(bool clerksOnly)
         {
             var scene = SceneManager.GetActiveScene();
             if (scene.path != "Assets/Scenes/Investigation.unity" || scene.isDirty || EditorApplication.isPlaying)
@@ -135,6 +140,7 @@ namespace RedCliffMystery.EditorTools
                 foreach (var npc in root.GetComponentsInChildren<Transform>(true))
                 {
                     if (System.Array.IndexOf(Names, npc.name) < 0) continue;
+                    if (clerksOnly && npc.name != "RecordsClerk" && npc.name != "Seolpyeong") continue;
                     var visual = npc.Find("VarcoVisual");
                     if (visual == null) continue;
                     string folder = "Assets/Art/Characters/Varco/" + npc.name;
@@ -160,13 +166,9 @@ namespace RedCliffMystery.EditorTools
                                 arm *= 1 - Mathf.SmoothStep(0, 1, Mathf.InverseLerp(height * .85f, height * .94f, p.y - floor));
                                 arm *= Mathf.SmoothStep(0, 1, Mathf.InverseLerp(height * .53f, height * .66f, p.y - floor));
                                 var shoulder = new Vector3(side * height * .115f, floor + height * .79f, 0);
-                                float forearm = npc.name == "RecordsClerk" || npc.name == "Seolpyeong"
-                                    ? Mathf.SmoothStep(0, 1, Mathf.InverseLerp(height * .30f, height * .38f, Mathf.Abs(p.x))) : 0;
-                                var elbow = new Vector3(side * height * .32f, shoulder.y, 0);
-                                var folded = elbow + Quaternion.AngleAxis(-side * 100f * forearm, Vector3.forward)
-                                    * Quaternion.AngleAxis(-side * 25f * forearm, Vector3.up) * (p - elbow);
-                                p = Vector3.Lerp(p, shoulder + Quaternion.AngleAxis(-side * 68f, Vector3.forward) * (folded - shoulder), arm);
-                                p.z -= height * .19f * forearm * arm;
+                                // These meshes have no arm rig. Keep wrist and sleeve together;
+                                // folding vertices around an estimated elbow twists the hands.
+                                p = Vector3.Lerp(p, shoulder + Quaternion.AngleAxis(-side * 68f, Vector3.forward) * (p - shoulder), arm);
                             }
                             if (npc.name == "DocumentCourier" || npc.name == "GamblingSoldier")
                             {
