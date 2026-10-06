@@ -9,6 +9,19 @@ namespace RedCliffMystery.EditorTools
 {
     public static class DemoReleaseBuilder
     {
+        // 데모 버전은 여기 한 곳만 올리면 됩니다. 출력 폴더 이름도 이 값에서 만들어집니다.
+        public const string DemoVersion = "0.1.0-demo.4";
+
+        // 같은 버전 폴더가 이미 있으면 덮어쓰지 않고 시간 표시를 붙인 새 폴더에 빌드합니다.
+        // (DemoReleaseZipper의 "RedCliffsDeduction-*-windows-x64" 패턴과 계속 맞습니다.)
+        static string NewOutputFolder()
+        {
+            string path = "Builds/RedCliffsDeduction-" + DemoVersion + "-windows-x64";
+            if (Directory.Exists(path))
+                path = "Builds/RedCliffsDeduction-" + DemoVersion + "-" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + "-windows-x64";
+            return path;
+        }
+
         // Batch review builds exercise Unity's real JSON save round trip before packaging.
         public static void BuildChecked()
         {
@@ -41,11 +54,11 @@ namespace RedCliffMystery.EditorTools
             try
             {
                 PlayerSettings.productName = "RedCliffsDeduction Test Demo";
-                PlayerSettings.bundleVersion = "0.1.0-demo.3";
+                PlayerSettings.bundleVersion = DemoVersion;
                 PlayerSettings.defaultScreenWidth = 1280;
                 PlayerSettings.defaultScreenHeight = 720;
                 PlayerSettings.fullScreenMode = FullScreenMode.Windowed;
-                string output = "Builds/RedCliffsDeduction-0.1.0-demo.3-windows-x64";
+                string output = NewOutputFolder();
                 Directory.CreateDirectory(output);
                 var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions {
                     scenes = new[] { FirstInvestigationBuilder.ScenePath },
