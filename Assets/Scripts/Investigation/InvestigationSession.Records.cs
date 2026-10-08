@@ -11,6 +11,7 @@ namespace RedCliffMystery.Investigation
 
         public void TalkToRecordsClerk()
         {
+            if (OrderChapterActive) { ShowOrderRecords(); return; }
             SetSavePoint("records");
             SetModal("수군 진영 · 기록 담당자", "기록 담당자", "“형주에서 인계된 인력과 근무 기록을 보관하고 있습니다. 앞의 탁자에서 명부와 근무 기록을 함께 살펴보십시오.”");
             view.AddChoice("경력 서류를 살펴본다", ShowCareerRecords);
@@ -23,6 +24,7 @@ namespace RedCliffMystery.Investigation
 
         public void ShowCareerRecords()
         {
+            if (OrderChapterActive) { ShowOrderRecords(); return; }
             SetSavePoint("career");
             if (!EnsureInquiry("career", "기록 담당자 · 경력 확인", ShowCareerRecords)) return;
             SetModal("기록 탁자", "형주 인력의 경력 서류", "인계 명부와 이전 근무 기록이 나란히 놓여 있다. 확인할 서류를 선택하자.");

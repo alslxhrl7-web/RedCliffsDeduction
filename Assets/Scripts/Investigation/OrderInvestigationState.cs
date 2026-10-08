@@ -51,7 +51,7 @@ namespace RedCliffMystery.Investigation
                 || Has(OrderFact.Reported) && !ReadyToReport
                 || Has(OrderFact.Explanation) && !Has(OrderFact.Recovered)
                 || Has(OrderFact.ClaimChallenged) && !CanChallenge)
-                throw new InvalidDataException("軍令 조사 기록의 선행 근거가 없습니다.");
+                throw new InvalidDataException("군령 조사 기록의 선행 근거가 없습니다.");
         }
     }
 }

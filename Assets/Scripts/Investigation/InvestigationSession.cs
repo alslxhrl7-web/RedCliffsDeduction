@@ -81,6 +81,7 @@ namespace RedCliffMystery.Investigation
             PlayerName = string.IsNullOrWhiteSpace(cleaned) ? "이름 없는 참모" : cleaned.Substring(0, Mathf.Min(16, cleaned.Length));
             enteringName = false;
             view.SetPlayerIdentity(PlayerName, "조조군 지휘 천막");
+            if (OrderChapterActive) { BeginOrderIntroduction(); return; }
             BeginSequence("조조", new[] {
                 $"{PlayerName}, 그대를 이번 사건을 조사할 임시 참모로 삼겠다.",
                 "문서고에 보관하던 화공대비책이 사라졌다. 적의 화공에 대비하기 위한 문서다. 군의 안위가 걸린 일이니 가벼이 여길 수 없다.",
@@ -147,7 +148,7 @@ namespace RedCliffMystery.Investigation
             if (!introductionFinished) return;
             if (reportActive) { CancelFinalReport(); return; }
             if (visitingCommandTent) { LeaveCommandTent(tentVisitFromNaval); return; }
-            if (investigationTime.DeadlineReached && !skipDeadlinePrompt) { ShowDeadlineChoice(); return; }
+            if (!OrderChapterActive && investigationTime.DeadlineReached && !skipDeadlinePrompt) { ShowDeadlineChoice(); return; }
             skipDeadlinePrompt = false;
             saveResumePoint = "field";
             onSequenceComplete = null;
@@ -168,7 +169,7 @@ namespace RedCliffMystery.Investigation
             view.AddChoice("조사 계속", CloseModal);
             view.AddChoice("수첩 열기", ShowJournal);
             view.AddChoice("장소 이동", ShowTravel);
-            view.AddChoice("날짜와 조사 일정 / 시간 보내기", ShowInvestigationSchedule);
+            if (!OrderChapterActive) view.AddChoice("날짜와 조사 일정 / 시간 보내기", ShowInvestigationSchedule);
             view.AddChoice("저장 / 불러오기", ShowSaveMenu);
             view.AddChoice("소리 설정", ShowAudioSettings);
             onAdvance = CloseModal;
@@ -176,6 +177,7 @@ namespace RedCliffMystery.Investigation
 
         public void InspectDocument()
         {
+            if (OrderChapterActive) { ShowOrderArchive(); return; }
             SetSavePoint("document");
             if (!DocumentInspected && !EnsureInquiry("document", "문서 보관함 조사", InspectDocument)) return;
             DocumentInspected = true;
@@ -187,6 +189,7 @@ namespace RedCliffMystery.Investigation
 
         public void TalkToSeolpyeong()
         {
+            if (OrderChapterActive) { ShowOrderSeol(); return; }
             SetSavePoint("seol");
             if (!EnsureInquiry("seol_initial", "설평 · 업무와 경력", TalkToSeolpyeong)) return;
             SetModal("문서고 서기", "설평", DocumentInspected
@@ -227,6 +230,7 @@ namespace RedCliffMystery.Investigation
 
         public void InspectMaintenanceOrder()
         {
+            if (OrderChapterActive) { ShowOrderMap(); return; }
             SetSavePoint("maintenance");
             if (!MaintenanceOrderRead && !EnsureInquiry("maintenance", "정비 명령서 조사", InspectMaintenanceOrder)) return;
             MaintenanceOrderRead = true;
@@ -239,6 +243,7 @@ namespace RedCliffMystery.Investigation
 
         public void TalkToDuseok()
         {
+            if (OrderChapterActive) { ShowOrderDuseok(); return; }
             SetSavePoint("duseok");
             SetModal("문서고 경비", "두석", "“문서고의 경비를 맡은 두석입니다. 출입 상황에 대해 물으시겠습니까?”");
             view.AddChoice("경비 시간대를 더 조사한다", ShowDuseokTimelineInquiry);
@@ -263,6 +268,7 @@ namespace RedCliffMystery.Investigation
 
         void TalkToNavalOfficer(bool caimao)
         {
+            if (OrderChapterActive) { ShowOrderOfficer(caimao); return; }
             SetSavePoint(caimao ? "caimao" : "zhangyun");
             if (!EnsureInquiry(caimao ? "caimao" : "zhangyun", caimao ? "채모 · 훈련 설명" : "장윤 · 군량 설명", () => TalkToNavalOfficer(caimao))) return;
             string speaker = caimao ? "채모" : "장윤";
@@ -322,7 +328,7 @@ namespace RedCliffMystery.Investigation
             complete?.Invoke();
         }
 
-        public void ShowJournal() => ShowJournalPage(0);
+        public void ShowJournal() { if (OrderChapterActive) ShowOrderJournal(); else ShowJournalPage(0); }
 
         void ShowJournalPage(int page)
         {
@@ -448,7 +454,7 @@ namespace RedCliffMystery.Investigation
             onSequenceComplete = null;
             bool atNaval = route != null && route.AtNavalCamp;
             SetModal("조사 · 이동", "다음 조사 선택", atNaval
-                ? "왼쪽 천막 앞에 채모, 오른쪽 천막 앞에 장윤이 있다. 입구 왼편에는 기록 담당자와 경력 서류 탁자가 있다.\n\n문서고로 돌아가 다시 질문할 수도 있다."
+                ? (OrderChapterActive ? "왼쪽 천막 앞에 채모, 오른쪽에 장윤이 있다. 입구 부근에는 전달자와 수송 물품 보관소가 있다. 기록 담당자 앞에서 부본·승인 기록을, 중앙 탁자에서 배치도를 확인할 수 있다." : "왼쪽 천막 앞에 채모, 오른쪽 천막 앞에 장윤이 있다. 입구 왼편에는 기록 담당자와 경력 서류 탁자가 있다.\n\n문서고로 돌아가 다시 질문할 수도 있다.")
                 : "수군 진영에서 채모·장윤의 설명을 들을 수 있다.\n\n문서고에 남아 추가로 조사해도 좋다. 뒤쪽 출입문 옆의 창을 든 경비가 두석이다.",
                 "이름과 조사 기록은 유지됩니다.  ·  Esc 현재 장소에서 계속");
             if (atNaval)
@@ -552,6 +558,7 @@ namespace RedCliffMystery.Investigation
 
         string NextInvestigationStep()
         {
+            if (OrderChapterActive) return OrderObjective();
             if (FinalReportCompleted) return "최종 보고 완료";
             if (InvestigationReviewStarted) return "조사 정리 완료 · J 수첩에서 기록 확인 / 추가 조사 선택";
             if (!string.IsNullOrEmpty(selectedInvestigationTarget))

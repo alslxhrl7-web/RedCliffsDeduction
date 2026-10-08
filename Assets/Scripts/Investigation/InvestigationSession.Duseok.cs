@@ -26,6 +26,7 @@ namespace RedCliffMystery.Investigation
 
         public void TalkToDocumentCourier()
         {
+            if (OrderChapterActive) { ShowOrderCourier(); return; }
             SetSavePoint("courier");
             if (!EnsureInquiry("courier", "전령 · 문서 확인 시점", TalkToDocumentCourier)) return;
             SetModal("수군 진영 · 문서 전달 전령", "전령", "“사건 당일 대비책을 전달하고 돌려놓은 일을 말씀드리겠습니다.”");

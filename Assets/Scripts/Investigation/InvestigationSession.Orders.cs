@@ -22,7 +22,7 @@ namespace RedCliffMystery.Investigation
             if (!OrderState.TryRecord(fact)) return;
             UpdateObjective();
             OrderModal(title, body);
-            view.AddChoice("돌아가기", back);
+            view.AddChoice("돌아가기", () => back());
             view.AddChoice("조사 수첩", ShowOrderJournal);
         }
         bool OrderInquiry(string id, string title, Action resume) => EnsureInquiry("order_" + id, title, resume);
@@ -58,10 +58,7 @@ namespace RedCliffMystery.Investigation
                 case InvestigationTarget.TargetKind.MaintenanceOrder: ShowOrderMap(); break;
                 case InvestigationTarget.TargetKind.PersonalToken:
                 case InvestigationTarget.TargetKind.PersonalPapers:
-                    OrderModal("今回の軍令と個人物品", "個人の品物だけでは軍令の移動を説明できない。");
-                    // Keep the public copy Korean even when older assets retain legacy labels.
-                    view.title.text = "個人物品".Replace("個人物品", "개인 물품");
-                    view.body.text = "개인 물품만으로 군령의 이동이나 조작자를 판단할 수 없다. 이번에는 반출 기록과 수령 여부부터 확인하자.";
+                    OrderModal("개인 물품", "개인 물품만으로 군령의 이동이나 조작자를 판단할 수 없다. 이번에는 반출 기록과 수령 여부부터 확인하자.");
                     view.AddChoice("조사 계속", CloseModal); break;
                 case InvestigationTarget.TargetKind.ReliefGuard:
                 case InvestigationTarget.TargetKind.GamblingSoldier:

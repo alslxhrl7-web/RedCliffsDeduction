@@ -8,6 +8,7 @@ namespace RedCliffMystery.Investigation
     public sealed class InvestigationSaveData
     {
         public int version;
+        public OrderInvestigationState order;
         public string playerName, target, savedAt;
         public string resumePoint;
         public InvestigationReportSave report;
@@ -48,7 +49,7 @@ namespace RedCliffMystery.Investigation
             Validate();
             var clock = new InvestigationTime();
             clock.Restore(inquiryIds, inquiryTitles);
-            return "참모: " + playerName + "\n조사 일정: " + clock.Label
+            return "이야기: " + (version == 2 ? "군령 분실 조사" : "기존 설평 사건") + "\n참모: " + playerName + "\n조사 일정: " + clock.Label
                 + "\n저장 장소: " + (navalCamp ? "조조군 수군 진영" : "조조군 문서고")
                 + "\n저장 지점: " + (report != null ? "보고 선택" : string.IsNullOrEmpty(resumePoint) || resumePoint == "field" ? "현장 조사" : "조사 선택 화면")
                 + "\n저장 시각: " + (string.IsNullOrWhiteSpace(savedAt) ? "시각 기록 없음" : savedAt)
@@ -60,13 +61,21 @@ namespace RedCliffMystery.Investigation
             if (report != null && string.IsNullOrEmpty(report.suspect) && string.IsNullOrEmpty(report.request)
                 && !report.uncertain && !report.deadlineLocked && !report.fromNaval && report.page == 0
                 && (report.evidence == null || report.evidence.Length == 0)) report = null;
-            if (version != 1 || string.IsNullOrWhiteSpace(playerName) || playerName.Length > 16
+            if ((version != 1 && version != 2) || string.IsNullOrWhiteSpace(playerName) || playerName.Length > 16
                 || inquiryIds == null || inquiryTitles == null || inquiryIds.Length != inquiryTitles.Length
                 || inquiryIds.Length > InvestigationTime.Budget)
                 throw new InvalidDataException("지원하지 않거나 손상된 저장 기록입니다.");
             var known = new HashSet<string> { "seol_initial", "duseok_initial", "caimao", "zhangyun", "career", "seol_reconfirm", "registry", "papers", "letter_interrogation", "relief_guard", "courier", "duseok_requestion", "gambling_witness" };
-            for (int slot = 0; slot < InvestigationTime.Budget; slot++) known.Add("wait_" + slot);
-            known.UnionWith(new[] { "document", "maintenance", "token" });
+            if (version == 2) {
+                if (order == null || report != null || !(string.IsNullOrEmpty(resumePoint) || resumePoint == "field" || resumePoint == "order_journal" || resumePoint == "travel" || resumePoint == "tent"))
+                    throw new InvalidDataException("군령 조사 저장의 이야기 상태가 올바르지 않습니다.");
+                order.Validate();
+                known = new HashSet<string> { "order_archive", "order_receipt", "order_procedure", "order_courier", "order_movement", "order_storage", "order_records" };
+            }
+            if (version == 1) {
+                for (int slot = 0; slot < InvestigationTime.Budget; slot++) known.Add("wait_" + slot);
+                known.UnionWith(new[] { "document", "maintenance", "token" });
+            }
             foreach (var id in inquiryIds)
                 if (id == null || !known.Remove(id)) throw new InvalidDataException("조사 기록이 손상되었습니다.");
             foreach (var title in inquiryTitles)
@@ -88,11 +97,11 @@ namespace RedCliffMystery.Investigation
 #endif
             }
         }
-        public static string SavePath => Path.Combine(DirectoryPath, "investigation-save.json");
-        public static string AutoSavePath => Path.Combine(DirectoryPath, "investigation-autosave.json");
+        public static string SavePath => Path.Combine(DirectoryPath, "order-investigation-save.json");
+        public static string AutoSavePath => Path.Combine(DirectoryPath, "order-investigation-autosave.json");
         public static string ManualPath(int slot) {
             if (slot < 1 || slot > 3) throw new ArgumentOutOfRangeException(nameof(slot));
-            return slot == 1 ? SavePath : Path.Combine(DirectoryPath, "investigation-save-" + slot + ".json");
+            return slot == 1 ? SavePath : Path.Combine(DirectoryPath, "order-investigation-save-" + slot + ".json");
         }
         public static InvestigationSaveData Read(string path) {
             var data = JsonUtility.FromJson<InvestigationSaveData>(File.ReadAllText(path));
@@ -115,7 +124,9 @@ namespace RedCliffMystery.Investigation
     public sealed partial class InvestigationSession
     {
         InvestigationSaveData CaptureSave() => new InvestigationSaveData {
-            version = 1, playerName = PlayerName, target = selectedInvestigationTarget,
+            version = OrderChapterActive ? 2 : 1,
+            order = OrderChapterActive ? new OrderInvestigationState { facts = OrderState.facts } : null,
+            playerName = PlayerName, target = selectedInvestigationTarget,
             resumePoint = saveResumePoint,
             report = CaptureReportSave(),
             savedAt = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), navalCamp = route.AtNavalCamp,
@@ -220,6 +231,8 @@ namespace RedCliffMystery.Investigation
         }
         void RestoreSave(InvestigationSaveData data) {
             data.Validate();
+            OrderChapterActive = data.version == 2;
+            OrderState = data.order == null ? new OrderInvestigationState() : new OrderInvestigationState { facts = data.order.facts };
             if (dayTransition != null) dayTransition.Cancel();
             dayTransitionActive = false;
             WorkRouteHeard = data.WorkRouteHeard; AccessAuthorityHeard = data.AccessAuthorityHeard;

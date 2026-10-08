@@ -61,6 +61,7 @@ namespace RedCliffMystery.Investigation
 
         public void BeginFinalReport()
         {
+            if (OrderChapterActive) { ShowOrderReport(); return; }
             if (!introductionFinished || !CanReportNow || reportActive || FinalReportCompleted) return;
             if (introductionStage == null || introductionStage.player == null
                 || introductionStage.tent == null || introductionStage.tentSpawn == null

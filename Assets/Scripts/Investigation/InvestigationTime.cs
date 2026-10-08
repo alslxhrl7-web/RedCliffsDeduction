@@ -125,6 +125,13 @@ namespace RedCliffMystery.Investigation
             onEscape = ShowInvestigationSchedule;
         }
         static string InquiryPurpose(string id) => id switch {
+            "order_archive" => "군령의 반출 기록과 정상 확인 표시를 살펴본다.",
+            "order_receipt" => "수령 부대의 미수령 보고와 병사 파견 여부를 확인한다.",
+            "order_procedure" => "정상 인계 절차와 대조 완료 표시의 의미를 확인한다.",
+            "order_courier" => "전달자가 언제 누구에게 문서를 넘겼다고 주장하는지 확인한다.",
+            "order_movement" => "두석의 목격과 당직 기록으로 전달자의 이동을 확인한다.",
+            "order_storage" => "반입 기록과 꾸러미 표식을 확인한다.",
+            "order_records" => "별도 보관 부본과 변경 승인 경위를 확인한다.",
             "document" => "문서가 보관되던 자리와 남아 있는 흔적을 살펴본다.",
             "maintenance" => "정비 명령서에 적힌 기간과 지시 내용을 읽는다.",
             "token" => "서류를 묶은 목패의 모양과 흔적을 살펴본다.",

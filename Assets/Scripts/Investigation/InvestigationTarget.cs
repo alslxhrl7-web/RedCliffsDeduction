@@ -6,7 +6,7 @@ namespace RedCliffMystery.Investigation
     {
         public enum TargetKind { MissingDocument = 0, Seolpyeong = 1, Duseok = 2, Caimao = 3, Zhangyun = 4, MaintenanceOrder = 5,
             NavalCampExit = 6, ArchiveReturn = 7, RecordsClerk = 8, CareerRecords = 9, PersonalToken = 10, PersonalPapers = 11,
-            DocumentCourier = 12, ReliefGuard = 13, GamblingSoldier = 14 }
+            DocumentCourier = 12, ReliefGuard = 13, GamblingSoldier = 14, OrderStorage = 15 }
         public TargetKind kind;
         public string Prompt => kind switch
         {
@@ -15,21 +15,23 @@ namespace RedCliffMystery.Investigation
             TargetKind.Duseok => "E  ·  두석과 대화",
             TargetKind.Caimao => "E  ·  채모와 대화",
             TargetKind.Zhangyun => "E  ·  장윤과 대화",
-            TargetKind.MaintenanceOrder => "E  ·  정비 명령서 확인",
+            TargetKind.MaintenanceOrder => "E  ·  수군 배치도 확인",
             TargetKind.NavalCampExit => "E  ·  천막을 젖히고 수군 진영으로 나가기",
             TargetKind.ArchiveReturn => "E  ·  문서고 / 조조군 지휘 천막으로 이동",
             TargetKind.RecordsClerk => "E  ·  기록 담당자와 대화",
-            TargetKind.CareerRecords => "E  ·  경력 서류 조사",
+            TargetKind.CareerRecords => "E  ·  발급 담당 기록 조사",
             TargetKind.PersonalToken => "E  ·  서류 묶음의 목패 확인",
             TargetKind.PersonalPapers => "E  ·  설평의 개인 서류함 확인",
             TargetKind.DocumentCourier => "E  ·  문서 전달 전령과 대화",
             TargetKind.ReliefGuard => "E  ·  교대 병사와 대화",
             TargetKind.GamblingSoldier => "E  ·  휴식 중인 병사와 대화",
+            TargetKind.OrderStorage => "E  ·  수송 물품과 반입 기록 조사",
             _ => ""
         };
 
         public void Interact(InvestigationSession session)
         {
+            if (session.HandleOrderTarget(kind)) return;
             switch (kind)
             {
                 case TargetKind.MissingDocument: session.InspectDocument(); break;
