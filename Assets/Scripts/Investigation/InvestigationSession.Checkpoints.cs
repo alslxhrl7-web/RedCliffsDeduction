@@ -37,6 +37,7 @@ namespace RedCliffMystery.Investigation
 
         Dictionary<string, Action> SavePoints => new Dictionary<string, Action> {
             { "order_journal", ShowOrderJournal },
+            { "order_final", ResumeOrderFinal },
             { "field", CloseModal },
             { "document", InspectDocument }, { "maintenance", InspectMaintenanceOrder },
             { "seol", TalkToSeolpyeong }, { "duseok", TalkToDuseok },
@@ -56,7 +57,7 @@ namespace RedCliffMystery.Investigation
             { "report_evidence", () => ShowReportEvidence(evidencePage) },
             { "report_request", ShowReportRequest }, { "report_confirm", ShowReportConfirmation }
         };
-        public static bool IsKnownSavePoint(string point) => point == "order_journal" || string.IsNullOrEmpty(point)
+        public static bool IsKnownSavePoint(string point) => point == "order_journal" || point == "order_final" || string.IsNullOrEmpty(point)
             || Array.IndexOf(new[] { "field", "document", "maintenance", "seol", "duseok", "caimao", "zhangyun",
                 "token", "seol_followup", "registry", "papers", "token_compare", "letter", "records", "career",
                 "courier", "relief", "gambling", "duseok_timeline", "comparison", "travel", "followup", "review",
@@ -153,7 +154,7 @@ namespace RedCliffMystery.Investigation
             } catch (Exception e) { Debug.LogWarning("자동저장 상태 확인 실패: " + e.Message, this); }
         }
 
-        InvestigationReportSave CaptureReportSave() => !reportActive ? null : new InvestigationReportSave {
+        InvestigationReportSave CaptureReportSave() => OrderChapterActive || !reportActive ? null : new InvestigationReportSave {
             uncertain = reportUncertain, deadlineLocked = deadlineReportLocked, fromNaval = reportFromNavalCamp,
             suspect = reportSuspect, request = reportRequest, page = evidencePage,
             evidence = new List<int>(submittedEvidence).ToArray()

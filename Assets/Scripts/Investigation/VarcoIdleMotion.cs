@@ -20,8 +20,8 @@ namespace RedCliffMystery
         float nextSample;
         string speech;
         float speechStart;
-        static readonly string[] Speakers = { "조조", "설평", "두석", "채모", "장윤", "기록 담당자", "전령", "교대 병사", "동석 병사" };
-        static readonly float[] MouthHeights = { .840f, .872f, .870f, .875f, .855f, .875f, .862f, .866f, .867f };
+        static readonly string[] Speakers = { "조조", "설평", "두석", "채모", "장윤", "기록 담당자", "전령", "교대 병사", "동석 병사", "한진" };
+        static readonly float[] MouthHeights = { .840f, .872f, .870f, .875f, .855f, .875f, .862f, .866f, .867f, .875f };
         public static float MouthHeightFraction(int profile) => MouthHeights[Mathf.Clamp(profile, 0, MouthHeights.Length - 1)];
         public static void StopSpeech()
         {

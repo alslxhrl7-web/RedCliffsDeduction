@@ -6,7 +6,8 @@ namespace RedCliffMystery.Investigation
     {
         public enum TargetKind { MissingDocument = 0, Seolpyeong = 1, Duseok = 2, Caimao = 3, Zhangyun = 4, MaintenanceOrder = 5,
             NavalCampExit = 6, ArchiveReturn = 7, RecordsClerk = 8, CareerRecords = 9, PersonalToken = 10, PersonalPapers = 11,
-            DocumentCourier = 12, ReliefGuard = 13, GamblingSoldier = 14, OrderStorage = 15 }
+            DocumentCourier = 12, ReliefGuard = 13, GamblingSoldier = 14, OrderStorage = 15,
+            HanJin = 16, ReturnedOrder = 17, OutgoingOrder = 18 }
         public TargetKind kind;
         public string Prompt => kind switch
         {
@@ -26,6 +27,9 @@ namespace RedCliffMystery.Investigation
             TargetKind.ReliefGuard => "E  ·  교대 병사와 대화",
             TargetKind.GamblingSoldier => "E  ·  휴식 중인 병사와 대화",
             TargetKind.OrderStorage => "E  ·  수송 물품과 반입 기록 조사",
+            TargetKind.HanJin => "E  ·  연락관 한진과 대화",
+            TargetKind.ReturnedOrder => "E  ·  재작성 반환 묶음 조사",
+            TargetKind.OutgoingOrder => "E  ·  출고 인계 기록 조사",
             _ => ""
         };
 

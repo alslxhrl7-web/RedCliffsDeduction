@@ -21,9 +21,12 @@ namespace RedCliffMystery.Investigation
         {
             if (!OrderState.TryRecord(fact)) return;
             UpdateObjective();
-            OrderModal(title, body);
-            view.AddChoice("돌아가기", () => back());
-            view.AddChoice("조사 수첩", ShowOrderJournal);
+            back();
+            string speaker = view.title.text == "문서 전달자" ? "전령" : view.title.text;
+            RedCliffMystery.VarcoIdleMotion.StopSpeech();
+            if (body.Contains("“")) RedCliffMystery.VarcoIdleMotion.Speak(speaker, body);
+            view.title.text = title; view.body.text = body;
+            view.SetFooterHint("수첩에 자동 기록됨 · 다음 질문 또는 조사 계속");
         }
         bool OrderInquiry(string id, string title, Action resume) => EnsureInquiry("order_" + id, title, resume);
 
@@ -35,7 +38,7 @@ namespace RedCliffMystery.Investigation
                 "열나흗날 밤까지 경위를 보고하라. 사소한 전달 착오로 여겨 덮어둘 일이 아니다. 관련자의 말과 남은 기록을 함께 확인하라."
             }, () => {
                 SetModal("임무 수령", "군령의 인계 경로를 밝혀라",
-                    "문서고의 보관 자리와 반출 대장을 확인할 수 있다. 수군 진영에서는 채모·장윤과 전달자를 만날 수 있다. 모든 조사를 마치지 않아도 이동할 수 있다.\n\nJ 수첩 · Esc 이동/저장\n새 조사 묶음은 1회, 같은 묶음의 질문·재열람·비교는 무료다. 이번 구간은 임시 12회 안에서 진행한다.\n\n현재 제작 구간: 문서 회수와 내용 대조, 조조에게 중간 보고까지. 범인 확정과 새 엔딩은 후속 구간이다.");
+                    "문서고의 보관 자리와 반출 대장을 확인할 수 있다. 수군 진영에서는 채모·장윤과 전달자를 만날 수 있다. 모든 조사를 마치지 않아도 이동할 수 있다.\n\nJ 수첩 · Esc 이동/저장\n새 조사 묶음은 1회, 같은 묶음의 질문·재열람·비교는 무료다. 이번 구간은 임시 12회 안에서 진행한다.\n\n문서를 회수한 뒤 내용과 출고 경위를 조사하라. 조사를 마치면 조조에게 최종 보고할 결론과 근거를 직접 선택한다.");
                 view.AddChoice("문서고로 향한다", FinishIntroduction);
                 onAdvance = FinishIntroduction;
             });
@@ -52,9 +55,12 @@ namespace RedCliffMystery.Investigation
                 case InvestigationTarget.TargetKind.Caimao: ShowOrderOfficer(true); break;
                 case InvestigationTarget.TargetKind.Zhangyun: ShowOrderOfficer(false); break;
                 case InvestigationTarget.TargetKind.DocumentCourier: ShowOrderCourier(); break;
-                case InvestigationTarget.TargetKind.RecordsClerk:
+                case InvestigationTarget.TargetKind.RecordsClerk: ShowOrderClerk(); break;
                 case InvestigationTarget.TargetKind.CareerRecords: ShowOrderRecords(); break;
                 case InvestigationTarget.TargetKind.OrderStorage: ShowOrderStorage(); break;
+                case InvestigationTarget.TargetKind.HanJin: ShowOrderHan(); break;
+                case InvestigationTarget.TargetKind.ReturnedOrder: ShowOrderRewrite(); break;
+                case InvestigationTarget.TargetKind.OutgoingOrder: ShowOrderOutgoing(); break;
                 case InvestigationTarget.TargetKind.MaintenanceOrder: ShowOrderMap(); break;
                 case InvestigationTarget.TargetKind.PersonalToken:
                 case InvestigationTarget.TargetKind.PersonalPapers:
@@ -72,8 +78,9 @@ namespace RedCliffMystery.Investigation
         public void ShowOrderArchive()
         {
             if (!OrderInquiry("archive", "문서고 · 보관 자리와 반출 기록", ShowOrderArchive)) return;
-            OrderModal("비어 있는 보관 자리", "군령을 두던 자리는 비어 있다. 반출 자체가 정상 업무였을 가능성도 있다. 탁자에 해당 군령의 반출 대장이 남아 있다.");
+            OrderModal("비어 있는 보관 자리", "군령을 두던 자리는 비어 있다. 반출 자체가 정상 업무였을 가능성도 있다. 탁자에 해당 군령의 반출 대장이 남아 있다.\n\n떠나기 전 서쪽 한진 앞 탁자의 반환 묶음도 확인할 수 있다. 확보하면 수군 진영에서 비교할 때 다시 가지 않아도 된다.");
             view.AddChoice("반출 대장 확인", () => OrderRecord(OrderFact.Dispatch, "반출 대장", "수군 제17호 · 강 입구 감시선 부대 앞으로 발급.\n전달자 수령 표시와 ‘대조 완료’ 표시가 남아 있다.\n\n이 기록은 출고를 보여 주지만 목적지 도착을 증명하지는 않는다.", ShowOrderArchive));
+            view.AddChoice("떠나기 전 반환 묶음 위치 확인", () => OrderDirections("제17호의 정서와 인계는 연락관 한진이 맡았다. 문서고의 발급 탁자 옆에서 만날 수 있다. 재작성을 마친 반환 묶음도 그 옆에 보관되어 있다."));
             view.AddChoice("조사 계속", CloseModal);
         }
 
@@ -99,6 +106,7 @@ namespace RedCliffMystery.Investigation
 
         public void ShowOrderSelection()
         {
+            if (HasOrder(OrderFact.Verified)) { ShowOrderFollowUp(); return; }
             OrderModal("다음 조사 선택", "전달자의 인계 주장, 두석의 목격, 설평의 서류 취급 중 무엇을 확인할지 선택하자. 추가 질문 없이 현장 조사로 돌아가도 된다.");
             view.AddChoice("전달자의 인계 경위", () => OrderDirections("수군 진영 입구의 문서 전달 전령에게 물을 수 있다."));
             view.AddChoice("두석의 동선 설명", () => OrderDirections("문서고 입구의 두석에게 물을 수 있다."));
@@ -175,11 +183,13 @@ namespace RedCliffMystery.Investigation
 
         public void ShowOrderRecords()
         {
-            if (!OrderInquiry("records", "발급 담당 · 부본과 승인 확인", ShowOrderRecords)) return;
-            OrderModal("발급 담당 기록", "본문, 확인표, 보관 부본은 각각 이동과 보관 이력이 있다. 봉인이나 기록 하나만으로 진위를 단정하지 않는다.");
-            view.AddChoice("보관 부본과 출처 확인", () => OrderRecord(OrderFact.RetainedCopy, "보관 부본", OrderCopy + "\n\n본문이 출고 준비로 넘어간 뒤에도 이 부본은 발급 담당 측에 남았다. 전달자 개인이 보관한 자료가 아니다.", ShowOrderRecords));
-            view.AddChoice("변경 승인 여부 확인", () => OrderRecord(OrderFact.Approval, "승인 경위 확인", "발급 담당의 승인 확인과 변경 대장을 함께 대조했다. 제17호의 승인 내용은 강 입구 유지이며, 본진 철수로 바꾸라는 승인은 확인되지 않는다.\n\n이 결과는 변경자를 지목하는 증거가 아니다.", ShowOrderRecords));
+            if (!OrderInquiry("records", "발급 기록 탁자 · 부본과 승인 확인", ShowOrderRecords)) return;
+            OrderState.TryRecord(OrderFact.RetainedCopy | OrderFact.Approval);
+            UpdateObjective();
+            OrderModal("발급 기록 탁자", "[보관 부본] 제17호 / 강 입구 감시선 유지, 현지에서 보고.\n발급 번호·보관자 인계 기록이 일치하며, 본문 출고 뒤에도 발급 측에 남았다.\n\n[변경 승인 대장] 제17호 승인 내용: 강 입구 유지. 본진 철수로 변경한 승인 항목은 없다.");
             view.AddChoice("정식 변경 가능성을 판단한다", ShowOrderVerification, OrderState.CanVerify);
+            view.AddChoice("옆에 묶인 제17호 회신철 열람", ShowOrderReplies);
+            view.AddChoice("부본 전문", () => ShowFollowSource("보관 부본", OrderCopy, ShowOrderRecords));
             view.AddChoice("조사 계속", CloseModal);
         }
         void ShowOrderVerification()
@@ -200,15 +210,16 @@ namespace RedCliffMystery.Investigation
 
         string OrderObjective()
         {
-            if (HasOrder(OrderFact.Reported)) return "중간 보고 완료 · 이번 조사 구간 종료 / 기록 재확인 가능";
-            if (OrderState.ReadyToReport) return "확인한 내용과 남은 의문을 조조에게 보고하자";
-            if (HasOrder(OrderFact.Verified)) return "수군 배치도에서 명령 변경의 영향을 확인하자";
-            if (HasOrder(OrderFact.Compared)) return "발급 담당의 보관 부본과 변경 승인 여부를 확인하자";
+            if (FinalReportCompleted) return "최종 보고 완료";
+            if (HasFollowUp(OrderFollowUpFact.Knowing)) return "수첩에서 근거를 검토하고 조조에게 최종 보고하자";
+            if (HasOrder(OrderFact.Verified)) return FollowRouteHint();
+            if (HasOrder(OrderFact.Compared)) return "발급 기록 탁자의 보관 부본과 변경 승인 여부를 확인하자";
             if (HasOrder(OrderFact.Recovered)) return "회수한 군령과 확인표를 비교하고 은닉 이유를 확인하자";
             return "군령의 반출과 미수령 사이를 조사하자 · J 수첩 / Esc 이동";
         }
         public void ShowOrderJournal()
         {
+            if (HasOrder(OrderFact.Verified)) { ShowOrderFollowUp(); return; }
             var lines = new List<string>();
             AddOrderLine(lines, OrderFact.Dispatch, "자료: 제17호 반출·정상 확인 표시.");
             AddOrderLine(lines, OrderFact.NoReceipt, "자료: 수령 부대는 미수령 보고.");
@@ -231,6 +242,7 @@ namespace RedCliffMystery.Investigation
             view.AddChoice("군령과 확인표 비교", ShowOrderComparison, OrderState.CanCompare);
             view.AddChoice("확보 자료 다시 읽기", ShowOrderEvidence);
             view.AddChoice("다음 조사 선택", ShowOrderSelection);
+            view.AddChoice("제17호 후속 수사", ShowOrderFollowUp);
             view.AddChoice("수첩 닫기", CloseModal);
         }
         void AddOrderLine(List<string> lines, OrderFact fact, string text) { if (HasOrder(fact)) lines.Add(text); }
@@ -241,18 +253,6 @@ namespace RedCliffMystery.Investigation
             if (HasOrder(OrderFact.Receipt)) view.AddChoice("인계 확인표", () => { OrderModal("확인표", OrderReceipt); view.AddChoice("돌아가기", ShowOrderEvidence); });
             if (HasOrder(OrderFact.RetainedCopy)) view.AddChoice("보관 부본", () => { OrderModal("부본", OrderCopy); view.AddChoice("돌아가기", ShowOrderEvidence); });
             view.AddChoice("수첩으로", ShowOrderJournal);
-        }
-        void ShowOrderReport()
-        {
-            OrderModal("조조 · 중간 보고", OrderState.ReadyToReport
-                ? "회수한 군령은 승인 내용과 다르고, 감시선 철수는 강 입구의 공백을 만들 수 있다. 은닉 행위와 명령 변경의 책임은 구분해 보고해야 한다."
-                : "“확인한 경위는 들었다. 문서의 행방과 내용 차이를 더 살펴라. 아직 드러나지 않은 일까지 단정하지 마라.”");
-            if (OrderState.ReadyToReport) view.AddChoice("회수·내용 차이를 보고하고 변경자 조사를 요청", () => {
-                OrderState.TryRecord(OrderFact.Reported); UpdateObjective();
-                OrderModal("중간 보고 완료", "“회수본을 그대로 시행해서는 안 되겠다. 발급·출고 경위를 더 조사하라. 문서를 숨긴 자의 책임과 내용을 바꾼 자의 책임은 따로 묻겠다.”\n\n이번 제작 구간은 여기까지입니다. 범인 확정·교체 수법·원본 행방·새 엔딩은 아직 구현하지 않았습니다. 저장하거나 조사 기록을 다시 확인할 수 있습니다.");
-                view.AddChoice("기록 저장", ShowSaveMenu); view.AddChoice("조사로 돌아가기", CloseModal);
-            });
-            view.AddChoice("조사를 이어간다", CloseModal);
         }
     }
 }

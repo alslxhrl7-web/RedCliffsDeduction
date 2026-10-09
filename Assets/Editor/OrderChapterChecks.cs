@@ -8,7 +8,7 @@ using UnityEditor;
 using UnityEngine;
 using RedCliffMystery.Investigation;
 
-public static class OrderChapterChecks
+public static partial class OrderChapterChecks
 {
     const string SaveKey = "RedCliffMystery.TestSaveDirectory";
     static InvestigationSession S => UnityEngine.Object.FindAnyObjectByType<InvestigationSession>();
@@ -48,7 +48,7 @@ public static class OrderChapterChecks
                 Require(title != null, "Start on title screen"); title.StartButton.onClick.Invoke();
                 S.BeginIntroduction("군령 검증");
                 S.AdvanceDialogue(); S.AdvanceDialogue(); S.AdvanceDialogue();
-                Require(S.view.body.text.Contains("중간 보고"), "Wrong briefing");
+                Require(S.view.body.text.Contains("최종 보고"), "Wrong briefing");
                 Click("문서고로 향한다"); Require(S.OrderChapterActive, "Wrong story");
             }),
             ("early report cannot end game", () => { S.BeginFinalReport(); Require(!S.FinalReportCompleted && !S.OrderState.ReadyToReport, "Early ending"); S.CloseModal(); }),
@@ -64,16 +64,18 @@ public static class OrderChapterChecks
             ("compare unlock", () => { S.ShowOrderComparison(); Click("같은 번호인데 완료 회신 장소가 다르다"); Require(S.OrderState.Has(OrderFact.Compared), "Comparison missing"); }),
             ("procedure and choice of suspect", () => { Pay(S.TalkToZhangyun); Click("정상 인계 절차 확인"); S.TalkToZhangyun(); Click("누구를 더 조사할지 정한다"); Click("추가 질문 없이 돌아간다"); Require(!S.BlocksMovement, "Decline inquiry blocked"); }),
             ("motive gated behind recovered document", () => { S.ShowOrderCourier(); Click("무엇이 달라 전달하지 않았는가?"); S.ShowOrderCourier(); Click("대조 완료라 적고 왜 보고하지 않았나?"); Require(S.OrderState.Has(OrderFact.Motive), "Motive missing"); }),
-            ("independent copy and approval", () => { Pay(S.TalkToRecordsClerk); Click("보관 부본과 출처 확인"); S.ShowOrderRecords(); Click("변경 승인 여부 확인"); }),
+            ("independent copy and approval", () => { Pay(S.ShowOrderRecords); Require(S.OrderState.Has(OrderFact.RetainedCopy | OrderFact.Approval), "Document bundle not recorded"); }),
             ("verify refuses access equals guilt", () => { S.ShowOrderRecords(); Click("정식 변경 가능성을 판단한다"); Click("접근 권한이 있는 사람을 범인으로 확정"); Require(!S.FinalReportCompleted && !S.OrderState.Has(OrderFact.Verified), "Unsupported accusation accepted"); }),
             ("verified mismatch", () => { S.ShowOrderRecords(); Click("정식 변경 가능성을 판단한다"); Click("회수본은 확인한 승인 내용과 다르다"); }),
             ("map links effect", () => { S.InspectMaintenanceOrder(); Click("회수본대로 이동하면 생기는 차이"); Require(S.OrderState.ReadyToReport, "Report still gated"); }),
             ("save round trip and no snapshot alias", CheckSave),
             ("physical storage collider", () => { var target = UnityEngine.Object.FindObjectsByType<InvestigationTarget>(FindObjectsInactive.Include).FirstOrDefault(t => t.kind == InvestigationTarget.TargetKind.OrderStorage); Require(target != null && target.GetComponent<Collider>() != null, "Missing storage scene target"); target.Interact(S); Require(S.view.title.text.Contains("보관소"), "Storage not routed"); }),
             ("new inquiry journal excludes old plot", () => { S.ShowJournal(); Require(!S.view.body.text.Contains("목연") && !S.view.body.text.Contains("화공대비책"), "Old plot leaked"); ScreenCapture.CaptureScreenshot("Logs/OrderChapter/journal.png"); }),
-            ("intermediate report, no invented culprit or ending", () => { S.VisitCommandTent(); Click("조사 결과 보고"); Click("회수·내용 차이를 보고하고 변경자 조사를 요청"); Require(S.OrderState.Has(OrderFact.Reported) && !S.FinalReportCompleted, "Report triggered legacy ending"); Require(Capture().inquiryIds.Length == 6, "Unexpected mandatory inquiry count"); ScreenCapture.CaptureScreenshot("Logs/OrderChapter/report.png"); }),
-            ("report autosave and return to field", () => { Call("AutoSaveProgress"); var saved = InvestigationSaveStore.Read(InvestigationSaveStore.AutoSavePath); Require(saved.version == 2 && saved.order.Has(OrderFact.Reported), "Autosave missed report"); S.CloseModal(); Require(!S.BlocksMovement, "Report return blocked"); })
+            ("final report replaces interim report", () => { S.VisitCommandTent(); Click("조사 결과 보고"); Require(S.view.title.text.StartsWith("1 / 3") && !S.OrderState.Has(OrderFact.Reported), "Interim gate remains"); Click("제출하지 않고 조사로 돌아가기"); Require(!S.FinalReportCompleted && Capture().inquiryIds.Length == 6, "Report preview ended game or charged"); }),
+            ("field autosave without interim flags", () => { Call("AutoSaveProgress"); var saved = InvestigationSaveStore.Read(InvestigationSaveStore.AutoSavePath); Require(saved.version == 2 && !saved.order.Has(OrderFact.Reported), "Interim progress still required"); S.CloseModal(); Require(!S.BlocksMovement, "Return blocked"); })
         };
+        AddFollowUpChecks(checks);
+        AddOrderFinalChecks(checks);
         try
         {
             foreach (var check in checks)

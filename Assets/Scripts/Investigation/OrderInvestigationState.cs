@@ -14,10 +14,39 @@ namespace RedCliffMystery.Investigation
         ClaimChallenged = 524288
     }
 
+    [Flags]
+    public enum OrderFollowUpFact
+    {
+        None = 0, Assignment = 1, Original = 2, Intake = 4, Outgoing = 8,
+        Rejection = 16, Delivery = 32, DeliveryWitness = 64, BeforeCourier = 128,
+        Submitted = 256, Knowing = 512, Held = 1024, DeploymentRequested = 2048,
+        Reported = 4096, MetHan = 8192, ClerkConfirmation = 16384, Sequence = 32768,
+        OriginalCompared = 65536
+    }
+
     [Serializable]
     public sealed class OrderInvestigationState
     {
         public int facts;
+        // Missing in older version-2 saves: defaults to no follow-up progress.
+        public int followUp;
+        public bool HasFollowUp(OrderFollowUpFact value) => ((OrderFollowUpFact)followUp & value) == value;
+        public bool CanLocateChange => Has(OrderFact.Recovered) &&
+            (HasFollowUp(OrderFollowUpFact.Intake) || HasFollowUp(OrderFollowUpFact.Outgoing));
+        public bool CanIdentifySubmission => HasFollowUp(OrderFollowUpFact.Assignment | OrderFollowUpFact.BeforeCourier)
+            && (HasFollowUp(OrderFollowUpFact.Original | OrderFollowUpFact.Intake)
+                || HasFollowUp(OrderFollowUpFact.Outgoing | OrderFollowUpFact.ClerkConfirmation));
+        public bool CanOrderReply => HasFollowUp(OrderFollowUpFact.Submitted | OrderFollowUpFact.Rejection)
+            && (HasFollowUp(OrderFollowUpFact.Delivery) || HasFollowUp(OrderFollowUpFact.DeliveryWitness));
+        public bool CanProveKnowledge => Has(OrderFact.Verified) && HasFollowUp(OrderFollowUpFact.Submitted | OrderFollowUpFact.Sequence);
+        public bool TryRecordFollowUp(OrderFollowUpFact value)
+        {
+            int previous = followUp;
+            followUp |= (int)value;
+            try { Validate(); return true; }
+            catch (InvalidDataException) { followUp = previous; return false; }
+        }
+        public OrderInvestigationState Copy() => new OrderInvestigationState { facts = facts, followUp = followUp };
         public bool Has(OrderFact value) => ((OrderFact)facts & value) == value;
         public bool CanRecover => Has(OrderFact.Dispatch | OrderFact.StorageTrail)
             && (Has(OrderFact.NoMessenger | OrderFact.CourierClaim) || Has(OrderFact.Movement));
@@ -42,6 +71,16 @@ namespace RedCliffMystery.Investigation
         }
         public void Validate()
         {
+            if (followUp < 0 || followUp > 131071
+                || HasFollowUp(OrderFollowUpFact.BeforeCourier) && !CanLocateChange
+                || HasFollowUp(OrderFollowUpFact.Submitted) && !CanIdentifySubmission
+                || HasFollowUp(OrderFollowUpFact.Sequence) && !CanOrderReply
+                || HasFollowUp(OrderFollowUpFact.Knowing) && !CanProveKnowledge
+                || HasFollowUp(OrderFollowUpFact.Held) && !Has(OrderFact.Reported)
+                || HasFollowUp(OrderFollowUpFact.DeploymentRequested) && !(HasFollowUp(OrderFollowUpFact.Held) && Has(OrderFact.Verified))
+                || HasFollowUp(OrderFollowUpFact.Reported) && !HasFollowUp(OrderFollowUpFact.Knowing)
+                || HasFollowUp(OrderFollowUpFact.OriginalCompared) && !(HasFollowUp(OrderFollowUpFact.Assignment | OrderFollowUpFact.Original) && Has(OrderFact.RetainedCopy)))
+                throw new InvalidDataException("군령 후속 조사 기록의 선행 근거가 없습니다.");
             if (facts < 0 || facts > 1048575
                 || Has(OrderFact.Recovered) && !CanRecover
                 || Has(OrderFact.Compared) && !CanCompare

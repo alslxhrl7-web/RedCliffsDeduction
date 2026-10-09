@@ -9,6 +9,7 @@ namespace RedCliffMystery.Investigation
     {
         public int version;
         public OrderInvestigationState order;
+        public OrderFinalReport orderReport;
         public string playerName, target, savedAt;
         public string resumePoint;
         public InvestigationReportSave report;
@@ -51,7 +52,7 @@ namespace RedCliffMystery.Investigation
             clock.Restore(inquiryIds, inquiryTitles);
             return "이야기: " + (version == 2 ? "군령 분실 조사" : "기존 설평 사건") + "\n참모: " + playerName + "\n조사 일정: " + clock.Label
                 + "\n저장 장소: " + (navalCamp ? "조조군 수군 진영" : "조조군 문서고")
-                + "\n저장 지점: " + (report != null ? "보고 선택" : string.IsNullOrEmpty(resumePoint) || resumePoint == "field" ? "현장 조사" : "조사 선택 화면")
+                + "\n저장 지점: " + ((orderReport != null && orderReport.stage > 0) || report != null ? "보고 선택" : string.IsNullOrEmpty(resumePoint) || resumePoint == "field" ? "현장 조사" : "조사 선택 화면")
                 + "\n저장 시각: " + (string.IsNullOrWhiteSpace(savedAt) ? "시각 기록 없음" : savedAt)
                 + (clock.DeadlineReached ? "\n기한 종료: 이미 시작한 조사 확인 또는 최종 보고로 이어집니다." : "");
         }
@@ -67,10 +68,12 @@ namespace RedCliffMystery.Investigation
                 throw new InvalidDataException("지원하지 않거나 손상된 저장 기록입니다.");
             var known = new HashSet<string> { "seol_initial", "duseok_initial", "caimao", "zhangyun", "career", "seol_reconfirm", "registry", "papers", "letter_interrogation", "relief_guard", "courier", "duseok_requestion", "gambling_witness" };
             if (version == 2) {
-                if (order == null || report != null || !(string.IsNullOrEmpty(resumePoint) || resumePoint == "field" || resumePoint == "order_journal" || resumePoint == "travel" || resumePoint == "tent"))
+                if (order == null || report != null || !(string.IsNullOrEmpty(resumePoint) || resumePoint == "field" || resumePoint == "order_journal" || resumePoint == "order_final" || resumePoint == "travel" || resumePoint == "tent"))
                     throw new InvalidDataException("군령 조사 저장의 이야기 상태가 올바르지 않습니다.");
                 order.Validate();
-                known = new HashSet<string> { "order_archive", "order_receipt", "order_procedure", "order_courier", "order_movement", "order_storage", "order_records" };
+                if (orderReport != null) orderReport.Validate(order);
+                if (resumePoint == "order_final" && (orderReport == null || orderReport.stage == 0)) throw new InvalidDataException("최종 보고 초안이 없습니다.");
+                known = new HashSet<string> { "order_archive", "order_receipt", "order_procedure", "order_courier", "order_movement", "order_storage", "order_records", "order_rewrite", "order_reply" };
             }
             if (version == 1) {
                 for (int slot = 0; slot < InvestigationTime.Budget; slot++) known.Add("wait_" + slot);
@@ -125,7 +128,8 @@ namespace RedCliffMystery.Investigation
     {
         InvestigationSaveData CaptureSave() => new InvestigationSaveData {
             version = OrderChapterActive ? 2 : 1,
-            order = OrderChapterActive ? new OrderInvestigationState { facts = OrderState.facts } : null,
+            order = OrderChapterActive ? OrderState.Copy() : null,
+            orderReport = OrderChapterActive ? OrderReport.Copy() : null,
             playerName = PlayerName, target = selectedInvestigationTarget,
             resumePoint = saveResumePoint,
             report = CaptureReportSave(),
@@ -232,7 +236,8 @@ namespace RedCliffMystery.Investigation
         void RestoreSave(InvestigationSaveData data) {
             data.Validate();
             OrderChapterActive = data.version == 2;
-            OrderState = data.order == null ? new OrderInvestigationState() : new OrderInvestigationState { facts = data.order.facts };
+            OrderState = data.order == null ? new OrderInvestigationState() : data.order.Copy();
+            OrderReport = data.orderReport == null ? new OrderFinalReport() : data.orderReport.Copy();
             if (dayTransition != null) dayTransition.Cancel();
             dayTransitionActive = false;
             WorkRouteHeard = data.WorkRouteHeard; AccessAuthorityHeard = data.AccessAuthorityHeard;

@@ -61,7 +61,7 @@ namespace RedCliffMystery.Investigation
 
         public void BeginFinalReport()
         {
-            if (OrderChapterActive) { ShowOrderReport(); return; }
+            if (OrderChapterActive) { BeginOrderFinal(); return; }
             if (!introductionFinished || !CanReportNow || reportActive || FinalReportCompleted) return;
             if (introductionStage == null || introductionStage.player == null
                 || introductionStage.tent == null || introductionStage.tentSpawn == null
@@ -278,6 +278,7 @@ namespace RedCliffMystery.Investigation
 
         void CancelFinalReport()
         {
+            if (OrderChapterActive) { CancelOrderFinal(); return; }
             if (!reportActive || FinalReportCompleted) return;
             if (deadlineReportLocked) { ShowReportConclusion(); return; }
             reportActive = false;

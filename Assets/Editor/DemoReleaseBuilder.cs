@@ -10,7 +10,7 @@ namespace RedCliffMystery.EditorTools
     public static class DemoReleaseBuilder
     {
         // 데모 버전은 여기 한 곳만 올리면 됩니다. 출력 폴더 이름도 이 값에서 만들어집니다.
-        public const string DemoVersion = "0.1.0-demo.4";
+        public const string DemoVersion = "0.1.0-demo.7";
 
         // 같은 버전 폴더가 이미 있으면 덮어쓰지 않고 시간 표시를 붙인 새 폴더에 빌드합니다.
         // (DemoReleaseZipper의 "RedCliffsDeduction-*-windows-x64" 패턴과 계속 맞습니다.)

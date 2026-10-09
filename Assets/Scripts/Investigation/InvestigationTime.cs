@@ -132,6 +132,8 @@ namespace RedCliffMystery.Investigation
             "order_movement" => "두석의 목격과 당직 기록으로 전달자의 이동을 확인한다.",
             "order_storage" => "반입 기록과 꾸러미 표식을 확인한다.",
             "order_records" => "별도 보관 부본과 변경 승인 경위를 확인한다.",
+            "order_rewrite" => "재작성 의뢰와 반환·출고 기록으로 본문이 달라진 지점을 확인한다.",
+            "order_reply" => "변경 승인 회신이 언제 전달되었는지 반납 순서와 대조한다.",
             "document" => "문서가 보관되던 자리와 남아 있는 흔적을 살펴본다.",
             "maintenance" => "정비 명령서에 적힌 기간과 지시 내용을 읽는다.",
             "token" => "서류를 묶은 목패의 모양과 흔적을 살펴본다.",
