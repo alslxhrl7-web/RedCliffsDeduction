@@ -38,6 +38,7 @@ namespace RedCliffMystery.Investigation
             identityName = playerName;
             identityLocation = locationName;
             RefreshDateLabels();
+            PlaytestObserver.Location(locationName); // the player name is deliberately not passed on
         }
 
         public void SetInvestigationDate(string date)
@@ -120,7 +121,7 @@ namespace RedCliffMystery.Investigation
                 controls = transform.Find("Controls").gameObject;
         }
 
-        public void SetObjective(string text) => objective.text = text;
+        public void SetObjective(string text) { objective.text = text; PlaytestObserver.Objective(text); }
 
         public System.Collections.IEnumerator FadeEndingToBlack()
         {
@@ -168,12 +169,15 @@ namespace RedCliffMystery.Investigation
             if (documentView != null) documentView.Show(heading, modalPanel, font);
             ResizeChoiceArea();
             if (bodyScroll != null) { bodyScroll.StopMovement(); bodyScroll.verticalNormalizedPosition = 1; body.rectTransform.anchoredPosition = Vector2.zero; }
+            // Hidden playtest log: only the screen name and body length, never the body text.
+            PlaytestObserver.Screen(category, heading, content == null ? 0 : content.Length);
         }
 
         public void HideModal()
         {
             modal.SetActive(false);
             crosshair.SetActive(true);
+            PlaytestObserver.ModalClosed();
         }
 
         void LateUpdate()
@@ -197,6 +201,8 @@ namespace RedCliffMystery.Investigation
             colors.highlightedColor = new Color(1f, .84f, .53f);
             colors.pressedColor = new Color(.72f, .62f, .42f);
             button.colors = colors;
+            // Logged before the action runs so the click is recorded against the screen it was made on.
+            button.onClick.AddListener(() => PlaytestObserver.Click(label, button.interactable));
             if (action != null) button.onClick.AddListener(action);
             CreateLabel(go.transform, "Label", label, 23, 0, interactable ? LabelColor : MutedLabelColor);
         }

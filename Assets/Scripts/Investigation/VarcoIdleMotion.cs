@@ -108,7 +108,28 @@ namespace RedCliffMystery
             nextSample = Time.unscaledTime + 1f / 20;
             var camera = Camera.main;
             if (camera != null && (camera.transform.position - transform.position).sqrMagnitude > 30 * 30) return;
+            if (camera != null && !HasSpeech && !InCameraView(camera)) return;
             Sample(Time.time);
+        }
+        static readonly Plane[] frustum = new Plane[6];
+        static int frustumFrame = -1;
+        // Out-of-view figures skip the vertex update; the pose is time-driven so it catches up on the next sample.
+        bool InCameraView(Camera camera)
+        {
+            if (surfaces == null) return false;
+            if (frustumFrame != Time.frameCount)
+            {
+                GeometryUtility.CalculateFrustumPlanes(camera, frustum);
+                frustumFrame = Time.frameCount;
+            }
+            foreach (var surface in surfaces)
+            {
+                if (surface.Filter == null || !surface.Filter.TryGetComponent<Renderer>(out var renderer)) continue;
+                var bounds = renderer.bounds;
+                bounds.Expand(.5f);
+                if (GeometryUtility.TestPlanesAABB(frustum, bounds)) return true;
+            }
+            return false;
         }
         public void Sample(float time)
         {

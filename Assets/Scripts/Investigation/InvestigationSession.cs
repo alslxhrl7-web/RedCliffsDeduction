@@ -52,6 +52,8 @@ namespace RedCliffMystery.Investigation
         void Start()
         {
             Application.runInBackground = true;
+            // Hidden playtest log; stays off unless "playtest.on" exists in the game folder. Never records the name.
+            PlaytestObserver.BeginIfRequested(() => PlayerName);
             titleScreenActive = true;
             view.gameObject.SetActive(false);
             InvestigationTitleScreen.Show(view.font, () => {
@@ -115,8 +117,17 @@ namespace RedCliffMystery.Investigation
             if (HandleSaveShortcuts()) return;
             if (!Application.isFocused || dayTransitionActive || enteringName || !BlocksMovement || Time.frameCount <= modalOpenedFrame || Keyboard.current == null) return;
             var keyboard = Keyboard.current;
-            if (keyboard.escapeKey.wasPressedThisFrame) onEscape?.Invoke();
-            else if (keyboard.eKey.wasPressedThisFrame || keyboard.enterKey.wasPressedThisFrame) onAdvance?.Invoke();
+            if (keyboard.escapeKey.wasPressedThisFrame)
+            {
+                if (onEscape != null) PlaytestObserver.Click("[키보드] Esc", true);
+                onEscape?.Invoke();
+            }
+            else if (keyboard.eKey.wasPressedThisFrame || keyboard.enterKey.wasPressedThisFrame)
+            {
+                // Keyboard advances count like clicks so quick skimming through dialogue shows up in the playtest log.
+                if (onAdvance != null) PlaytestObserver.Click("[키보드] E/Enter 계속", true);
+                onAdvance?.Invoke();
+            }
         }
 
         public void SetPrompt(string prompt) { if (!BlocksMovement) view.SetPrompt(prompt); }
@@ -166,6 +177,7 @@ namespace RedCliffMystery.Investigation
         public void ShowPause()
         {
             SetModal("잠시 멈춤", LocationName, "조사를 이어가거나 지금까지 확인한 사실을 살펴볼 수 있습니다.");
+            PlaytestObserver.Pause();
             view.AddChoice("조사 계속", CloseModal);
             view.AddChoice("수첩 열기", ShowJournal);
             view.AddChoice("장소 이동", ShowTravel);
@@ -328,7 +340,7 @@ namespace RedCliffMystery.Investigation
             complete?.Invoke();
         }
 
-        public void ShowJournal() { if (OrderChapterActive) ShowOrderJournal(); else ShowJournalPage(0); }
+        public void ShowJournal() { PlaytestObserver.Journal(); if (OrderChapterActive) ShowOrderJournal(); else ShowJournalPage(0); }
 
         void ShowJournalPage(int page)
         {

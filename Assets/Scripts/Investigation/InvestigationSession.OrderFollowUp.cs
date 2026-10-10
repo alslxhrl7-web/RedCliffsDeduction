@@ -24,6 +24,7 @@ namespace RedCliffMystery.Investigation
         void ReadFollowBundle(OrderFollowUpFact facts, string title, string text)
         {
             if (!OrderState.TryRecordFollowUp(facts)) return;
+            PlaytestObserver.SourceRead(title);
             UpdateObjective();
             OrderModal(title, text);
             view.SetFooterHint("열람한 자료는 수첩에 자동 기록됩니다 · Esc 닫기");
@@ -35,22 +36,54 @@ namespace RedCliffMystery.Investigation
             view.AddChoice("다시 판단", () => back());
             view.AddChoice("판단을 보류한다", CloseModal);
         }
+
+        // Judgment options. Each question shows one correct option and two near-misses side by side.
+        // A near-miss cites something true but skips one record, so it can only be ruled out by asking what was missed.
+        public const string JudgeCourierChanged = "전달자가 받은 뒤 바뀌었다 · 그가 묶음을 따로 숨겨 두었다";
+        public const string JudgeBeforeCourier = "전달자가 받기 전에 바뀌었다 · 넘기기 전 기록부터 이미 철수다";
+        public const string JudgeAlwaysWithdraw = "처음부터 철수였다 · 한진은 받은 대로 옮겨 적었다";
+        public const string JudgeHanByAssignment = "제출자는 한진 · 의뢰서에 재작성 담당으로 적혀 있다";
+        public const string JudgeSwapAfterIntake = "단정할 수 없다 · 접수 뒤 출고 사이에 바뀌었을 수 있다";
+        public const string JudgeHanSubmitted = "제출자는 한진 · 그가 반납한 완성물이 그대로 출고됐다";
+        public const string JudgeKnowingByReceipt = "알고 제출했다 · 답신을 직접 받은 뒤에 철수 본문을 냈다";
+        public const string JudgeKnowingByDispatch = "알고 제출했다 · 거절 회신이 나간 뒤에 철수 본문이 들어왔다";
+        public const string JudgeMisreadReply = "착오였다 · 회신의 ‘재작성 진행’을 수정 허가로 읽었다";
+        const string JudgeNotReady = "지금 수첩에 있는 자료만으로는 이 판단을 확정할 수 없다. 판단은 보류하고 자료를 더 모으자.";
+
+        // Until the question's evidence is in hand, every option gets the same neutral reply,
+        // so availability never reveals which option is correct.
+        void JudgeFollowUp(int question, string option, bool ready, Action correct, string missed, Action back)
+        {
+            PlaytestObserver.Judgment(question, option, ready, correct != null);
+            if (!ready) { FollowFeedback(JudgeNotReady + "\n\n" + FollowRouteHint(), back); return; }
+            if (correct != null) correct();
+            else FollowFeedback(missed, back);
+        }
         public void ShowOrderHan()
         {
             OrderState.TryRecordFollowUp(OrderFollowUpFact.MetHan);
-            string words = HasFollowUp(OrderFollowUpFact.Knowing)
-                ? "“답신을 받은 것은 맞소. 그래도 현장에 맞게 고칠 수 있다고 여겼소.”"
-                : "“군령을 옮겨 적고 인계하는 일을 맡았소. 제17호의 이전 묶음은 내 앞 탁자에 반환했소.”";
+            // The opening line never changes with the player's judgments; only presenting evidence changes what Han admits.
+            string words = "“군령을 옮겨 적고 인계하는 일을 맡았소. 제17호의 이전 묶음은 내 앞 탁자에 반환했소.”";
             OrderModal("연락관 한진", words);
             RedCliffMystery.VarcoIdleMotion.Speak("한진", words);
             view.AddChoice("맡았던 재작성 업무를 확인한다", ShowOrderAssignment);
             if (HasFollowUp(OrderFollowUpFact.Submitted))
+            {
                 view.AddChoice("제출 기록에 대한 해명을 듣는다", () => {
                     ShowOrderHan();
-                    string answer = HasFollowUp(OrderFollowUpFact.Knowing) ? "“변경하지 말라는 답신을 받고도 내 판단대로 철수 본문을 넘겼소.”" : "“내가 넘긴 것은 맞소. 변경 문의도 보냈소. 답신 내용은 보관 기록에서 확인하시오.”";
-                    view.body.text = answer;
-                    RedCliffMystery.VarcoIdleMotion.Speak("한진", answer);
+                    const string denial = "“내가 넘긴 것은 맞소. 변경 문의도 보냈소. 답신 내용은 보관 기록에서 확인하시오.”";
+                    view.body.text = denial;
+                    RedCliffMystery.VarcoIdleMotion.Speak("한진", denial);
                 });
+                // Han admits only when confronted with the receipt record, not when a judgment is merely recorded.
+                if (HasFollowUp(OrderFollowUpFact.Knowing) && (HasFollowUp(OrderFollowUpFact.Delivery) || HasFollowUp(OrderFollowUpFact.DeliveryWitness)))
+                    view.AddChoice("거절 답신의 수령 기록을 들이민다", () => {
+                        ShowOrderHan();
+                        const string confession = "“…받은 답신을 읽고도 내 판단대로 철수 본문을 넘겼소.”";
+                        view.body.text = confession;
+                        RedCliffMystery.VarcoIdleMotion.Speak("한진", confession);
+                    });
+            }
             view.AddChoice("대화 마치기", CloseModal);
         }
         public void ShowOrderAssignment()
@@ -112,6 +145,7 @@ namespace RedCliffMystery.Investigation
         void ShowFollowSource(string title, string text, Action back)
         {
             OrderModal(title, text);
+            PlaytestObserver.SourceRead(title);
             view.AddChoice("간추린 자료로", () => back());
             view.AddChoice("닫기", CloseModal);
         }
@@ -147,13 +181,24 @@ namespace RedCliffMystery.Investigation
             view.SetFooterHint(FollowRouteHint());
             if (!HasFollowUp(OrderFollowUpFact.BeforeCourier))
             {
-                view.AddChoice("완성물 접수·출고 때 이미 철수 본문이었다", () => FollowRecord(OrderFollowUpFact.BeforeCourier, "전달자 수령 전 변경", "", ShowOrderSubmission), OrderState.CanLocateChange);
-                view.AddChoice("전달자가 받은 뒤 처음 바뀌었다", () => FollowFeedback("회수본뿐 아니라 인계 전 기록의 본문도 대조해 보자.", ShowOrderSubmission));
+                // All options are always shown and look alike. Each wrong option cites a real fact but skips one record.
+                bool ready = OrderState.CanLocateChange;
+                view.AddChoice(JudgeCourierChanged, () => JudgeFollowUp(1, JudgeCourierChanged, ready, null,
+                    "숨긴 사람이 곧 고친 사람이라는 근거는 없다. 전달자 손에 들어가기 전, 그 묶음을 실제로 보고 적은 기록이 무엇이라고 적었는지 다시 보자.", ShowOrderSubmission));
+                view.AddChoice(JudgeBeforeCourier, () => JudgeFollowUp(1, JudgeBeforeCourier, ready,
+                    () => FollowRecord(OrderFollowUpFact.BeforeCourier, "전달자 수령 전 변경", "", ShowOrderSubmission), null, ShowOrderSubmission));
+                view.AddChoice(JudgeAlwaysWithdraw, () => JudgeFollowUp(1, JudgeAlwaysWithdraw, ready, null,
+                    "재작성 의뢰에는 기존 묶음을 반환하라고 적혀 있다. 반환된 기존 묶음이나 인계 확인표에 적힌 원래 지시가 무엇이었는지 다시 보자.", ShowOrderSubmission));
             }
             else if (!HasFollowUp(OrderFollowUpFact.Submitted))
             {
-                view.AddChoice("의뢰·반납과 출고를 연결해 한진의 제출을 판단", () => FollowRecord(OrderFollowUpFact.Submitted, "한진의 제출", "", ShowOrderReplyOrder), OrderState.CanIdentifySubmission);
-                view.AddChoice("한진에게 권한이 있으므로 범인이다", () => FollowFeedback("권한만으로 실제 제출은 입증되지 않는다. 의뢰와 반납·출고의 연결을 확인하자.", ShowOrderSubmission));
+                bool ready = OrderState.CanIdentifySubmission;
+                view.AddChoice(JudgeHanByAssignment, () => JudgeFollowUp(2, JudgeHanByAssignment, ready, null,
+                    "의뢰서는 누가 일을 맡았는지만 보여 준다. 일을 맡은 사람과 바뀐 본문을 실제로 넘긴 사람이 같다는 것을 어떤 기록이 이어 주는지 다시 보자.", ShowOrderSubmission));
+                view.AddChoice(JudgeSwapAfterIntake, () => JudgeFollowUp(2, JudgeSwapAfterIntake, ready, null,
+                    "중간에 바뀌었다면 받은 때와 넘긴 때의 지시가 달라야 한다. 한진에게서 받은 순간 그 완성물이 무엇을 지시했는지, 각 담당이 남긴 기록을 다시 보자.", ShowOrderSubmission));
+                view.AddChoice(JudgeHanSubmitted, () => JudgeFollowUp(2, JudgeHanSubmitted, ready,
+                    () => FollowRecord(OrderFollowUpFact.Submitted, "한진의 제출", "", ShowOrderReplyOrder), null, ShowOrderSubmission));
             }
             else view.AddChoice("3 / 3 · 착오인지 고의인지 비교", ShowOrderReplyOrder);
             view.AddChoice("수첩으로", ShowOrderFollowUp);
@@ -170,8 +215,13 @@ namespace RedCliffMystery.Investigation
             view.SetFooterHint(FollowRouteHint());
             if (!HasFollowUp(OrderFollowUpFact.Knowing))
             {
-                view.AddChoice("거절 답신을 받은 뒤 철수 본문을 제출했다", () => FollowRecord(OrderFollowUpFact.Sequence | OrderFollowUpFact.Knowing, "회신 순서와 고의 판단", "", ShowOrderFollowUp), OrderState.CanOrderReply && HasOrder(OrderFact.Verified));
-                view.AddChoice("발송됐으니 언제 받았든 알고 있었다", () => FollowFeedback("발송과 실제 수령은 다르다. 반납보다 먼저 받았는지 확인하자.", ShowOrderReplyOrder));
+                bool ready = OrderState.CanOrderReply && HasOrder(OrderFact.Verified);
+                view.AddChoice(JudgeKnowingByReceipt, () => JudgeFollowUp(3, JudgeKnowingByReceipt, ready,
+                    () => FollowRecord(OrderFollowUpFact.Sequence | OrderFollowUpFact.Knowing, "회신 순서와 고의 판단", "", ShowOrderFollowUp), null, ShowOrderReplyOrder));
+                view.AddChoice(JudgeKnowingByDispatch, () => JudgeFollowUp(3, JudgeKnowingByDispatch, ready, null,
+                    "회신이 나간 때와 한진이 그것을 손에 쥔 때는 다르다. 한진에게 실제로 건네졌다는 표시가 어디에 있고, 그것이 반납보다 앞서는지 다시 보자.", ShowOrderReplyOrder));
+                view.AddChoice(JudgeMisreadReply, () => JudgeFollowUp(3, JudgeMisreadReply, ready, null,
+                    "회신을 처음부터 다시 읽자. 한진은 무엇을 물었고, 회신은 그 물음에 무엇이라 답했는가.", ShowOrderReplyOrder));
             }
             view.AddChoice("제출 자료와 비교", ShowOrderSubmission);
             view.AddChoice("수첩으로", ShowOrderFollowUp);
@@ -215,6 +265,7 @@ namespace RedCliffMystery.Investigation
             if (HasFollowUp(OrderFollowUpFact.Delivery)) lines.Add(ReplyDelivery);
             if (HasFollowUp(OrderFollowUpFact.DeliveryWitness)) lines.Add(ReplyWitness);
             OrderModal("확보한 자료 전문", lines.Count == 0 ? "확보한 자료가 없다." : string.Join("\n\n", lines));
+            PlaytestObserver.SourceRead("확보한 자료 전문");
             if (HasFollowUp(OrderFollowUpFact.Assignment | OrderFollowUpFact.Original) && HasOrder(OrderFact.RetainedCopy))
                 view.AddChoice("원문 출처 추가 검토 · 선택", ShowOrderOriginalComparison);
             view.AddChoice("수첩으로", ShowOrderFollowUp);

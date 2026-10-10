@@ -40,7 +40,10 @@ namespace RedCliffMystery.EditorTools
 
             int rootLength = source.FullName.Length + 1;
             var files = Directory.GetFiles(source.FullName, "*", SearchOption.AllDirectories)
-                .Where(f => { string r = f.Substring(rootLength); return !r.Contains("DontShip") && !r.Contains("DoNotShip"); })
+                .Where(f => { string r = f.Substring(rootLength); return !r.Contains("DontShip") && !r.Contains("DoNotShip")
+                    // The playtest switch and its logs must never reach the public download.
+                    && !string.Equals(Path.GetFileName(r), RedCliffMystery.Investigation.PlaytestObserver.FlagFileName, StringComparison.OrdinalIgnoreCase)
+                    && !r.Replace('\\', '/').StartsWith(RedCliffMystery.Investigation.PlaytestObserver.LogFolderName + "/", StringComparison.OrdinalIgnoreCase); })
                 .ToArray();
 
             try

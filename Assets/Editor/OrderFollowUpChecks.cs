@@ -40,11 +40,13 @@ public static partial class OrderChapterChecks
             }),
             ("first deduction advances directly to second", () => {
                 S.ShowOrderSubmission(); int before = S.OrderState.followUp;
-                Click("전달자가 받은 뒤 처음 바뀌었다"); Require(S.OrderState.followUp == before, "Wrong timing mutates facts");
-                S.ShowOrderSubmission(); Click("완성물 접수·출고 때 이미 철수 본문이었다");
+                Click(InvestigationSession.JudgeCourierChanged); Require(S.OrderState.followUp == before, "Wrong timing mutates facts");
+                S.ShowOrderSubmission(); Click(InvestigationSession.JudgeAlwaysWithdraw); Require(S.OrderState.followUp == before && S.view.title.text == "근거 다시 살펴보기", "Unchanged-text claim accepted");
+                S.ShowOrderSubmission(); Click(InvestigationSession.JudgeBeforeCourier);
                 Require(S.view.title.text.StartsWith("2 / 3") && !Choices().Contains("돌아가기"), "Confirmation interrupts deduction");
-                before = S.OrderState.followUp; Click("한진에게 권한이 있으므로 범인이다"); Require(S.OrderState.followUp == before, "Access proves guilt");
-                S.ShowOrderSubmission(); Click("의뢰·반납과 출고를 연결해 한진의 제출을 판단");
+                before = S.OrderState.followUp; Click(InvestigationSession.JudgeHanByAssignment); Require(S.OrderState.followUp == before, "Assignment alone proves submission");
+                S.ShowOrderSubmission(); Click(InvestigationSession.JudgeSwapAfterIntake); Require(S.OrderState.followUp == before, "Swap theory accepted");
+                S.ShowOrderSubmission(); Click(InvestigationSession.JudgeHanSubmitted);
                 Require(S.view.title.text.StartsWith("3 / 3") && !S.OrderState.CanProveKnowledge, "Submission proves intent");
             }),
             ("reply bundle eighth inquiry day transition", () => Pay(S.ShowOrderReplies)),
@@ -55,12 +57,19 @@ public static partial class OrderChapterChecks
             ("wrong intent inference leaves evidence", () => {
                 Click("확보한 자료 비교"); int before = S.OrderState.followUp;
                 Require(S.view.body.text.Contains("[수령 기록]") && S.view.body.text.Contains("[거절 회신]"), "Comparison split across screens");
-                Click("발송됐으니 언제 받았든 알고 있었다"); Require(S.OrderState.followUp == before, "Unsupported intent accepted");
+                Click(InvestigationSession.JudgeKnowingByDispatch); Require(S.OrderState.followUp == before, "Dispatch accepted as receipt");
+                S.ShowOrderReplyOrder(); Click(InvestigationSession.JudgeMisreadReply); Require(S.OrderState.followUp == before, "Misreading theory accepted");
             }),
             ("third question records chronology and intent", () => {
-                S.ShowOrderReplyOrder(); Click("거절 답신을 받은 뒤 철수 본문을 제출했다");
+                S.ShowOrderReplyOrder(); Click(InvestigationSession.JudgeKnowingByReceipt);
                 Require(S.OrderState.HasFollowUp(OrderFollowUpFact.Knowing | OrderFollowUpFact.Sequence) && S.view.title.text == "제17호 후속 수사", "Third judgment needs extra confirmation");
                 ScreenCapture.CaptureScreenshot("Logs/OrderChapter/follow-up-journal.png");
+            }),
+            ("Han admits only when confronted with the receipt record", () => {
+                S.ShowOrderHan(); Require(!S.view.body.text.Contains("답신"), "Opening line changed by judgment");
+                Click("제출 기록에 대한 해명을 듣는다"); Require(!S.view.body.text.Contains("답신을 읽고도"), "Confession without confrontation");
+                Click("거절 답신의 수령 기록을 들이민다"); Require(S.view.body.text.Contains("답신을 읽고도"), "Confrontation did not produce admission");
+                S.CloseModal();
             }),
             ("completed deduction does not auto-report", () => {
                 Require(S.OrderState.HasFollowUp(OrderFollowUpFact.Knowing) && !S.OrderState.HasFollowUp(OrderFollowUpFact.Reported) && !S.FinalReportCompleted, "Deduction auto reported");
@@ -98,7 +107,7 @@ public static partial class OrderChapterChecks
                 try {
                     S.OrderState.followUp &= ~(int)(OrderFollowUpFact.Knowing | OrderFollowUpFact.Sequence | OrderFollowUpFact.Reported);
                     S.ShowOrderReplyOrder(); RequireBodyFits();
-                    Require(Choices().Contains("거절 답신을 받은 뒤 철수 본문을 제출했다"), "Missing active comparison");
+                    Require(Choices().Contains(InvestigationSession.JudgeKnowingByReceipt), "Missing active comparison");
                     ScreenCapture.CaptureScreenshot("Logs/OrderChapter/follow-up-comparison.png");
                 } finally { S.OrderState.followUp = saved; }
             })
@@ -130,14 +139,18 @@ public static partial class OrderChapterChecks
         var preserved = Capture();
         try {
             S.OrderState.followUp = 0;
+            foreach (var label in new[] { InvestigationSession.JudgeCourierChanged, InvestigationSession.JudgeBeforeCourier, InvestigationSession.JudgeAlwaysWithdraw }) {
+                S.ShowOrderSubmission(); Require(Choices().Contains(label), "Judgment option hidden before evidence: " + label);
+                Click(label); Require(S.OrderState.followUp == 0 && S.view.body.text.Contains("확정할 수 없다"), "Option reacts differently before evidence: " + label);
+            }
             S.OrderState.facts &= ~(int)(OrderFact.OptionalCareer | OrderFact.OptionalProtection | OrderFact.ClaimChallenged | OrderFact.Explanation | OrderFact.Motive);
             S.ShowOrderAssignment(); S.ShowOrderIntake(); S.ShowOrderOutgoing();
-            S.ShowOrderSubmission(); Click("완성물 접수·출고 때 이미 철수 본문이었다");
-            Click("의뢰·반납과 출고를 연결해 한진의 제출을 판단");
+            S.ShowOrderSubmission(); Click(InvestigationSession.JudgeBeforeCourier);
+            Click(InvestigationSession.JudgeHanSubmitted);
             // A legacy save may contain the rejection without its delivery card.
             S.OrderState.TryRecordFollowUp(OrderFollowUpFact.Rejection);
             Require(!S.OrderState.CanOrderReply, "Dispatch alone proves receipt");
-            S.ShowOrderReplyWitness(); S.ShowOrderReplyOrder(); Click("거절 답신을 받은 뒤 철수 본문을 제출했다");
+            S.ShowOrderReplyWitness(); S.ShowOrderReplyOrder(); Click(InvestigationSession.JudgeKnowingByReceipt);
             Require(S.OrderState.HasFollowUp(OrderFollowUpFact.Knowing) && !S.OrderState.HasFollowUp(OrderFollowUpFact.Original) && !S.OrderState.HasFollowUp(OrderFollowUpFact.Intake) && !S.OrderState.HasFollowUp(OrderFollowUpFact.Delivery), "Alternate path used missing cards");
             S.OrderState.Validate();
         } finally { Call("LoadInvestigation", (Action)(() => {}), preserved); }

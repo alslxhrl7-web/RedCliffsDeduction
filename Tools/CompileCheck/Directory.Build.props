@@ -1,0 +1,25 @@
+<Project>
+  <!-- Compiles the game's scripts outside Unity against the installed Unity engine assemblies.
+       Used to catch compile errors (including player-build-only errors) without opening the editor.
+       Nothing here is part of the game; outputs go to Temp/CompileCheck. -->
+  <PropertyGroup>
+    <ProjectRoot>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\..'))</ProjectRoot>
+    <UnityManaged Condition="'$(UnityManaged)' == ''">C:\Program Files\Unity\Hub\Editor\6000.6.0f1\Editor\Data\Managed</UnityManaged>
+    <ScriptAssemblies>$(ProjectRoot)\Library\ScriptAssemblies</ScriptAssemblies>
+    <BaseIntermediateOutputPath>$(ProjectRoot)\Temp\CompileCheck\obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
+    <OutputPath>$(ProjectRoot)\Temp\CompileCheck\bin\$(MSBuildProjectName)\</OutputPath>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <LangVersion>9.0</LangVersion>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Nullable>disable</Nullable>
+    <NoWarn>0414;0169;0649;0168;0219;0618;0067;0108;0114;0162;0429;8632</NoWarn>
+    <UnityDefines>UNITY_6000_0_OR_NEWER;UNITY_2021_3_OR_NEWER;UNITY_2022_3_OR_NEWER;UNITY_2023_1_OR_NEWER;UNITY_STANDALONE_WIN;UNITY_STANDALONE;ENABLE_INPUT_SYSTEM;ENABLE_MONO;NET_STANDARD_2_0;NET_STANDARD;NET_STANDARD_2_1</UnityDefines>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="$(UnityManaged)\UnityEngine\UnityEngine*.dll"><Private>false</Private></Reference>
+    <Reference Include="$(ScriptAssemblies)\Unity.InputSystem.dll;$(ScriptAssemblies)\UnityEngine.UI.dll;$(ScriptAssemblies)\Unity.TextMeshPro.dll;$(ScriptAssemblies)\Unity.RenderPipelines.Universal.Runtime.dll;$(ScriptAssemblies)\Unity.RenderPipelines.Core.Runtime.dll;$(ScriptAssemblies)\Unity.Timeline.dll;$(ScriptAssemblies)\Unity.AI.Navigation.dll"><Private>false</Private></Reference>
+  </ItemGroup>
+</Project>

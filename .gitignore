@@ -26,3 +26,13 @@ crashlytics-build.properties
 /AudioPreviews/*.wav
 /AudioPreviews/*.mp4
 /AudioPreviews/*.jpg
+
+# Hidden playtest log (developer only, never committed)
+/PlaytestLogs/
+playtest.on
+
+# Claude Code
+.claude/settings.local.json
+# Unity MCP connection (contains this machine's user path)
+/.mcp.json
+!/Tools/CompileCheck/*.csproj

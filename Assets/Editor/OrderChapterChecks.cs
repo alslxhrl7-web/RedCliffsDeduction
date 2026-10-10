@@ -76,6 +76,7 @@ public static partial class OrderChapterChecks
         };
         AddFollowUpChecks(checks);
         AddOrderFinalChecks(checks);
+        AddPlaytestObserverChecks(checks);
         try
         {
             foreach (var check in checks)

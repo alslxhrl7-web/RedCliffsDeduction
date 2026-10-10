@@ -249,9 +249,9 @@ namespace RedCliffMystery.Investigation
         void ShowOrderEvidence()
         {
             OrderModal("확보 자료 재열람", "재열람과 비교에는 추가 시간이 들지 않는다.");
-            if (HasOrder(OrderFact.Recovered)) view.AddChoice("회수한 군령", () => { OrderModal("군령", OrderBody); view.AddChoice("돌아가기", ShowOrderEvidence); });
-            if (HasOrder(OrderFact.Receipt)) view.AddChoice("인계 확인표", () => { OrderModal("확인표", OrderReceipt); view.AddChoice("돌아가기", ShowOrderEvidence); });
-            if (HasOrder(OrderFact.RetainedCopy)) view.AddChoice("보관 부본", () => { OrderModal("부본", OrderCopy); view.AddChoice("돌아가기", ShowOrderEvidence); });
+            if (HasOrder(OrderFact.Recovered)) view.AddChoice("회수한 군령", () => { OrderModal("군령", OrderBody); PlaytestObserver.SourceRead("군령"); view.AddChoice("돌아가기", ShowOrderEvidence); });
+            if (HasOrder(OrderFact.Receipt)) view.AddChoice("인계 확인표", () => { OrderModal("확인표", OrderReceipt); PlaytestObserver.SourceRead("확인표"); view.AddChoice("돌아가기", ShowOrderEvidence); });
+            if (HasOrder(OrderFact.RetainedCopy)) view.AddChoice("보관 부본", () => { OrderModal("부본", OrderCopy); PlaytestObserver.SourceRead("부본"); view.AddChoice("돌아가기", ShowOrderEvidence); });
             view.AddChoice("수첩으로", ShowOrderJournal);
         }
     }

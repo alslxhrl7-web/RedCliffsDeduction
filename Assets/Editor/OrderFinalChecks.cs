@@ -12,8 +12,9 @@ public static partial class OrderChapterChecks
         checks.AddRange(new (string, Action)[] {
             ("final rules exhaustive submission/action matrix", () => {
                 finalBaseline = Capture();
-                Require((int)OrderFinalReport.Available(S.OrderState) == 63, "Missing test evidence");
-                for (int suspect = 0; suspect <= 6; suspect++) for (int proofs = 0; proofs <= 63; proofs++) for (int action = 0; action <= 3; action++) {
+                Require((((int)OrderFinalReport.Available(S.OrderState)) & OrderFinalReport.EvidenceSetMask) == OrderFinalReport.EvidenceSetMask, "Missing test evidence");
+                // proofs now spans 0..127: bit 64 is the access-record decoy.
+                for (int suspect = 0; suspect <= 6; suspect++) for (int proofs = 0; proofs <= 127; proofs++) for (int action = 0; action <= 3; action++) {
                     var draft = new OrderFinalReport { suspect = suspect, proofs = proofs, action = action };
                     var outcome = draft.Resolve(S.OrderState);
                     Require((outcome == OrderReportEnding.True) == (suspect == 1 && proofs == 63 && action == 1), "Unexpected true ending");
@@ -25,7 +26,7 @@ public static partial class OrderChapterChecks
                 Require(rejected, "Unowned evidence accepted");
             }),
             ("final draft selected evidence and save reload", () => {
-                S.BeginFinalReport(); Click("한진의 고의 제출을 보고");
+                S.BeginFinalReport(); Click("한진을 책임자로 지목");
                 Require(S.OrderReport.proofs == 0, "Owned evidence auto submitted");
                 Click("[미선택] 회수본과 확인표의 지시 불일치");
                 Click("[미선택] 출처가 확인된 부본과 변경 승인 대장");
@@ -53,6 +54,14 @@ public static partial class OrderChapterChecks
             ("partial submitted proof normal ending", () => RunFinalOutcome(0,3,2,"NORMAL END")),
             ("wrong culprit remains bad with full evidence", () => RunFinalOutcome(2,63,1,"BAD END")),
             ("wrong action cannot produce true ending", () => RunFinalOutcome(1,63,3,"NORMAL END")),
+            ("access-record decoy breaks the true ending", () => RunFinalOutcome(1,63|64,1,"NORMAL END")),
+            ("evidence complete but no order change is not rewarded as missing evidence", () => {
+                RestoreFinalBaseline(); S.BeginFinalReport();
+                S.OrderReport.suspect=1; S.OrderReport.proofs=63; S.OrderReport.action=0;
+                Call("ShowOrderFinalReview"); Click("최종 제출 · 엔딩으로");
+                Require(S.view.body.text.Contains("멈추라는 명령은 내리지 않는다"), "Complete evidence with no action still shows missing-evidence text");
+                Click("명령이 전해진 뒤");
+            }),
             ("legacy interim flags do not grant good ending", () => {
                 RestoreFinalBaseline(); S.OrderState.TryRecord(OrderFact.Reported);
                 S.OrderState.TryRecordFollowUp(OrderFollowUpFact.Held | OrderFollowUpFact.DeploymentRequested);
