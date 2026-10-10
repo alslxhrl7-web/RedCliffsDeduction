@@ -22,7 +22,7 @@ namespace RedCliffMystery.Investigation
         void Update()
         {
             if (session == null || viewCamera == null || !session.CanProcessInvestigationInput || !Application.isFocused)
-            { if(footsteps!=null && !footsteps.ExternalMotion) footsteps.ResetMotion(); return; }
+            { held = null; lostAt = -1; if(footsteps!=null && !footsteps.ExternalMotion) footsteps.ResetMotion(); return; }
             var keyboard = Keyboard.current;
             var mouse = Mouse.current;
             if (keyboard == null) return;
@@ -46,20 +46,63 @@ namespace RedCliffMystery.Investigation
             verticalSpeed += -18 * Time.deltaTime;
             controller.Move((movement * moveSpeed + Vector3.up * verticalSpeed) * Time.deltaTime);
             if(footsteps!=null) footsteps.RecordMovement(controller.isGrounded,session.route!=null && session.route.OnOutdoorGround);
-            InvestigationTarget target = FindTarget();
+            InvestigationTarget target = FindTarget(held);
+            if (target != null) { held = target; lostAt = -1; }
+            else if (held != null)
+            {
+                // A one-frame miss must not blink the prompt off.
+                if (lostAt < 0) lostAt = Time.unscaledTime;
+                if (Time.unscaledTime - lostAt < PromptGrace) target = held; else { held = null; lostAt = -1; }
+            }
             session.SetPrompt(target == null ? "" : target.Prompt);
             if (target != null && keyboard.eKey.wasPressedThisFrame) target.Interact(session);
         }
 
-        public InvestigationTarget FindTarget()
+        const float PromptGrace = .12f;
+        // Extra reach and aim margin that only apply to a target that is already selected.
+        const float HoldRangeMargin = .35f, HoldAimRadius = .15f;
+        InvestigationTarget held;
+        float lostAt = -1;
+
+        public InvestigationTarget FindTarget() => Find(out _);
+
+        // Keeps `current` while it is still nearly under the crosshair, so the prompt does not flicker at the
+        // range limit, at collider edges, or between neighbouring targets. A target hit dead-centre wins at once.
+        public InvestigationTarget FindTarget(InvestigationTarget current)
         {
+            var found = Find(out bool exact);
+            if (current == null || found == current || (found != null && exact)) return found;
+            return StillAimingAt(current) ? current : found;
+        }
+
+        bool StillAimingAt(InvestigationTarget current)
+        {
+            if (viewCamera == null || current == null || !current.isActiveAndEnabled) return false;
+            Vector3 origin = viewCamera.transform.position;
+            Vector3 direction = viewCamera.transform.forward;
+            float reach = interactionDistance + HoldRangeMargin;
+            int count = Physics.SphereCastNonAlloc(origin, HoldAimRadius, direction, nearbyHits, reach, ~0, QueryTriggerInteraction.Ignore);
+            for (int i = 0; i < count; i++)
+            {
+                var hit = nearbyHits[i];
+                if (hit.distance <= 0 || hit.collider.GetComponentInParent<InvestigationTarget>() != current) continue;
+                Vector3 toPoint = hit.point - origin;
+                if (Physics.Raycast(origin, toPoint.normalized, out RaycastHit visible, toPoint.magnitude + .01f, ~0, QueryTriggerInteraction.Ignore)
+                    && visible.collider.GetComponentInParent<InvestigationTarget>() == current) return true;
+            }
+            return false;
+        }
+
+        InvestigationTarget Find(out bool exactHit)
+        {
+            exactHit = false;
             if (viewCamera == null) return null;
             Vector3 origin = viewCamera.transform.position;
             Vector3 direction = viewCamera.transform.forward;
             if (Physics.Raycast(origin, direction, out RaycastHit direct, interactionDistance, ~0, QueryTriggerInteraction.Ignore))
             {
                 var exact = direct.collider.GetComponentInParent<InvestigationTarget>();
-                if (exact != null) return exact;
+                if (exact != null) { exactHit = true; return exact; }
             }
 
             // Thin tabletop clues allow a small aim margin, but must still be visible.
