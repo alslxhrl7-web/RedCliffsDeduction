@@ -1,0 +1,129 @@
+C:\Users\나민재\Documents\poject\RedCliffsDeduction\ArtSource\CharacterRefresh2026-10-10\polish_models.py:22: DeprecationWarning: 'World.use_nodes' is expected to be removed in Blender 6.0
+  scene.world.use_nodes=True
+00:25.141  render           | Saved: 'C:\Users\나민재\Documents\poject\RedCliffsDeduction\ArtSource\CharacterRefresh2026-10-10\BlenderRefined\before_1.png'
+00:39.313  render           | Saved: 'C:\Users\나민재\Documents\poject\RedCliffsDeduction\ArtSource\CharacterRefresh2026-10-10\BlenderRefined\before_2.png'
+FBX version: 7400
+WARNING: material link b'AmbientColor' ignored
+FBX version: 7400
+WARNING: material link b'AmbientColor' ignored
+FBX version: 7400
+WARNING: material link b'AmbientColor' ignored
+FBX version: 7400
+WARNING: material link b'AmbientColor' ignored
+FBX version: 7400
+WARNING: material link b'AmbientColor' ignored
+FBX version: 7400
+WARNING: material link b'AmbientColor' ignored
+FBX version: 7400
+WARNING: material link b'AmbientColor' ignored
+FBX version: 7400
+WARNING: material link b'AmbientColor' ignored
+FBX version: 7400
+WARNING: material link b'AmbientColor' ignored
+FBX version: 7400
+WARNING: material link b'AmbientColor' ignored
+INFO Draco is available, use library at C:\Program Files\Blender Foundation\Blender 5.2\5.2\scripts\addons_core\io_scene_gltf2\bf_intern_draco_bridge.dll
+INFO MeshOptimizer is available, use library at C:\Program Files\Blender Foundation\Blender 5.2\5.2\scripts\addons_core\io_scene_gltf2\bf_intern_meshopt_bridge.dll
+18:26:00 | INFO: Starting glTF 2.0 export
+18:26:00 | INFO: Extracting primitive: CaoCao_Han208_v3_refined_Mesh
+18:26:00 | WARNING: More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.
+18:26:00 | INFO: Primitives created: 1
+18:26:00 | INFO: Finished glTF 2.0 export in 0.35970234870910645 s
+
+
+FBX export starting... 'C:\\Users\\나민재\\Documents\\poject\\RedCliffsDeduction\\ArtSource\\CharacterRefresh2026-10-10\\BlenderRefined\\CaoCao_Han208_v3_refined.fbx'
+export finished in 0.1278 sec.
+REFINED CaoCao {'vertices': 14950, 'faces': 30000, 'boundary_edges': 0, 'nonmanifold_edges': 0, 'loose_vertices': 0, 'degenerate_faces': 0}
+18:26:01 | INFO: Starting glTF 2.0 export
+18:26:01 | INFO: Extracting primitive: Seolpyeong_Han208_v3_refined_Mesh
+18:26:01 | INFO: Primitives created: 1
+18:26:01 | INFO: Finished glTF 2.0 export in 0.6081705093383789 s
+
+
+FBX export starting... 'C:\\Users\\나민재\\Documents\\poject\\RedCliffsDeduction\\ArtSource\\CharacterRefresh2026-10-10\\BlenderRefined\\Seolpyeong_Han208_v3_refined.fbx'
+export finished in 0.1036 sec.
+REFINED Seolpyeong {'vertices': 14956, 'faces': 30000, 'boundary_edges': 0, 'nonmanifold_edges': 0, 'loose_vertices': 0, 'degenerate_faces': 0}
+18:26:02 | INFO: Starting glTF 2.0 export
+18:26:02 | INFO: Extracting primitive: Duseok_Han208_v3_refined_Mesh
+18:26:02 | WARNING: More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.
+18:26:02 | INFO: Primitives created: 1
+18:26:02 | INFO: Finished glTF 2.0 export in 0.20266008377075195 s
+
+
+FBX export starting... 'C:\\Users\\나민재\\Documents\\poject\\RedCliffsDeduction\\ArtSource\\CharacterRefresh2026-10-10\\BlenderRefined\\Duseok_Han208_v3_refined.fbx'
+export finished in 0.0955 sec.
+REFINED Duseok {'vertices': 14818, 'faces': 30000, 'boundary_edges': 0, 'nonmanifold_edges': 0, 'loose_vertices': 0, 'degenerate_faces': 0}
+18:26:02 | INFO: Starting glTF 2.0 export
+18:26:02 | INFO: Extracting primitive: Caimao_Han208_v3_refined_Mesh
+18:26:02 | WARNING: More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.
+18:26:02 | INFO: Primitives created: 1
+18:26:03 | INFO: Finished glTF 2.0 export in 0.20828986167907715 s
+
+
+FBX export starting... 'C:\\Users\\나민재\\Documents\\poject\\RedCliffsDeduction\\ArtSource\\CharacterRefresh2026-10-10\\BlenderRefined\\Caimao_Han208_v3_refined.fbx'
+export finished in 0.0993 sec.
+REFINED Caimao {'vertices': 14956, 'faces': 30000, 'boundary_edges': 0, 'nonmanifold_edges': 0, 'loose_vertices': 0, 'degenerate_faces': 0}
+18:26:03 | INFO: Starting glTF 2.0 export
+18:26:03 | INFO: Extracting primitive: Zhangyun_Han208_v3_refined_Mesh
+18:26:03 | WARNING: More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.
+18:26:03 | INFO: Primitives created: 1
+18:26:03 | INFO: Finished glTF 2.0 export in 0.2039949893951416 s
+
+
+FBX export starting... 'C:\\Users\\나민재\\Documents\\poject\\RedCliffsDeduction\\ArtSource\\CharacterRefresh2026-10-10\\BlenderRefined\\Zhangyun_Han208_v3_refined.fbx'
+export finished in 0.0999 sec.
+REFINED Zhangyun {'vertices': 14902, 'faces': 30000, 'boundary_edges': 0, 'nonmanifold_edges': 0, 'loose_vertices': 0, 'degenerate_faces': 0}
+18:26:04 | INFO: Starting glTF 2.0 export
+18:26:04 | INFO: Extracting primitive: RecordsClerk_Han208_v3_refined_Mesh
+18:26:04 | INFO: Primitives created: 1
+18:26:04 | INFO: Finished glTF 2.0 export in 0.6117918491363525 s
+
+
+FBX export starting... 'C:\\Users\\나민재\\Documents\\poject\\RedCliffsDeduction\\ArtSource\\CharacterRefresh2026-10-10\\BlenderRefined\\RecordsClerk_Han208_v3_refined.fbx'
+export finished in 0.0947 sec.
+REFINED RecordsClerk {'vertices': 14952, 'faces': 30000, 'boundary_edges': 0, 'nonmanifold_edges': 0, 'loose_vertices': 0, 'degenerate_faces': 0}
+18:26:05 | INFO: Starting glTF 2.0 export
+18:26:05 | INFO: Extracting primitive: DocumentCourier_Han208_v3_refined_Mesh
+18:26:05 | INFO: Primitives created: 1
+18:26:05 | INFO: Finished glTF 2.0 export in 0.623375654220581 s
+
+
+FBX export starting... 'C:\\Users\\나민재\\Documents\\poject\\RedCliffsDeduction\\ArtSource\\CharacterRefresh2026-10-10\\BlenderRefined\\DocumentCourier_Han208_v3_refined.fbx'
+export finished in 0.0994 sec.
+REFINED DocumentCourier {'vertices': 14926, 'faces': 30000, 'boundary_edges': 0, 'nonmanifold_edges': 0, 'loose_vertices': 0, 'degenerate_faces': 0}
+18:26:06 | INFO: Starting glTF 2.0 export
+18:26:06 | INFO: Extracting primitive: ReliefGuard_Han208_v3_refined_Mesh
+18:26:06 | WARNING: More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.
+18:26:06 | INFO: Primitives created: 1
+18:26:06 | INFO: Finished glTF 2.0 export in 0.21633219718933105 s
+
+
+FBX export starting... 'C:\\Users\\나민재\\Documents\\poject\\RedCliffsDeduction\\ArtSource\\CharacterRefresh2026-10-10\\BlenderRefined\\ReliefGuard_Han208_v3_refined.fbx'
+export finished in 0.1062 sec.
+REFINED ReliefGuard {'vertices': 14926, 'faces': 30000, 'boundary_edges': 0, 'nonmanifold_edges': 0, 'loose_vertices': 0, 'degenerate_faces': 0}
+18:26:06 | INFO: Starting glTF 2.0 export
+18:26:06 | INFO: Extracting primitive: GamblingSoldier_Han208_v3_refined_Mesh
+18:26:07 | INFO: Primitives created: 1
+18:26:07 | INFO: Finished glTF 2.0 export in 0.5754985809326172 s
+
+
+FBX export starting... 'C:\\Users\\나민재\\Documents\\poject\\RedCliffsDeduction\\ArtSource\\CharacterRefresh2026-10-10\\BlenderRefined\\GamblingSoldier_Han208_v3_refined.fbx'
+export finished in 0.0940 sec.
+REFINED GamblingSoldier {'vertices': 14982, 'faces': 30000, 'boundary_edges': 0, 'nonmanifold_edges': 0, 'loose_vertices': 0, 'degenerate_faces': 0}
+18:26:07 | INFO: Starting glTF 2.0 export
+18:26:07 | INFO: Extracting primitive: HanJin_Han208_v3_refined_Mesh
+18:26:08 | INFO: Primitives created: 1
+18:26:08 | INFO: Finished glTF 2.0 export in 0.6018457412719727 s
+
+
+FBX export starting... 'C:\\Users\\나민재\\Documents\\poject\\RedCliffsDeduction\\ArtSource\\CharacterRefresh2026-10-10\\BlenderRefined\\HanJin_Han208_v3_refined.fbx'
+export finished in 0.1188 sec.
+REFINED HanJin {'vertices': 14980, 'faces': 30000, 'boundary_edges': 0, 'nonmanifold_edges': 0, 'loose_vertices': 0, 'degenerate_faces': 0}
+01:03.953  render           | Saved: 'C:\Users\나민재\Documents\poject\RedCliffsDeduction\ArtSource\CharacterRefresh2026-10-10\BlenderRefined\after_1.png'
+01:18.688  render           | Saved: 'C:\Users\나민재\Documents\poject\RedCliffsDeduction\ArtSource\CharacterRefresh2026-10-10\BlenderRefined\after_2.png'
+Info: No new files have been packed
+Info: Saved as "RedCliffs_Characters_v3_refined.blend"
+POLISH_COMPLETE 10
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:37:04)
+
+Blender quit

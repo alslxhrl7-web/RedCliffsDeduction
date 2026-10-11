@@ -15,9 +15,9 @@ namespace RedCliffMystery.EditorTools
             var current = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
             if (current.isDirty) throw new InvalidOperationException("Save current scene changes first.");
             var scene = EditorSceneManager.OpenScene(FirstInvestigationBuilder.ScenePath);
-            var session = UnityEngine.Object.FindFirstObjectByType<InvestigationSession>();
+            var session = UnityEngine.Object.FindAnyObjectByType<InvestigationSession>();
             if (session.introductionStage != null) return;
-            var player = UnityEngine.Object.FindFirstObjectByType<FirstPersonInvestigator>();
+            var player = UnityEngine.Object.FindAnyObjectByType<FirstPersonInvestigator>();
             var stageGo = new GameObject("IntroductionStage");
             var stage = stageGo.AddComponent<IntroductionStage>();
             stage.player = player;

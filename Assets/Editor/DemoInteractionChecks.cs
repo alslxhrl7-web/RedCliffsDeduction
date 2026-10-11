@@ -59,7 +59,7 @@ namespace RedCliffMystery.EditorTools
             {
                 foreach (var kind in new[] { InvestigationTarget.TargetKind.MissingDocument, InvestigationTarget.TargetKind.PersonalToken, InvestigationTarget.TargetKind.MaintenanceOrder, InvestigationTarget.TargetKind.PersonalPapers })
                 {
-                    var target = UnityEngine.Object.FindObjectsByType<InvestigationTarget>(FindObjectsSortMode.None).Single(t => t.kind == kind);
+                    var target = UnityEngine.Object.FindObjectsByType<InvestigationTarget>().Single(t => t.kind == kind);
                     var collider = target.GetComponentsInChildren<Collider>().First(c => c.enabled && (c.name == "WoodenToken" || c.name == "MaintenanceOrder" || c.name == "Case" || c.name == "MissingDocumentTray"));
                     var point = collider.bounds.center;
                     foreach (float x in new[] { -.6f, 0, .6f })
@@ -167,7 +167,7 @@ namespace RedCliffMystery.EditorTools
         public static void Inspect()
         {
             var text = new StringBuilder();
-            foreach (var c in UnityEngine.Object.FindObjectsByType<Collider>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            foreach (var c in UnityEngine.Object.FindObjectsByType<Collider>(FindObjectsInactive.Include))
             {
                 string path = c.name;
                 for (var p = c.transform.parent; p != null; p = p.parent) path = p.name + "/" + path;

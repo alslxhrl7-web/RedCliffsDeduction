@@ -7,6 +7,7 @@ namespace RedCliffMystery
     {
         public int Profile;
         public float Amplitude = .005f;
+        [Range(0, 1)] public float MouthHeightOverride;
         struct Surface
         {
             public MeshFilter Filter;
@@ -80,7 +81,7 @@ namespace RedCliffMystery
                     min = Mathf.Min(min, y); max = Mathf.Max(max, y);
                 }
                 float height = max - min;
-                float mouthY = min + height * MouthHeightFraction(Profile);
+                float mouthY = min + height * (MouthHeightOverride > 0 ? MouthHeightOverride : MouthHeightFraction(Profile));
                 float front = float.PositiveInfinity;
                 for (int i = 0; i < rest.Length; i++)
                 {

@@ -39,7 +39,7 @@ namespace RedCliffMystery.EditorTools
             Require(s != null && s.route != null && s.route.IsReady, "Investigation route is not connected.");
             Require(!s.DocumentInspected && !s.TestimonyHeard && !s.MaintenanceOrderRead &&
                 !s.TestimonyReconfirmed && !s.ContradictionFound && s.BlocksMovement, "Use a fresh Play session.");
-            Require(UnityEngine.Object.FindObjectsByType<EventSystem>(FindObjectsSortMode.None).Length == 1,
+            Require(UnityEngine.Object.FindObjectsByType<EventSystem>().Length == 1,
                 "Exactly one EventSystem required.");
             Require(s.view.font.HasCharacter('설') && s.view.font.HasCharacter('석') && s.view.font.HasCharacter('닫'),
                 "Korean font unavailable.");
@@ -321,7 +321,7 @@ namespace RedCliffMystery.EditorTools
 
         static void Interact(InvestigationSession s, InvestigationTarget.TargetKind kind)
         {
-            var target = UnityEngine.Object.FindObjectsByType<InvestigationTarget>(FindObjectsSortMode.None)
+            var target = UnityEngine.Object.FindObjectsByType<InvestigationTarget>()
                 .Single(t => t.kind == kind);
             target.Interact(s);
             AcceptInvestigationCost(s);
@@ -388,7 +388,7 @@ namespace RedCliffMystery.EditorTools
             controller.enabled = false;
             try
             {
-                var targets = UnityEngine.Object.FindObjectsByType<InvestigationTarget>(FindObjectsSortMode.None).Where(t => (int)t.kind <= (int)InvestigationTarget.TargetKind.MaintenanceOrder).ToArray();
+                var targets = UnityEngine.Object.FindObjectsByType<InvestigationTarget>().Where(t => (int)t.kind <= (int)InvestigationTarget.TargetKind.MaintenanceOrder).ToArray();
                 Require(targets.Length == 6 && targets.Select(t => t.kind).Distinct().Count() == 6,
                     "Exactly six distinct investigation targets expected.");
                 blocker = GameObject.CreatePrimitive(PrimitiveType.Cube);

@@ -1,0 +1,91 @@
+00:04.047  blend            | Read blend: "C:\Users\나민재\Documents\poject\RedCliffsDeduction\ArtSource\CharacterRefresh2026-10-10\BlenderRefined\RedCliffs_Characters_v3_refined.blend"
+INFO Draco is available, use library at C:\Program Files\Blender Foundation\Blender 5.2\5.2\scripts\addons_core\io_scene_gltf2\bf_intern_draco_bridge.dll
+INFO MeshOptimizer is available, use library at C:\Program Files\Blender Foundation\Blender 5.2\5.2\scripts\addons_core\io_scene_gltf2\bf_intern_meshopt_bridge.dll
+18:28:15 | INFO: Starting glTF 2.0 export
+18:28:15 | INFO: Extracting primitive: CaoCao_Han208_v3_refined_Mesh
+18:28:16 | INFO: Primitives created: 1
+18:28:16 | INFO: Finished glTF 2.0 export in 0.5435640811920166 s
+
+
+FBX export starting... 'C:\\Users\\나민재\\Documents\\poject\\RedCliffsDeduction\\ArtSource\\CharacterRefresh2026-10-10\\BlenderRefined\\CaoCao_Han208_v3_refined.fbx'
+export finished in 0.1059 sec.
+18:28:16 | INFO: Starting glTF 2.0 export
+18:28:16 | INFO: Extracting primitive: Seolpyeong_Han208_v3_refined_Mesh
+18:28:16 | INFO: Primitives created: 1
+18:28:16 | INFO: Finished glTF 2.0 export in 0.3150026798248291 s
+
+
+FBX export starting... 'C:\\Users\\나민재\\Documents\\poject\\RedCliffsDeduction\\ArtSource\\CharacterRefresh2026-10-10\\BlenderRefined\\Seolpyeong_Han208_v3_refined.fbx'
+export finished in 0.1096 sec.
+18:28:16 | INFO: Starting glTF 2.0 export
+18:28:16 | INFO: Extracting primitive: Duseok_Han208_v3_refined_Mesh
+18:28:17 | INFO: Primitives created: 1
+18:28:17 | INFO: Finished glTF 2.0 export in 0.30586671829223633 s
+
+
+FBX export starting... 'C:\\Users\\나민재\\Documents\\poject\\RedCliffsDeduction\\ArtSource\\CharacterRefresh2026-10-10\\BlenderRefined\\Duseok_Han208_v3_refined.fbx'
+export finished in 0.1116 sec.
+18:28:17 | INFO: Starting glTF 2.0 export
+18:28:17 | INFO: Extracting primitive: Caimao_Han208_v3_refined_Mesh
+18:28:17 | INFO: Primitives created: 1
+18:28:17 | INFO: Finished glTF 2.0 export in 0.3085048198699951 s
+
+
+FBX export starting... 'C:\\Users\\나민재\\Documents\\poject\\RedCliffsDeduction\\ArtSource\\CharacterRefresh2026-10-10\\BlenderRefined\\Caimao_Han208_v3_refined.fbx'
+export finished in 0.1072 sec.
+18:28:17 | INFO: Starting glTF 2.0 export
+18:28:17 | INFO: Extracting primitive: Zhangyun_Han208_v3_refined_Mesh
+18:28:17 | INFO: Primitives created: 1
+18:28:17 | INFO: Finished glTF 2.0 export in 0.3248424530029297 s
+
+
+FBX export starting... 'C:\\Users\\나민재\\Documents\\poject\\RedCliffsDeduction\\ArtSource\\CharacterRefresh2026-10-10\\BlenderRefined\\Zhangyun_Han208_v3_refined.fbx'
+export finished in 0.1165 sec.
+18:28:18 | INFO: Starting glTF 2.0 export
+18:28:18 | INFO: Extracting primitive: RecordsClerk_Han208_v3_refined_Mesh
+18:28:18 | INFO: Primitives created: 1
+18:28:18 | INFO: Finished glTF 2.0 export in 0.30652880668640137 s
+
+
+FBX export starting... 'C:\\Users\\나민재\\Documents\\poject\\RedCliffsDeduction\\ArtSource\\CharacterRefresh2026-10-10\\BlenderRefined\\RecordsClerk_Han208_v3_refined.fbx'
+export finished in 0.1070 sec.
+18:28:18 | INFO: Starting glTF 2.0 export
+18:28:18 | INFO: Extracting primitive: DocumentCourier_Han208_v3_refined_Mesh
+18:28:18 | INFO: Primitives created: 1
+18:28:18 | INFO: Finished glTF 2.0 export in 0.30933427810668945 s
+
+
+FBX export starting... 'C:\\Users\\나민재\\Documents\\poject\\RedCliffsDeduction\\ArtSource\\CharacterRefresh2026-10-10\\BlenderRefined\\DocumentCourier_Han208_v3_refined.fbx'
+export finished in 0.1029 sec.
+18:28:18 | INFO: Starting glTF 2.0 export
+18:28:18 | INFO: Extracting primitive: ReliefGuard_Han208_v3_refined_Mesh
+18:28:19 | INFO: Primitives created: 1
+18:28:19 | INFO: Finished glTF 2.0 export in 0.31597137451171875 s
+
+
+FBX export starting... 'C:\\Users\\나민재\\Documents\\poject\\RedCliffsDeduction\\ArtSource\\CharacterRefresh2026-10-10\\BlenderRefined\\ReliefGuard_Han208_v3_refined.fbx'
+export finished in 0.1170 sec.
+18:28:19 | INFO: Starting glTF 2.0 export
+18:28:19 | INFO: Extracting primitive: GamblingSoldier_Han208_v3_refined_Mesh
+18:28:19 | INFO: Primitives created: 1
+18:28:19 | INFO: Finished glTF 2.0 export in 0.3076903820037842 s
+
+
+FBX export starting... 'C:\\Users\\나민재\\Documents\\poject\\RedCliffsDeduction\\ArtSource\\CharacterRefresh2026-10-10\\BlenderRefined\\GamblingSoldier_Han208_v3_refined.fbx'
+export finished in 0.1053 sec.
+18:28:19 | INFO: Starting glTF 2.0 export
+18:28:19 | INFO: Extracting primitive: HanJin_Han208_v3_refined_Mesh
+18:28:20 | INFO: Primitives created: 1
+18:28:20 | INFO: Finished glTF 2.0 export in 0.30712103843688965 s
+00:26.469  render           | Saved: 'C:\Users\나민재\Documents\poject\RedCliffsDeduction\ArtSource\CharacterRefresh2026-10-10\BlenderRefined\after_1.png'
+00:43.078  render           | Saved: 'C:\Users\나민재\Documents\poject\RedCliffsDeduction\ArtSource\CharacterRefresh2026-10-10\BlenderRefined\after_2.png'
+
+
+FBX export starting... 'C:\\Users\\나민재\\Documents\\poject\\RedCliffsDeduction\\ArtSource\\CharacterRefresh2026-10-10\\BlenderRefined\\HanJin_Han208_v3_refined.fbx'
+export finished in 0.0994 sec.
+Info: No new files have been packed
+Info: Saved as "RedCliffs_Characters_v3_refined.blend"
+MATTE_REVIEW_COMPLETE
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:37:04)
+
+Blender quit

@@ -1,0 +1,740 @@
+[
+  {
+    "name": "Caimao_Han208_v3",
+    "objects": [
+      {
+        "name": "texture_mapping",
+        "type": "MESH",
+        "dimensions": [
+          0.532271146774292,
+          0.29999667406082153,
+          1.000215768814087
+        ],
+        "rotation": [
+          0.0,
+          -0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "vertices": 23575,
+        "faces": 30000,
+        "bounds": [
+          [
+            -0.26571527123451233,
+            0.26655590534210205
+          ],
+          [
+            -0.15591925382614136,
+            0.14407743513584137
+          ],
+          [
+            -0.49999991059303284,
+            0.5002158284187317
+          ]
+        ],
+        "materials": [
+          {
+            "name": "material_0",
+            "nodes": [
+              {
+                "type": "BSDF_PRINCIPLED",
+                "name": "Principled BSDF",
+                "image": null
+              },
+              {
+                "type": "OUTPUT_MATERIAL",
+                "name": "Material Output",
+                "image": null
+              },
+              {
+                "type": "NORMAL_MAP",
+                "name": "Normal Map",
+                "image": null
+              },
+              {
+                "type": "TEX_IMAGE",
+                "name": "Image Texture",
+                "image": "base_color"
+              },
+              {
+                "type": "TEX_IMAGE",
+                "name": "Image Texture.001",
+                "image": "normal"
+              },
+              {
+                "type": "TEX_IMAGE",
+                "name": "Image Texture.002",
+                "image": "orm"
+              },
+              {
+                "type": "TEX_IMAGE",
+                "name": "Image Texture.003",
+                "image": "orm"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "CaoCao_Han208_v3",
+    "objects": [
+      {
+        "name": "texture_mapping",
+        "type": "MESH",
+        "dimensions": [
+          0.5037325620651245,
+          0.2364167869091034,
+          1.0010592937469482
+        ],
+        "rotation": [
+          0.0,
+          -0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "vertices": 23656,
+        "faces": 30000,
+        "bounds": [
+          [
+            -0.2515958547592163,
+            0.2521367371082306
+          ],
+          [
+            -0.12132786214351654,
+            0.11508892476558685
+          ],
+          [
+            -0.500440776348114,
+            0.5006184577941895
+          ]
+        ],
+        "materials": [
+          {
+            "name": "material_0.001",
+            "nodes": [
+              {
+                "type": "BSDF_PRINCIPLED",
+                "name": "Principled BSDF",
+                "image": null
+              },
+              {
+                "type": "OUTPUT_MATERIAL",
+                "name": "Material Output",
+                "image": null
+              },
+              {
+                "type": "NORMAL_MAP",
+                "name": "Normal Map",
+                "image": null
+              },
+              {
+                "type": "TEX_IMAGE",
+                "name": "Image Texture",
+                "image": "base_color.001"
+              },
+              {
+                "type": "TEX_IMAGE",
+                "name": "Image Texture.001",
+                "image": "normal.001"
+              },
+              {
+                "type": "TEX_IMAGE",
+                "name": "Image Texture.002",
+                "image": "orm.001"
+              },
+              {
+                "type": "TEX_IMAGE",
+                "name": "Image Texture.003",
+                "image": "orm.001"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "DocumentCourier_Han208_v3",
+    "objects": [
+      {
+        "name": "texture_mapping",
+        "type": "MESH",
+        "dimensions": [
+          0.48846232891082764,
+          0.2462638020515442,
+          0.997620701789856
+        ],
+        "rotation": [
+          0.0,
+          -0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "vertices": 23306,
+        "faces": 30000,
+        "bounds": [
+          [
+            -0.2440861463546753,
+            0.24437616765499115
+          ],
+          [
+            -0.12761634588241577,
+            0.11864745616912842
+          ],
+          [
+            -0.4976402521133423,
+            0.4999804198741913
+          ]
+        ],
+        "materials": [
+          {
+            "name": "material_0.002",
+            "nodes": [
+              {
+                "type": "BSDF_PRINCIPLED",
+                "name": "Principled BSDF",
+                "image": null
+              },
+              {
+                "type": "OUTPUT_MATERIAL",
+                "name": "Material Output",
+                "image": null
+              },
+              {
+                "type": "NORMAL_MAP",
+                "name": "Normal Map",
+                "image": null
+              },
+              {
+                "type": "TEX_IMAGE",
+                "name": "Image Texture",
+                "image": "base_color.002"
+              },
+              {
+                "type": "TEX_IMAGE",
+                "name": "Image Texture.001",
+                "image": "normal.002"
+              },
+              {
+                "type": "TEX_IMAGE",
+                "name": "Image Texture.002",
+                "image": "orm.002"
+              },
+              {
+                "type": "TEX_IMAGE",
+                "name": "Image Texture.003",
+                "image": "orm.002"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "GamblingSoldier_Han208_v3",
+    "objects": [
+      {
+        "name": "texture_mapping",
+        "type": "MESH",
+        "dimensions": [
+          0.5057485699653625,
+          0.24590061604976654,
+          1.0006312131881714
+        ],
+        "rotation": [
+          0.0,
+          -0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "vertices": 21451,
+        "faces": 30000,
+        "bounds": [
+          [
+            -0.2527603507041931,
+            0.25298821926116943
+          ],
+          [
+            -0.12361237406730652,
+            0.12228824198246002
+          ],
+          [
+            -0.5002565383911133,
+            0.5003746747970581
+          ]
+        ],
+        "materials": [
+          {
+            "name": "material_0.003",
+            "nodes": [
+              {
+                "type": "BSDF_PRINCIPLED",
+                "name": "Principled BSDF",
+                "image": null
+              },
+              {
+                "type": "OUTPUT_MATERIAL",
+                "name": "Material Output",
+                "image": null
+              },
+              {
+                "type": "NORMAL_MAP",
+                "name": "Normal Map",
+                "image": null
+              },
+              {
+                "type": "TEX_IMAGE",
+                "name": "Image Texture",
+                "image": "base_color.003"
+              },
+              {
+                "type": "TEX_IMAGE",
+                "name": "Image Texture.001",
+                "image": "normal.003"
+              },
+              {
+                "type": "TEX_IMAGE",
+                "name": "Image Texture.002",
+                "image": "orm.003"
+              },
+              {
+                "type": "TEX_IMAGE",
+                "name": "Image Texture.003",
+                "image": "orm.003"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "HanJin_Han208_v3",
+    "objects": [
+      {
+        "name": "texture_mapping",
+        "type": "MESH",
+        "dimensions": [
+          0.49850061535835266,
+          0.24361801147460938,
+          1.0007076263427734
+        ],
+        "rotation": [
+          0.0,
+          -0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "vertices": 21391,
+        "faces": 30000,
+        "bounds": [
+          [
+            -0.24902068078517914,
+            0.24947993457317352
+          ],
+          [
+            -0.12415172159671783,
+            0.11946629732847214
+          ],
+          [
+            -0.5000365972518921,
+            0.5006710290908813
+          ]
+        ],
+        "materials": [
+          {
+            "name": "material_0.004",
+            "nodes": [
+              {
+                "type": "BSDF_PRINCIPLED",
+                "name": "Principled BSDF",
+                "image": null
+              },
+              {
+                "type": "OUTPUT_MATERIAL",
+                "name": "Material Output",
+                "image": null
+              },
+              {
+                "type": "NORMAL_MAP",
+                "name": "Normal Map",
+                "image": null
+              },
+              {
+                "type": "TEX_IMAGE",
+                "name": "Image Texture",
+                "image": "base_color.004"
+              },
+              {
+                "type": "TEX_IMAGE",
+                "name": "Image Texture.001",
+                "image": "normal.004"
+              },
+              {
+                "type": "TEX_IMAGE",
+                "name": "Image Texture.002",
+                "image": "orm.004"
+              },
+              {
+                "type": "TEX_IMAGE",
+                "name": "Image Texture.003",
+                "image": "orm.004"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "RecordsClerk_Han208_v3",
+    "objects": [
+      {
+        "name": "texture_mapping",
+        "type": "MESH",
+        "dimensions": [
+          0.4866499900817871,
+          0.24447795748710632,
+          1.0010466575622559
+        ],
+        "rotation": [
+          0.0,
+          -0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "vertices": 23414,
+        "faces": 30000,
+        "bounds": [
+          [
+            -0.24332499504089355,
+            0.24332499504089355
+          ],
+          [
+            -0.12223897874355316,
+            0.12223897874355316
+          ],
+          [
+            -0.5005233287811279,
+            0.5005233287811279
+          ]
+        ],
+        "materials": [
+          {
+            "name": "material_0.005",
+            "nodes": [
+              {
+                "type": "BSDF_PRINCIPLED",
+                "name": "Principled BSDF",
+                "image": null
+              },
+              {
+                "type": "OUTPUT_MATERIAL",
+                "name": "Material Output",
+                "image": null
+              },
+              {
+                "type": "NORMAL_MAP",
+                "name": "Normal Map",
+                "image": null
+              },
+              {
+                "type": "TEX_IMAGE",
+                "name": "Image Texture",
+                "image": "base_color.005"
+              },
+              {
+                "type": "TEX_IMAGE",
+                "name": "Image Texture.001",
+                "image": "normal.005"
+              },
+              {
+                "type": "TEX_IMAGE",
+                "name": "Image Texture.002",
+                "image": "orm.005"
+              },
+              {
+                "type": "TEX_IMAGE",
+                "name": "Image Texture.003",
+                "image": "orm.005"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "ReliefGuard_Han208_v3",
+    "objects": [
+      {
+        "name": "texture_mapping",
+        "type": "MESH",
+        "dimensions": [
+          0.4726923108100891,
+          0.23995134234428406,
+          0.9992913007736206
+        ],
+        "rotation": [
+          0.0,
+          -0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "vertices": 23969,
+        "faces": 30000,
+        "bounds": [
+          [
+            -0.23613324761390686,
+            0.23655907809734344
+          ],
+          [
+            -0.11566101759672165,
+            0.12429031729698181
+          ],
+          [
+            -0.4983380436897278,
+            0.5009532570838928
+          ]
+        ],
+        "materials": [
+          {
+            "name": "material_0.006",
+            "nodes": [
+              {
+                "type": "BSDF_PRINCIPLED",
+                "name": "Principled BSDF",
+                "image": null
+              },
+              {
+                "type": "OUTPUT_MATERIAL",
+                "name": "Material Output",
+                "image": null
+              },
+              {
+                "type": "NORMAL_MAP",
+                "name": "Normal Map",
+                "image": null
+              },
+              {
+                "type": "TEX_IMAGE",
+                "name": "Image Texture",
+                "image": "base_color.006"
+              },
+              {
+                "type": "TEX_IMAGE",
+                "name": "Image Texture.001",
+                "image": "normal.006"
+              },
+              {
+                "type": "TEX_IMAGE",
+                "name": "Image Texture.002",
+                "image": "orm.006"
+              },
+              {
+                "type": "TEX_IMAGE",
+                "name": "Image Texture.003",
+                "image": "orm.006"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Seolpyeong_Han208_v3",
+    "objects": [
+      {
+        "name": "texture_mapping",
+        "type": "MESH",
+        "dimensions": [
+          0.5614215135574341,
+          0.23509743809700012,
+          0.9967861175537109
+        ],
+        "rotation": [
+          0.0,
+          -0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "vertices": 23066,
+        "faces": 30000,
+        "bounds": [
+          [
+            -0.2805946171283722,
+            0.2808269262313843
+          ],
+          [
+            -0.11939164996147156,
+            0.11570578068494797
+          ],
+          [
+            -0.5002599358558655,
+            0.49652615189552307
+          ]
+        ],
+        "materials": [
+          {
+            "name": "material_0.007",
+            "nodes": [
+              {
+                "type": "BSDF_PRINCIPLED",
+                "name": "Principled BSDF",
+                "image": null
+              },
+              {
+                "type": "OUTPUT_MATERIAL",
+                "name": "Material Output",
+                "image": null
+              },
+              {
+                "type": "NORMAL_MAP",
+                "name": "Normal Map",
+                "image": null
+              },
+              {
+                "type": "TEX_IMAGE",
+                "name": "Image Texture",
+                "image": "base_color.007"
+              },
+              {
+                "type": "TEX_IMAGE",
+                "name": "Image Texture.001",
+                "image": "normal.007"
+              },
+              {
+                "type": "TEX_IMAGE",
+                "name": "Image Texture.002",
+                "image": "orm.007"
+              },
+              {
+                "type": "TEX_IMAGE",
+                "name": "Image Texture.003",
+                "image": "orm.007"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Zhangyun_Han208_v3",
+    "objects": [
+      {
+        "name": "texture_mapping",
+        "type": "MESH",
+        "dimensions": [
+          0.5291323661804199,
+          0.24851498007774353,
+          0.9969882965087891
+        ],
+        "rotation": [
+          0.0,
+          -0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "vertices": 24471,
+        "faces": 30000,
+        "bounds": [
+          [
+            -0.26408150792121887,
+            0.26505088806152344
+          ],
+          [
+            -0.1229822114109993,
+            0.12553276121616364
+          ],
+          [
+            -0.49828410148620605,
+            0.498704195022583
+          ]
+        ],
+        "materials": [
+          {
+            "name": "material_0.008",
+            "nodes": [
+              {
+                "type": "BSDF_PRINCIPLED",
+                "name": "Principled BSDF",
+                "image": null
+              },
+              {
+                "type": "OUTPUT_MATERIAL",
+                "name": "Material Output",
+                "image": null
+              },
+              {
+                "type": "NORMAL_MAP",
+                "name": "Normal Map",
+                "image": null
+              },
+              {
+                "type": "TEX_IMAGE",
+                "name": "Image Texture",
+                "image": "base_color.008"
+              },
+              {
+                "type": "TEX_IMAGE",
+                "name": "Image Texture.001",
+                "image": "normal.008"
+              },
+              {
+                "type": "TEX_IMAGE",
+                "name": "Image Texture.002",
+                "image": "orm.008"
+              },
+              {
+                "type": "TEX_IMAGE",
+                "name": "Image Texture.003",
+                "image": "orm.008"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

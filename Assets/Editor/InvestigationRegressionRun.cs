@@ -142,7 +142,7 @@ public static class InvestigationRegressionRun
         Click("이 내용으로 보고 완료"); Click("조사로 돌아가기");
         Require(Capture().inquiryIds.Length == 3, "Early report changed inquiry count");
         S.TalkToCaimao(); Click("조사 시작 · 1회 사용");
-        UnityEngine.Object.FindFirstObjectByType<InvestigationDayTransition>().FinishForEditorCheck();
+        UnityEngine.Object.FindAnyObjectByType<InvestigationDayTransition>().FinishForEditorCheck();
         CheckTime(4, "둘째 날 · 오전", "조사 1회 사용");
         S.CloseModal(); S.TalkToCaimao();
         CheckTime(4, "둘째 날 · 오전", "이미 시작한 조사");

@@ -1,6 +1,7 @@
 using System;
 using System.Reflection;
 using UnityEngine;
+using UnityEngine.Assemblies;
 
 internal static class PipelineEncodingVerification
 {
@@ -10,7 +11,7 @@ internal static class PipelineEncodingVerification
         var predicate = driver.GetMethod("ShouldScanForCodeReload", BindingFlags.NonPublic | BindingFlags.Static);
         if (predicate == null) throw new MissingMethodException(driver.FullName, "ShouldScanForCodeReload");
         int count = 0;
-        foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+        foreach (var assembly in CurrentAssemblies.GetLoadedAssemblies())
         {
             predicate.Invoke(null, new object[] { assembly });
             count++;

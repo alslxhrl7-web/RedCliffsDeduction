@@ -11,6 +11,8 @@ namespace RedCliffMystery.EditorTools
     public static class VarcoRolePoses
     {
         static readonly string[] Names = { "CaoCao", "Seolpyeong", "Duseok", "Caimao", "Zhangyun", "RecordsClerk", "DocumentCourier", "ReliefGuard", "GamblingSoldier" };
+        // Keep the original v2 pose installer limited to its nine source models.
+        static readonly string[] InspectionNames = Names.Concat(new[] { "HanJin" }).ToArray();
         [MenuItem("적벽추리/전체 인물 포즈와 대기 움직임 적용")]
         public static void ApplyAll() => Apply();
         [MenuItem("적벽추리/대화 화자 연결 검증")]
@@ -18,15 +20,17 @@ namespace RedCliffMystery.EditorTools
         {
             if (!EditorApplication.isPlaying) throw new System.Exception("Run in Play Mode");
             var report = new StringBuilder();
-            var motions = Object.FindObjectsByType<RedCliffMystery.VarcoIdleMotion>(FindObjectsSortMode.None);
-            if (motions.Length != 9) throw new System.Exception("Expected nine characters");
-            var session = Object.FindFirstObjectByType<RedCliffMystery.Investigation.InvestigationSession>();
+            var motions = Object.FindObjectsByType<RedCliffMystery.VarcoIdleMotion>();
+            if (motions.Length != InspectionNames.Length
+                || Enumerable.Range(0, InspectionNames.Length).Any(profile => motions.Count(m => m.Profile == profile) != 1))
+                throw new System.Exception("Expected one character for each of the ten speaker profiles");
+            var session = Object.FindAnyObjectByType<RedCliffMystery.Investigation.InvestigationSession>();
             var modal = session.GetType().GetMethod("SetModal", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            string[] speakers = { "조조", "설평", "두석", "채모", "장윤", "기록 담당자", "전령", "교대 병사", "동석 병사", "병사" };
+            string[] speakers = { "조조", "설평", "두석", "채모", "장윤", "기록 담당자", "전령", "교대 병사", "동석 병사", "한진", "병사" };
             foreach (var speaker in speakers)
             {
                 modal.Invoke(session, new object[] { "대화 검증", speaker, "“아아아아아아아아아아아아”", "검증" });
-                int expected = System.Array.IndexOf(speakers, speaker); if (expected == 9) expected = 8;
+                int expected = speaker == "병사" ? 8 : System.Array.IndexOf(speakers, speaker);
                 if (motions.Count(m => m.HasSpeech) != 1 || !motions.Single(m => m.Profile == expected).HasSpeech)
                     throw new System.Exception("Wrong dialogue assignment: " + speaker);
                 foreach (var motion in motions) if (motion.Profile == expected) motion.StartSpeech("아아아아아아아아아아아아", Time.time - .07f);
@@ -47,6 +51,7 @@ namespace RedCliffMystery.EditorTools
             RedCliffMystery.VarcoIdleMotion.StopSpeech();
             report.AppendLine("PASS record panel and explicit stop close all mouths");
             report.AppendLine("PASS line advance, sequence completion, player/NPC name collision");
+            Directory.CreateDirectory("Logs/VarcoPreviews");
             File.WriteAllText("Logs/VarcoPreviews/speaker-check.txt", report.ToString());
         }
         [MenuItem("적벽추리/대화 입모양 검증")]
@@ -56,7 +61,7 @@ namespace RedCliffMystery.EditorTools
             var preview = EditorSceneManager.NewPreviewScene();
             try
             {
-                foreach (var motion in Object.FindObjectsByType<RedCliffMystery.VarcoIdleMotion>(FindObjectsSortMode.None))
+                foreach (var motion in Object.FindObjectsByType<RedCliffMystery.VarcoIdleMotion>())
                 {
                     var clone = Object.Instantiate(motion.gameObject);
                     SceneManager.MoveGameObjectToScene(clone, preview);
@@ -71,7 +76,7 @@ namespace RedCliffMystery.EditorTools
                     if (changed == 0) throw new System.Exception("Mouth vertices missing for profile " + sample.Profile);
                     sample.StartSpeech("아", -10); sample.Sample(0);
                     if (!closed.SequenceEqual(filter.sharedMesh.vertices)) throw new System.Exception("Mouth did not return to rest");
-                    report.AppendLine(Names[sample.Profile] + " PASS mouth vertices=" + changed + ", returns to rest");
+                    report.AppendLine(InspectionNames[sample.Profile] + " PASS mouth vertices=" + changed + ", returns to rest");
                     Object.DestroyImmediate(clone);
                 }
                 if (RedCliffMystery.VarcoIdleMotion.MouthShape("마", .01f) != Vector2.zero
@@ -91,7 +96,7 @@ namespace RedCliffMystery.EditorTools
             var report = new StringBuilder();
             var characters = SceneManager.GetActiveScene().GetRootGameObjects()
                 .SelectMany(r => r.GetComponentsInChildren<Transform>(true))
-                .Where(t => Names.Contains(t.name) && t.Find("VarcoVisual") != null).ToArray();
+                .Where(t => InspectionNames.Contains(t.name) && t.Find("VarcoVisual") != null).ToArray();
             var preview = EditorSceneManager.NewPreviewScene();
             try
             {
@@ -121,6 +126,7 @@ namespace RedCliffMystery.EditorTools
                     report.AppendLine(npc.name + " PASS moved=" + moving + " feet=" + planted);
                     Object.DestroyImmediate(clone);
                 }
+                Directory.CreateDirectory("Logs/VarcoPreviews");
                 File.WriteAllText("Logs/VarcoPreviews/idle-check.txt", report.ToString());
             }
             finally { EditorSceneManager.ClosePreviewScene(preview); }
@@ -235,7 +241,7 @@ namespace RedCliffMystery.EditorTools
         {
             var originalScene = SceneManager.GetActiveScene();
             var characters = originalScene.GetRootGameObjects().SelectMany(r => r.GetComponentsInChildren<Transform>(true))
-                .Where(t => Names.Contains(t.name) && t.Find("VarcoVisual") != null).OrderBy(t => System.Array.IndexOf(Names, t.name)).ToArray();
+                .Where(t => InspectionNames.Contains(t.name) && t.Find("VarcoVisual") != null).OrderBy(t => System.Array.IndexOf(InspectionNames, t.name)).ToArray();
             var preview = EditorSceneManager.NewPreviewScene();
             try
             {
@@ -274,7 +280,7 @@ namespace RedCliffMystery.EditorTools
             var report = new StringBuilder();
             foreach (var root in SceneManager.GetActiveScene().GetRootGameObjects())
                 foreach (var npc in root.GetComponentsInChildren<Transform>(true))
-                    if (System.Array.IndexOf(Names, npc.name) >= 0)
+                    if (System.Array.IndexOf(InspectionNames, npc.name) >= 0)
                     {
                         report.AppendLine(npc.name);
                         var visual = npc.Find("VarcoVisual");
