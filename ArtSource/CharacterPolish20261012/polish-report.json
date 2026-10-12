@@ -1,0 +1,92 @@
+[
+  {
+    "name": "Caimao",
+    "profile": 3,
+    "vertices": 25084,
+    "triangles": 30000,
+    "changed_vertices": 17405,
+    "max_displacement_mm": 3.0000000000001057,
+    "normal_strength": 0.22
+  },
+  {
+    "name": "CaoCao",
+    "profile": 0,
+    "vertices": 25020,
+    "triangles": 30000,
+    "changed_vertices": 15979,
+    "max_displacement_mm": 3.000000000000111,
+    "normal_strength": 0.22
+  },
+  {
+    "name": "DocumentCourier",
+    "profile": 6,
+    "vertices": 24314,
+    "triangles": 30000,
+    "changed_vertices": 20530,
+    "max_displacement_mm": 3.000000000000107,
+    "normal_strength": 0.16
+  },
+  {
+    "name": "Duseok",
+    "profile": 2,
+    "vertices": 26949,
+    "triangles": 30000,
+    "changed_vertices": 16600,
+    "max_displacement_mm": 3.0000000000001044,
+    "normal_strength": 0.22
+  },
+  {
+    "name": "GamblingSoldier",
+    "profile": 8,
+    "vertices": 21767,
+    "triangles": 30000,
+    "changed_vertices": 18548,
+    "max_displacement_mm": 3.000000000000101,
+    "normal_strength": 0.16
+  },
+  {
+    "name": "HanJin",
+    "profile": 9,
+    "vertices": 22003,
+    "triangles": 30000,
+    "changed_vertices": 18824,
+    "max_displacement_mm": 3.000000000000108,
+    "normal_strength": 0.16
+  },
+  {
+    "name": "RecordsClerk",
+    "profile": 5,
+    "vertices": 24443,
+    "triangles": 30000,
+    "changed_vertices": 21202,
+    "max_displacement_mm": 3.0000000000001057,
+    "normal_strength": 0.16
+  },
+  {
+    "name": "ReliefGuard",
+    "profile": 7,
+    "vertices": 25412,
+    "triangles": 30000,
+    "changed_vertices": 15674,
+    "max_displacement_mm": 3.0000000000001,
+    "normal_strength": 0.22
+  },
+  {
+    "name": "Seolpyeong",
+    "profile": 1,
+    "vertices": 24028,
+    "triangles": 30000,
+    "changed_vertices": 20226,
+    "max_displacement_mm": 3.0000000000001092,
+    "normal_strength": 0.16
+  },
+  {
+    "name": "Zhangyun",
+    "profile": 4,
+    "vertices": 26279,
+    "triangles": 30000,
+    "changed_vertices": 14131,
+    "max_displacement_mm": 3.000000000000107,
+    "normal_strength": 0.22
+  }
+]

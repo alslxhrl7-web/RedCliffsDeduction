@@ -15,10 +15,19 @@ namespace RedCliffMystery.Investigation
         public string SelectedId{get;private set;}
         Font font; Action closed; RectTransform list,detail; UnityEngine.UI.Text count; int page;
         ArchivePortrait stage; AudioSource wind, cue; AudioClip unlockTone; float opened;
+        Texture2D illustration;
+        static readonly string[] EvidenceArtIds={"dispatch","receipt","recovered","copy","approval","assignment","original","intake","outgoing","reply","delivery","witness"};
+        // The generated sheet has unequal gutters; map the inspected cell interiors, not an assumed grid.
+        static Rect EvidenceUV(int index)
+        {
+            int[] left={24,436,778,1121},right={415,756,1100,1510},top={29,322,612},bottom={299,590,934};
+            int col=index%4,row=index/4;
+            return new Rect(left[col]/1536f,1-bottom[row]/1024f,(right[col]-left[col])/1536f,(bottom[row]-top[row])/1024f);
+        }
         static readonly Color Gold=new Color(.83f,.68f,.43f),Ivory=new Color(.95f,.91f,.81f);
         public static RecordArchiveScreen Show(Font font,Action closed,string tab="결말")
         {
-            if(IsOpen)return FindAnyObjectByType<RecordArchiveScreen>();
+            if(IsOpen)return current;
             var go=new GameObject("RedCliffsArchive",typeof(RectTransform),typeof(Canvas),typeof(CanvasScaler),typeof(GraphicRaycaster));
             var canvas=go.GetComponent<Canvas>();canvas.renderMode=RenderMode.ScreenSpaceOverlay;canvas.sortingOrder=150;
             var scaler=go.GetComponent<CanvasScaler>();scaler.uiScaleMode=CanvasScaler.ScaleMode.ScaleWithScreenSize;scaler.referenceResolution=new Vector2(1280,720);scaler.matchWidthOrHeight=.5f;
@@ -41,10 +50,12 @@ namespace RedCliffMystery.Investigation
             unlockTone=AudioClip.Create("ArchivePluckedNote",samples.Length,1,44100,false);unlockTone.SetData(samples,0);
         }
         public void SelectTab(string tab){CurrentTab=tab;page=0;Draw();}
-        void Clear(Transform t){foreach(Transform child in t){child.gameObject.SetActive(false);Destroy(child.gameObject);}}
+        void Clear(Transform t){foreach(Transform child in t){child.gameObject.SetActive(false);Destroy(child.gameObject);}if(t==detail)ReleaseIllustration();}
+        void ClearDetail(){Clear(detail);if(stage){Destroy(stage.gameObject);stage=null;}}
+        void ReleaseIllustration(){if(illustration){foreach(var image in detail.GetComponentsInChildren<RawImage>(true))if(image.texture==illustration)image.texture=null;Resources.UnloadAsset(illustration);illustration=null;}}
         void Draw()
         {
-            Clear(list);Clear(detail);SelectedId=null;if(stage){Destroy(stage.gameObject);stage=null;}
+            Clear(list);ClearDetail();SelectedId=null;
             count.text="인물 "+Total("인물")+"   증거 "+Total("증거")+"   결말 "+Total("결말");
             var entries=RecordArchive.Entries.Where(e=>e.tab==CurrentTab).ToArray();
             for(int i=page*5;i<Mathf.Min(entries.Length,page*5+5);i++){
@@ -58,7 +69,7 @@ namespace RedCliffMystery.Investigation
         string Total(string tab){var e=RecordArchive.Entries.Where(x=>x.tab==tab);return e.Count(x=>RecordArchive.Has(x.id))+" / "+e.Count();}
         public void OpenEntry(string id)
         {
-            var entry=RecordArchive.Entries.Single(e=>e.id==id);Clear(detail);if(stage){Destroy(stage.gameObject);stage=null;}SelectedId=id;
+            var entry=RecordArchive.Entries.Single(e=>e.id==id);ClearDetail();SelectedId=id;
             bool owned=RecordArchive.Has(id);
             Text(detail,"Heading",owned?entry.title:"아직 밝혀지지 않은 기록",29,Gold,0,.81f,1,1);
             if(!owned){Text(detail,"Locked",entry.hint,23,Ivory,0,.25f,1,.76f);return;}
@@ -72,21 +83,26 @@ namespace RedCliffMystery.Investigation
                 string extra=entry.profile==9&&RecordArchive.Has("time-5")?"확인된 이면: 거절 답신을 읽은 뒤에도 철수 본문을 제출했다.":entry.profile==6&&RecordArchive.Has("recovered")?"문서 은닉과 내용 변경의 책임은 구분해서 살펴야 한다.":"진술의 사실 여부는 증거 탭에서 확인하세요.";
                 Text(detail,"Details",extra,19,Gold,0,.17f,.55f,.35f);
             }
-            if(id=="ending-True")Button(detail,"후일담 · 한진에게 다시 묻다",()=>Bonus(0),0,0,1,.11f);
-            if(entry.tab=="증거")Button(detail,"문서 외형 참고 보기",()=>EvidenceImage(id),0,0,1,.11f);
+            if(id=="ending-True")Button(detail,"후일담 · 한진에게 다시 묻다",()=>Bonus(0),0,0,.66f,.11f);
+            if(entry.tab=="결말")Button(detail,"결말 삽화 보기",()=>ShowIllustration(id),id=="ending-True"?.68f:0,0,1,.11f);
+            if(entry.tab=="증거")Button(detail,"증거 삽화 보기",()=>ShowIllustration(id),0,0,1,.11f);
         }
-        void EvidenceImage(string id)
+        public void ShowIllustration(string id)
         {
             if(!RecordArchive.Has(id))return;Clear(detail);
-            var evidence=FindObjectsByType<EvidenceDocumentView>(FindObjectsInactive.Include).FirstOrDefault();
-            if(evidence&&evidence.dutyRecord){var r=Rect("DocumentImage",detail,.12f,.19f,.88f,.90f);var picture=Rect("View",r,0,0,1,1);var image=picture.gameObject.AddComponent<RawImage>();image.texture=evidence.dutyRecord;image.raycastTarget=false;var aspect=picture.gameObject.AddComponent<AspectRatioFitter>();aspect.aspectMode=AspectRatioFitter.AspectMode.FitInParent;aspect.aspectRatio=(float)image.texture.width/image.texture.height;}
-            Text(detail,"Caption","공통 문서 외형 참고 · 실제 증거 내용은 본문에서 확인",17,Gold,0,.10f,1,.18f);
+            int index=Array.IndexOf(EvidenceArtIds,id);bool ending=id.StartsWith("ending-");
+            if(index<0&&!ending){OpenEntry(id);return;}
+            illustration=Resources.Load<Texture2D>("ArchiveArt/"+(ending?id:"evidence-atlas"));
+            if(illustration){var r=Rect("Illustration",detail,0,.22f,1,1);var picture=Rect("View",r,0,0,1,1);var image=picture.gameObject.AddComponent<RawImage>();image.texture=illustration;image.raycastTarget=false;
+                if(!ending)image.uvRect=EvidenceUV(index);
+                var aspect=picture.gameObject.AddComponent<AspectRatioFitter>();aspect.aspectMode=AspectRatioFitter.AspectMode.FitInParent;aspect.aspectRatio=ending?1.5f:(float)illustration.width*image.uvRect.width/(illustration.height*image.uvRect.height);}
+            Text(detail,"Caption",illustration?(ending?"결말을 표현한 삽화 · 상세 결과는 보고 내용에 따릅니다.":"증거별 참고 삽화 · 정확한 단서와 문구는 본문에서 확인하세요."):"삽화를 불러오지 못했습니다. 본문은 계속 확인할 수 있습니다.",17,Gold,0,.10f,1,.21f);
             Button(detail,"본문으로 돌아가기",()=>OpenEntry(id),0,0,1,.1f);
         }
         public void Bonus(int question)
         {
             if(!RecordArchive.Has("ending-True"))return;
-            Clear(detail);if(stage){Destroy(stage.gameObject);stage=null;}
+            ClearDetail();
             string[] answers={"보고가 끝난 뒤, 한진에게 확인된 기록을 다시 묻는다.\n\n이 장면은 군령 사건의 후일담이다. 새로운 범행이나 역사적 결말을 확정하지 않는다.","참모: 맡은 일은 무엇이었소?\n\n한진: 끝부분이 갈라진 제17호를 다시 쓰는 일이었소. 본문을 그대로 옮기고 기존 묶음은 반환하라는 의뢰였소. 내용을 바꾸라는 허가는 아니었소.","참모: 거절 답신은 읽었소?\n\n한진: …읽었소. 강 입구 유지를 바꾸지 말라는 뜻이었지. 그래도 내 판단대로 철수 본문을 넘겼소.\n\n참모: 수령 기록과 반납 순서가 그 사실을 보여 주었소.","참모: 전달자가 숨긴 일도 당신의 행위인가?\n\n한진: 내가 제출한 완성물에는 이미 철수 지시가 있었소. 그 뒤의 일을 내 재작성과 같은 일로 말할 수는 없소.\n\n은닉 책임과 변경 책임은 별도로 기록된다. 진실을 밝힌 뒤에도, 잘못된 명령을 멈추는 조치가 필요했다."};
             Text(detail,"Heading","후일담 · 한진의 진술",28,Gold,0,.85f,1,1);Text(detail,"Body",answers[question],18,Ivory,0,.31f,1,.83f);
             string[] questions={"재작성 의뢰","거절 답신","전달자의 은닉"};for(int i=0;i<3;i++){int q=i+1;Button(detail,questions[i],()=>Bonus(q),i*.335f,.18f,i*.335f+.32f,.30f);}
@@ -94,14 +110,14 @@ namespace RedCliffMystery.Investigation
         }
         void Update(){if(wind)wind.volume=.12f*InvestigationAudioSettings.Background;if(Time.unscaledTime-opened>.25f&&Keyboard.current!=null&&Keyboard.current.escapeKey.wasPressedThisFrame)Close();}
         public void Close(){if(current!=this)return;current=null;gameObject.SetActive(false);closed?.Invoke();Destroy(gameObject);}
-        void OnDestroy(){if(current==this)current=null;if(unlockTone)Destroy(unlockTone);}
+        void OnDestroy(){if(current==this)current=null;ReleaseIllustration();if(unlockTone)Destroy(unlockTone);}
         UnityEngine.UI.Text Text(Transform p,string name,string text,int size,Color color,float x,float y,float xx,float yy){var t=Rect(name,p,x,y,xx,yy).gameObject.AddComponent<UnityEngine.UI.Text>();t.font=font;t.fontSize=size;t.color=color;t.text=text;t.supportRichText=false;t.raycastTarget=false;t.horizontalOverflow=HorizontalWrapMode.Wrap;t.verticalOverflow=VerticalWrapMode.Truncate;return t;}
         void Button(Transform p,string label,UnityEngine.Events.UnityAction click,float x,float y,float xx,float yy){var rect=Rect(label,p,x,y,xx,yy);var image=rect.gameObject.AddComponent<UnityEngine.UI.Image>();image.color=new Color(.13f,.17f,.18f);var b=rect.gameObject.AddComponent<UnityEngine.UI.Button>();b.targetGraphic=image;b.onClick.AddListener(click);var text=Text(rect,"Label",label,20,Ivory,.04f,.05f,.96f,.95f);text.alignment=TextAnchor.MiddleLeft;}
         static RectTransform Rect(string name,Transform p,float x,float y,float xx,float yy){var g=new GameObject(name,typeof(RectTransform));g.transform.SetParent(p,false);var r=(RectTransform)g.transform;r.anchorMin=new Vector2(x,y);r.anchorMax=new Vector2(xx,yy);r.offsetMin=r.offsetMax=Vector2.zero;return r;}
     }
     public sealed class ArchivePortrait : MonoBehaviour,IDragHandler
     {
-        GameObject root,figure;RenderTexture texture;Camera camera;readonly System.Collections.Generic.List<Mesh> meshes=new System.Collections.Generic.List<Mesh>();
+        GameObject root,figure;RenderTexture texture;Camera camera;float nextRender;public int RenderCount{get;private set;}readonly System.Collections.Generic.List<Mesh> meshes=new System.Collections.Generic.List<Mesh>();
         public void Show(int profile,RawImage image)
         {
             var source=FindObjectsByType<RedCliffMystery.VarcoIdleMotion>(FindObjectsInactive.Include).FirstOrDefault(m=>m.Profile==profile);if(!source)return;
@@ -113,11 +129,12 @@ namespace RedCliffMystery.Investigation
             var bounds=figure.GetComponentsInChildren<Renderer>().Select(r=>r.bounds).Aggregate((a,b)=>{a.Encapsulate(b);return a;});
             float h=bounds.size.y;figure.transform.localPosition-=new Vector3(bounds.center.x-root.transform.position.x,bounds.min.y-root.transform.position.y,bounds.center.z-root.transform.position.z);
             var cam=new GameObject("PortraitCamera",typeof(Camera));cam.transform.SetParent(root.transform,false);camera=cam.GetComponent<Camera>();camera.cullingMask=1<<31;camera.clearFlags=CameraClearFlags.SolidColor;camera.backgroundColor=new Color(.035f,.045f,.05f);camera.nearClipPlane=.05f;camera.farClipPlane=15;camera.fieldOfView=32;camera.transform.localPosition=new Vector3(0,h*.58f,-h*2.1f);camera.transform.LookAt(root.transform.position+Vector3.up*h*.52f);
-            texture=new RenderTexture(480,640,24);texture.Create();camera.targetTexture=texture;image.texture=texture;
+            texture=new RenderTexture(384,512,16){useMipMap=false,autoGenerateMips=false,antiAliasing=1};texture.Create();camera.targetTexture=texture;camera.enabled=false;camera.allowHDR=false;camera.allowMSAA=false;image.texture=texture;
             var aspect=image.gameObject.AddComponent<AspectRatioFitter>();aspect.aspectMode=AspectRatioFitter.AspectMode.FitInParent;aspect.aspectRatio=.75f;
             for(int i=0;i<3;i++){var g=new GameObject("PortraitLight"+i,typeof(Light));g.transform.SetParent(root.transform,false);g.transform.localPosition=new Vector3(i==0?-h:h,h*.85f,i==1?h:-h);var l=g.GetComponent<Light>();l.type=LightType.Point;l.range=h*4;l.intensity=i==0?8:4f;l.color=i==1?new Color(.6f,.75f,1):new Color(1,.85f,.66f);l.cullingMask=1<<31;l.shadows=LightShadows.None;}
         }
         void Update(){if(figure)figure.transform.Rotate(0,Time.unscaledDeltaTime*8,0);}
+        void LateUpdate(){if(camera&&Time.unscaledTime>=nextRender){camera.Render();RenderCount++;nextRender=Time.unscaledTime+1f/30;}}
         public void OnDrag(PointerEventData data){if(figure)figure.transform.Rotate(0,-data.delta.x*.5f,0);}
         void OnDestroy(){if(root)Destroy(root);if(texture){texture.Release();Destroy(texture);}foreach(var mesh in meshes)if(mesh)Destroy(mesh);}
     }

@@ -4,3 +4,4 @@
 *.psd filter=lfs diff=lfs merge=lfs -text
 *.wav filter=lfs diff=lfs merge=lfs -text
 *.zip filter=lfs diff=lfs merge=lfs -text
+/ArtSource/CharacterPolish20261012/Input/*.json filter=lfs diff=lfs merge=lfs -text

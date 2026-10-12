@@ -172,7 +172,8 @@ namespace RedCliffMystery.EditorTools
                 if (motion.Profile != i) throw new Exception("Wrong profile " + Names[i]);
                 foreach (var filter in visual.GetComponentsInChildren<MeshFilter>())
                     if (!filter.sharedMesh.isReadable || !(AssetDatabase.GetAssetPath(filter.sharedMesh).StartsWith(Root+"/"+Names[i]+"/")
-                        || AssetDatabase.GetAssetPath(filter.sharedMesh).StartsWith("Assets/Art/Characters/Feedback20261012/"+Names[i]+"_Rest"))) throw new Exception("Wrong mesh " + Names[i]);
+                        || AssetDatabase.GetAssetPath(filter.sharedMesh).StartsWith("Assets/Art/Characters/Feedback20261012/"+Names[i]+"_Rest")
+                        || AssetDatabase.GetAssetPath(filter.sharedMesh)==CharacterBlenderPolish.Output+"/"+Names[i]+".asset")) throw new Exception("Wrong mesh " + Names[i]);
                 foreach (var renderer in visual.GetComponentsInChildren<Renderer>())
                     if (renderer.sharedMaterials.Any(m => m == null || m.shader.name != "Universal Render Pipeline/Lit" || m.GetTexture("_BaseMap") == null)) throw new Exception("Material " + Names[i]);
                 var bounds = VisualBounds(visual);

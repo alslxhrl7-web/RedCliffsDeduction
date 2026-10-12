@@ -1,0 +1,14 @@
+{
+  "provider": "VARCO 3D",
+  "workflow": "https://3d.varco.ai/customWorkflow/909eba21-8617-4ce7-8621-ad52296e34e9",
+  "modelShownInUI": "GPT Image 1.5",
+  "date": "2026-10-12",
+  "usage": "User-requested generated archive illustrations; not represented as CC0. Original PNG bytes retained in Assets/Resources/ArchiveArt; Unity import settings optimize runtime copies only.",
+  "assets": [
+    {"file":"ending-True.png","node":"53900541-86d3-4423-b02d-fcc503300dfa","object":"4cc20a19c06bbcb8ed56609c7b11f189.png","subject":"Restored river-mouth sentry line at dawn"},
+    {"file":"ending-Normal.png","node":"65b3f031-51f9-4fba-b0be-b08f010d60cf","object":"57185d03b63c4bb996d57cd3f2b8f8ab.png","subject":"Incomplete investigation, separated documents in a dusk tent"},
+    {"file":"ending-Bad.png","node":"0385a7a7-3850-4190-8cf6-3556df7ace0f","object":"2fa72c1183fc4c3ea57774b9732e4edc.png","subject":"Unproven report and waiting sentries, no execution shown"},
+    {"file":"evidence-atlas.png","node":"4ab1d066-f5dc-4542-b0b0-a6055ab553b8","object":"57207af36b01d77353197d07c03f84cc.png","columns":4,"rows":3,"order":["dispatch","receipt","recovered","copy","approval","assignment","original","intake","outgoing","reply","delivery","witness"]}
+  ],
+  "interpretation": "Symbolic illustrations only. Generated marks and document shapes are not evidence; the existing Korean text remains authoritative. Hidden records never expose the illustration."
+}

@@ -58,6 +58,7 @@ namespace RedCliffMystery.Investigation
         string justStartedInquiry;
         string pendingInquiryNotice;
         public string InvestigationDate => investigationTime.Label;
+        public int InvestigationTimeSlot => Math.Min(investigationTime.ElapsedSlots, InvestigationTime.Budget - 1) % 4;
         bool CanReportNow => introductionFinished && !FinalReportCompleted;
 
         void RefreshInvestigationTime() {

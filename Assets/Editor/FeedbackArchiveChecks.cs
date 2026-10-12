@@ -28,6 +28,7 @@ namespace RedCliffMystery.EditorTools
                     Require(RecordArchive.Entries.All(e=>!RecordArchive.Has(e.id)),"fresh archive reveals no entries");
                     title.ArchiveButton.onClick.Invoke();screen=Object.FindAnyObjectByType<RecordArchiveScreen>();Require(screen&&RecordArchiveScreen.IsOpen,"title opens archive");screen.OpenEntry("ending-True");
                     Require(!screen.GetComponentsInChildren<UnityEngine.UI.Text>().Any(t=>t.text.Contains("한진의 제출")),"locked ending does not leak result");
+                    screen.ShowIllustration("ending-True");Require(!screen.GetComponentsInChildren<UnityEngine.UI.RawImage>().Any(),"locked illustration does not load or reveal art");
                 }else if(step==1){screen.Close();Require(!RecordArchiveScreen.IsOpen,"archive returns to title");Object.FindAnyObjectByType<InvestigationTitleScreen>().StartButton.onClick.Invoke();
                     session.OrderState.facts=1048575;session.OrderState.followUp=131071;session.OrderState.Validate();RecordArchive.Capture(session);
                     for(int i=0;i<10;i++)RecordArchive.RecordPerson(i);foreach(OrderReportEnding e in Enum.GetValues(typeof(OrderReportEnding)))RecordArchive.Ending(e);
@@ -35,11 +36,16 @@ namespace RedCliffMystery.EditorTools
                     RecordArchive.Viewed("copy");session.OrderState.facts=0;session.OrderState.followUp=0;RecordArchive.Capture(session);RecordArchive.Reload();
                     Require(RecordArchive.Has("copy")&&!RecordArchive.IsNew("copy")&&RecordArchive.Has("ending-True"),"unlocks and viewed state survive reload and earlier investigation state");
                     Require(Path.GetFileName(RecordArchive.PathName)!=Path.GetFileName(InvestigationSaveStore.SavePath),"archive is separate from save slot");
-                    screen=RecordArchiveScreen.Show(session.view.font,()=>{});screen.OpenEntry("ending-True");
+                    screen=RecordArchiveScreen.Show(session.view.font,()=>{});screen.OpenEntry("ending-True");screen.ShowIllustration("ending-True");
                 }else if(step==2){screen.SelectTab("인물");screen.OpenEntry("person-4");}
-                else if(step==3){Require(screen.GetComponentInChildren<ArchivePortrait>()!=null,"unlocked character has 3D portrait");screen.SelectTab("증거");screen.OpenEntry("delivery");}
+                else if(step==3){var portrait=screen.GetComponentInChildren<ArchivePortrait>();Require(portrait!=null,"unlocked character has 3D portrait");Require(portrait.RenderCount>0&&portrait.RenderCount<=90,"portrait rendering is active and rate limited");screen.SelectTab("증거");screen.OpenEntry("delivery");screen.ShowIllustration("delivery");}
                 else if(step==4){
                     foreach(var e in RecordArchive.Entries){screen.OpenEntry(e.id);Canvas.ForceUpdateCanvases();var body=screen.GetComponentsInChildren<UnityEngine.UI.Text>().FirstOrDefault(t=>t.name=="Body");Require(body==null||body.preferredHeight<=body.rectTransform.rect.height+1,"text fits "+e.id);}
+                    foreach(var e in RecordArchive.Entries.Where(e=>e.tab=="증거"||e.tab=="결말")){
+                        screen.ShowIllustration(e.id);Canvas.ForceUpdateCanvases();var art=screen.GetComponentsInChildren<UnityEngine.UI.RawImage>().Single();
+                        Require(art.texture!=null&&art.uvRect.width>0&&art.uvRect.xMax<=1&&art.uvRect.yMax<=1,"illustration linked "+e.id);
+                        screen.OpenEntry(e.id);Require(!screen.GetComponentsInChildren<UnityEngine.UI.RawImage>().Any(),"illustration released on return "+e.id);
+                    }
                     screen.SelectTab("결말");
                     for(int q=0;q<4;q++){screen.Bonus(q);Canvas.ForceUpdateCanvases();var text=screen.GetComponentsInChildren<UnityEngine.UI.Text>().Single(t=>t.name=="Body");Require(text.preferredHeight<=text.rectTransform.rect.height+1,"bonus text fits "+q);}
                     screen.Bonus(2);
