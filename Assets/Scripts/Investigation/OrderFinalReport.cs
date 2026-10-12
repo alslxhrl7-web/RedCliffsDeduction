@@ -12,8 +12,8 @@ namespace RedCliffMystery.Investigation
     {
         public const int EvidenceSetMask = 63;
         public int stage, suspect, proofs, action;
-        public bool fromNaval;
-        public OrderFinalReport Copy() => new OrderFinalReport { stage = stage, suspect = suspect, proofs = proofs, action = action, fromNaval = fromNaval };
+        public bool fromNaval, fromSupply, fromCommand;
+        public OrderFinalReport Copy() => new OrderFinalReport { stage = stage, suspect = suspect, proofs = proofs, action = action, fromNaval = fromNaval, fromSupply = fromSupply, fromCommand = fromCommand };
         public bool Has(OrderReportProof proof) => ((OrderReportProof)proofs & proof) == proof;
         public static OrderReportProof Available(OrderInvestigationState state)
         {

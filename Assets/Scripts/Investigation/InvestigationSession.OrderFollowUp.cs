@@ -223,18 +223,17 @@ namespace RedCliffMystery.Investigation
                 view.AddChoice(JudgeMisreadReply, () => JudgeFollowUp(3, JudgeMisreadReply, ready, null,
                     "회신을 처음부터 다시 읽자. 한진은 무엇을 물었고, 회신은 그 물음에 무엇이라 답했는가.", ShowOrderReplyOrder));
             }
-            view.AddChoice("제출 자료와 비교", ShowOrderSubmission);
-            view.AddChoice("수첩으로", ShowOrderFollowUp);
+            view.AddChoicePair("제출 자료와 비교", ShowOrderSubmission, "수첩으로", ShowOrderFollowUp);
         }
         public void ShowOrderJudgment() => ShowOrderReplyOrder();
         string FollowRouteHint()
         {
             if (!HasFollowUp(OrderFollowUpFact.Assignment)) return "문서고: 한진 앞 반환 묶음에서 작업 의뢰를 확인할 수 있다.";
             if (!HasOrder(OrderFact.Recovered)) return "수군 진영: 수송 물품에서 제17호 꾸러미를 찾자.";
-            if (!HasFollowUp(OrderFollowUpFact.Intake) && !HasFollowUp(OrderFollowUpFact.Outgoing)) return "수군 진영: 전령 옆 탁자의 출고 기록을 확인하자.";
-            if (HasFollowUp(OrderFollowUpFact.BeforeCourier) && !HasFollowUp(OrderFollowUpFact.Submitted) && !OrderState.CanIdentifySubmission) return "수군 진영: 발급 담당에게 한진의 반납을 확인하고, 전령 옆 출고 기록과 연결하자.";
-            if (!HasOrder(OrderFact.Verified)) return "수군 진영: 발급 기록 탁자의 부본·승인 기록으로 회수본을 대조하자.";
-            if (!HasFollowUp(OrderFollowUpFact.Rejection) || !(HasFollowUp(OrderFollowUpFact.Delivery) || HasFollowUp(OrderFollowUpFact.DeliveryWitness))) return "수군 진영: 발급 기록 탁자의 회신철을 읽자. 담당자의 직접 전달 진술도 확인할 수 있다.";
+            if (!HasFollowUp(OrderFollowUpFact.Intake) && !HasFollowUp(OrderFollowUpFact.Outgoing)) return "수군 진영: 출고 기록 탁자를 확인하자. 전령은 보급 천막에 있다.";
+            if (HasFollowUp(OrderFollowUpFact.BeforeCourier) && !HasFollowUp(OrderFollowUpFact.Submitted) && !OrderState.CanIdentifySubmission) return "보급 천막: 발급 담당에게 한진의 반납을 확인하고, 수군 진영의 출고 기록과 연결하자.";
+            if (!HasOrder(OrderFact.Verified)) return "보급 천막: 발급 기록 탁자의 부본·승인 기록으로 회수본을 대조하자.";
+            if (!HasFollowUp(OrderFollowUpFact.Rejection) || !(HasFollowUp(OrderFollowUpFact.Delivery) || HasFollowUp(OrderFollowUpFact.DeliveryWitness))) return "보급 천막: 발급 기록 탁자의 회신철을 읽자. 담당자의 직접 전달 진술도 확인할 수 있다.";
             if (!HasFollowUp(OrderFollowUpFact.Knowing)) return "확보한 자료만으로 수첩에서 비교를 이어갈 수 있다. 재방문은 필요 없다.";
             return HasOrder(OrderFact.Map) ? "조조의 지휘 천막에서 결론과 제출 근거를 골라 최종 보고하자." : "수군 배치도로 명령 변경의 영향을 확인할 수 있다. 준비되면 조조에게 최종 보고하자.";
         }

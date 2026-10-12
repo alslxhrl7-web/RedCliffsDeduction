@@ -7,7 +7,7 @@ namespace RedCliffMystery.Investigation
         public enum TargetKind { MissingDocument = 0, Seolpyeong = 1, Duseok = 2, Caimao = 3, Zhangyun = 4, MaintenanceOrder = 5,
             NavalCampExit = 6, ArchiveReturn = 7, RecordsClerk = 8, CareerRecords = 9, PersonalToken = 10, PersonalPapers = 11,
             DocumentCourier = 12, ReliefGuard = 13, GamblingSoldier = 14, OrderStorage = 15,
-            HanJin = 16, ReturnedOrder = 17, OutgoingOrder = 18 }
+            HanJin = 16, ReturnedOrder = 17, OutgoingOrder = 18, CaoCao = 19 }
         public TargetKind kind;
         public string Prompt => kind switch
         {
@@ -30,11 +30,13 @@ namespace RedCliffMystery.Investigation
             TargetKind.HanJin => "E  ·  연락관 한진과 대화",
             TargetKind.ReturnedOrder => "E  ·  재작성 반환 묶음 조사",
             TargetKind.OutgoingOrder => "E  ·  출고 인계 기록 조사",
+            TargetKind.CaoCao => "E  ·  조조에게 보고",
             _ => ""
         };
 
         public void Interact(InvestigationSession session)
         {
+            if(kind==TargetKind.CaoCao) { session.TalkToCaoCaoOnFoot(); return; }
             if (session.HandleOrderTarget(kind)) return;
             switch (kind)
             {

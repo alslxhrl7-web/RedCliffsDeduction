@@ -28,6 +28,8 @@ namespace RedCliffMystery.Investigation
             if (!reportActive)
             {
                 OrderReport.fromNaval = visitingCommandTent ? tentVisitFromNaval : route.AtNavalCamp;
+                OrderReport.fromSupply = visitingCommandTent ? tentVisitFromSupply : route.AtSupplyTent;
+                OrderReport.fromCommand = !visitingCommandTent && route.AtCommandTent;
                 introductionStage.Begin();
                 visitingCommandTent = false; reportActive = true;
                 deadlineReportLocked = investigationTime.DeadlineReached;
@@ -56,8 +58,10 @@ namespace RedCliffMystery.Investigation
             if (deadlineReportLocked) { ShowOrderFinalReview(); return; }
             reportActive = false; visitingCommandTent = false; OrderReport.stage = 0;
             PlaytestObserver.ReportCancelled();
-            introductionStage.EnterArchive();
-            if (OrderReport.fromNaval) route.EnterNavalCamp(); else route.EnterArchive();
+            if(OrderReport.fromCommand) introductionStage.Begin(); else introductionStage.EnterArchive();
+            if(OrderReport.fromCommand) route.RefreshPhysicalLocation();
+            else if (OrderReport.fromSupply && route.SupplyTentReady) route.EnterSupplyTent();
+            else if (OrderReport.fromNaval) route.EnterNavalCamp(); else route.EnterArchive();
             view.SetPlayerIdentity(PlayerName, LocationName); UpdateObjective(); CloseModal();
         }
         void ShowOrderFinalConclusion()
@@ -164,6 +168,8 @@ namespace RedCliffMystery.Investigation
         void ShowOrderEnding()
         {
             var ending = OrderReport.Resolve(OrderState);
+            RecordArchive.Capture(this);
+            if (FinalReportCompleted) RecordArchive.Ending(ending);
             string title = ending == OrderReportEnding.True ? "TRUE END · 지켜낸 강 입구" : ending == OrderReportEnding.Normal ? "NORMAL END · 남겨진 공백" : "BAD END · 빗나간 보고";
             string result = ending == OrderReportEnding.True
                 ? "한진의 제출과 거절 회신 수령 순서가 입증된다. 문서를 숨긴 전달자의 책임은 별도로 기록된다.\n\n잘못된 군령과 대체 재발행이 멈춘다. 강 입구에 남은 감시선이 접근하는 선단을 발견하고 경고를 전한다. 당신은 제17호가 만들 감시 공백을 막았다."
@@ -174,6 +180,10 @@ namespace RedCliffMystery.Investigation
             OrderFinalModal(title, result);
             view.AddChoice("제출한 보고서 보기", () => { OrderFinalModal("확정한 보고서", FinalReportSummary ?? OrderFinalSummary()); view.AddChoice("엔딩으로", ShowOrderEnding); });
             view.AddChoice("보고 직전 기록 불러오기", () => ConfirmLoadPath(InvestigationSaveStore.AutoSavePath, ShowOrderEnding));
+            view.AddChoice("기록관으로", () => {
+                view.gameObject.SetActive(false);
+                RecordArchiveScreen.Show(view.font, () => { view.gameObject.SetActive(true); ShowOrderEnding(); }, "결말");
+            });
             view.AddChoice("처음부터 다시 시작", ConfirmRestart);
         }
     }

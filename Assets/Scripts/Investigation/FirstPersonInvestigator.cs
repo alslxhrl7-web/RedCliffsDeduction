@@ -130,6 +130,7 @@ namespace RedCliffMystery.Investigation
         public void TeleportTo(Transform arrival)
         {
             if (arrival == null) return;
+            ConversationPresentation.BeforeTravel();
             if (controller == null) controller = GetComponent<CharacterController>();
             bool wasEnabled = controller.enabled;
             controller.enabled = false;

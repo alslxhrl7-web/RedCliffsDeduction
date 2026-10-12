@@ -17,10 +17,36 @@ namespace RedCliffMystery.EditorTools
         static void Begin()
         {
             if(!EditorApplication.isPlaying) throw new InvalidOperationException("Enter isolated play test first.");
+            var title=UnityEngine.Object.FindAnyObjectByType<InvestigationTitleScreen>();
+            if(title!=null) title.StartButton.onClick.Invoke();
             view=UnityEngine.Object.FindAnyObjectByType<InvestigationView>();
             UnityEngine.Object.FindAnyObjectByType<InvestigationSession>().enabled=false;
             view.SetPrologueLayout(false); step=0; next=EditorApplication.timeSinceStartup;
-            File.WriteAllText("Logs/EvidenceDocuments/ui-check.txt",""); EditorApplication.update+=Tick;
+            Directory.CreateDirectory("Logs/EvidenceDocuments");
+            File.WriteAllText("Logs/EvidenceDocuments/ui-check.txt","");
+            try { CheckDiscoveryGates(); }
+            catch(Exception e) { File.AppendAllText("Logs/EvidenceDocuments/ui-check.txt","FAIL "+e+"\nCOMPLETE failures=1\n");EditorApplication.isPlaying=false;Debug.LogException(e);return; }
+            EditorApplication.update+=Tick;
+        }
+        static void CheckDiscoveryGates()
+        {
+            var session=UnityEngine.Object.FindAnyObjectByType<InvestigationSession>();
+            var gate=session.GetComponent<DiscoveredDocumentVisuals>();
+            if(!gate||!gate.householdRegistry||!gate.secretLetter)throw new InvalidOperationException("Document discovery references missing");
+            string[] properties={"OrderChapterActive","HasHouseholdRegistryEvidence","SearchAuthorized","LetterFound"};
+            var fields=properties.Select(p=>typeof(InvestigationSession).GetField("<"+p+">k__BackingField",System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance)).ToArray();
+            var original=fields.Select(f=>f.GetValue(session)).ToArray();
+            void Set(int i,bool value){fields[i].SetValue(session,value);gate.RefreshVisibility();}
+            void Require(bool value,string message){if(!value)throw new InvalidOperationException(message);File.AppendAllText("Logs/EvidenceDocuments/ui-check.txt","PASS "+message+"\n");}
+            try {
+                for(int i=0;i<4;i++)Set(i,false);
+                Require(!gate.householdRegistry.activeSelf&&!gate.secretLetter.activeSelf,"undiscovered world documents hidden");
+                Set(1,true);Require(gate.householdRegistry.activeSelf&&!gate.secretLetter.activeSelf,"verified registry appears independently");
+                Set(3,true);Require(!gate.secretLetter.activeSelf,"letter stays hidden without search authorization");
+                Set(2,true);Require(gate.secretLetter.activeSelf,"authorized discovered letter appears");
+                Set(3,false);Require(!gate.secretLetter.activeSelf,"loading undiscovered state hides letter again");
+                Set(3,true);Set(0,true);Require(!gate.householdRegistry.activeSelf&&!gate.secretLetter.activeSelf,"legacy clues do not leak into Han Jin chapter");
+            } finally {for(int i=0;i<fields.Length;i++)fields[i].SetValue(session,original[i]);gate.RefreshVisibility();}
         }
         static void Tick()
         {
@@ -54,9 +80,10 @@ namespace RedCliffMystery.EditorTools
                     }
                     step++; return;
                 }
+                File.AppendAllText("Logs/EvidenceDocuments/ui-check.txt","COMPLETE failures=0\n");
                 view.HideModal(); EditorApplication.update-=Tick; EditorApplication.isPlaying=false;
             }
-            catch(Exception e) { File.AppendAllText("Logs/EvidenceDocuments/ui-check.txt","FAIL "+e); EditorApplication.update-=Tick; EditorApplication.isPlaying=false; Debug.LogException(e); }
+            catch(Exception e) { File.AppendAllText("Logs/EvidenceDocuments/ui-check.txt","FAIL "+e+"\nCOMPLETE failures=1\n"); EditorApplication.update-=Tick; EditorApplication.isPlaying=false; Debug.LogException(e); }
         }
     }
 }

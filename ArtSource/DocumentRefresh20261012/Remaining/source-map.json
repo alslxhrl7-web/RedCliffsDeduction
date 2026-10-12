@@ -1,0 +1,17 @@
+{
+  "DutyRecordRefined": {
+    "studio": "https://3d.varco.ai/studio/9dabdfc6-2394-4298-a106-0916228f31a4",
+    "verified": "Workflow node > View Larger > Open in Studio, 2026-10-12",
+    "note": "Source reused where workflow points to the same generation; distinct refined document models"
+  },
+  "HouseholdRegistryRefined": {
+    "studio": "https://3d.varco.ai/studio/8ae33142-18df-43e4-be34-895a6e47fe46",
+    "verified": "Workflow node > View Larger > Open in Studio, 2026-10-12",
+    "note": "Source reused where workflow points to the same generation; distinct refined document models"
+  },
+  "SecretLetterRefined": {
+    "studio": "https://3d.varco.ai/studio/6bff62a5-3ae1-43fb-9b11-387596a46f80",
+    "verified": "Workflow node > View Larger > Open in Studio, 2026-10-12",
+    "note": "Source reused where workflow points to the same generation; distinct refined document models"
+  }
+}

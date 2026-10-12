@@ -14,6 +14,8 @@ namespace RedCliffMystery.Investigation
         public string resumePoint;
         public InvestigationReportSave report;
         public bool navalCamp;
+        public bool supplyTent;
+        public bool commandTent;
         public bool WorkRouteHeard, AccessAuthorityHeard;
         public string[] inquiryIds, inquiryTitles;
         public bool DocumentInspected;
@@ -51,7 +53,7 @@ namespace RedCliffMystery.Investigation
             var clock = new InvestigationTime();
             clock.Restore(inquiryIds, inquiryTitles);
             return "이야기: " + (version == 2 ? "군령 분실 조사" : "기존 설평 사건") + "\n참모: " + playerName + "\n조사 일정: " + clock.Label
-                + "\n저장 장소: " + (navalCamp ? "조조군 수군 진영" : "조조군 문서고")
+                + "\n저장 장소: " + (commandTent ? "조조군 지휘 천막" : supplyTent ? "조조군 보급 천막" : navalCamp ? "조조군 수군 진영" : "조조군 문서고")
                 + "\n저장 지점: " + ((orderReport != null && orderReport.stage > 0) || report != null ? "보고 선택" : string.IsNullOrEmpty(resumePoint) || resumePoint == "field" ? "현장 조사" : "조사 선택 화면")
                 + "\n저장 시각: " + (string.IsNullOrWhiteSpace(savedAt) ? "시각 기록 없음" : savedAt)
                 + (clock.DeadlineReached ? "\n기한 종료: 이미 시작한 조사 확인 또는 최종 보고로 이어집니다." : "");
@@ -133,7 +135,7 @@ namespace RedCliffMystery.Investigation
             playerName = PlayerName, target = selectedInvestigationTarget,
             resumePoint = saveResumePoint,
             report = CaptureReportSave(),
-            savedAt = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), navalCamp = route.AtNavalCamp,
+            savedAt = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), navalCamp = route.AtNavalCamp || route.OnConnectingRoad, supplyTent = route.AtSupplyTent, commandTent = !visitingCommandTent && !reportActive && route.AtCommandTent,
             inquiryIds = investigationTime.SavedIds, inquiryTitles = investigationTime.SavedTitles,
             WorkRouteHeard = WorkRouteHeard, AccessAuthorityHeard = AccessAuthorityHeard,
             DocumentInspected = DocumentInspected,
@@ -224,7 +226,9 @@ namespace RedCliffMystery.Investigation
             }
             RestoreSave(data);
             introductionStage.EnterArchive();
-            if (data.navalCamp) route.EnterNavalCamp(); else route.EnterArchive();
+            if(data.commandTent) { introductionStage.Begin(); route.RefreshPhysicalLocation(); }
+            else if (data.supplyTent && route.SupplyTentReady) route.EnterSupplyTent();
+            else if (data.navalCamp) route.EnterNavalCamp(); else route.EnterArchive();
             view.SetPrologueLayout(false);
             view.SetPlayerIdentity(PlayerName, LocationName);
             RefreshInvestigationTime();

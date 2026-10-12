@@ -30,7 +30,8 @@ namespace RedCliffMystery.Investigation
             }
             if (campAmbience == null) return;
             if (!campAmbience.isPlaying) campAmbience.Play();
-            float targetVolume = (.40f + .04f * investigationTime.DayIndex) * InvestigationAudioSettings.Background;
+            // Time progression should not silently change the player's chosen audio balance.
+            float targetVolume = .40f * InvestigationAudioSettings.Background;
             campAmbience.volume = Mathf.MoveTowards(campAmbience.volume, targetVolume, Time.unscaledDeltaTime * .12f);
         }
 
@@ -39,7 +40,7 @@ namespace RedCliffMystery.Investigation
             SetModal("소리 설정", "소리 크기", "군영 배경음에는 바람과 깃발 소리가 함께 포함됩니다.\n효과음은 발소리와 천막 스침 소리입니다.\n\n변경한 값은 다음 실행에도 유지됩니다.", "Esc  돌아가기");
             view.AddVolumeSlider("배경음 · 바람 / 깃발", InvestigationAudioSettings.Background, value => {
                 InvestigationAudioSettings.SetBackground(value);
-                if(campAmbience!=null) campAmbience.volume=(.40f+.04f*investigationTime.DayIndex)*value;
+                if(campAmbience!=null) campAmbience.volume=.40f*value;
             });
             view.AddVolumeSlider("효과음 · 발소리 / 천막", InvestigationAudioSettings.Effects, InvestigationAudioSettings.SetEffects);
             System.Action back=()=> { InvestigationAudioSettings.Save(); ShowPause(); };

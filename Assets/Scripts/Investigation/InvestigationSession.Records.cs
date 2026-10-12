@@ -13,7 +13,7 @@ namespace RedCliffMystery.Investigation
         {
             if (OrderChapterActive) { ShowOrderClerk(); return; }
             SetSavePoint("records");
-            SetModal("수군 진영 · 기록 담당자", "기록 담당자", "“형주에서 인계된 인력과 근무 기록을 보관하고 있습니다. 앞의 탁자에서 명부와 근무 기록을 함께 살펴보십시오.”");
+            SetModal("보급 천막 · 기록 담당자", "기록 담당자", "“형주에서 인계된 인력과 근무 기록을 보관하고 있습니다. 앞의 탁자에서 명부와 근무 기록을 함께 살펴보십시오.”");
             view.AddChoice("경력 서류를 살펴본다", ShowCareerRecords);
             view.AddChoice("신고 출신지의 호적 대조", ShowRegistryComparison);
             view.AddChoice("이 기록으로 무엇을 확인할 수 있나?", () => BeginSequence("기록 담당자", new[] {

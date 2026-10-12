@@ -23,6 +23,7 @@ namespace RedCliffMystery.Investigation
 
         public UGUI.Button StartButton { get; private set; }
         public UGUI.Button QuitButton { get; private set; }
+        public UGUI.Button ArchiveButton { get; private set; }
         public UGUI.RawImage TitleLogo { get; private set; }
 
         static readonly Color Ivory = new Color(.96f, .91f, .81f);
@@ -139,8 +140,13 @@ namespace RedCliffMystery.Investigation
                 start();
                 Destroy(gameObject);
             });
-            QuitButton = MenuButton(column, "종료", 1, Quit);
-            Link(StartButton, QuitButton);
+            ArchiveButton = MenuButton(column, "기록관", 1, () => {
+                gameObject.SetActive(false);
+                RecordArchiveScreen.Show(font, () => { gameObject.SetActive(true); Select(ArchiveButton); });
+            });
+            QuitButton = MenuButton(column, "종료", 2, Quit);
+            var menu = new[] { StartButton, ArchiveButton, QuitButton };
+            for(int i=0;i<menu.Length;i++) { var n=menu[i].navigation;n.mode=UGUI.Navigation.Mode.Explicit;n.selectOnUp=menu[(i+2)%3];n.selectOnDown=menu[(i+1)%3];menu[i].navigation=n; }
 
             var caption = Label(transform, "Caption", Track("서기 208년 · 조조군 진영", Hair), 18, Gold);
             Corner(caption.rectTransform, new Vector2(0, 0), new Vector2(150, 44), new Vector2(800, 32));

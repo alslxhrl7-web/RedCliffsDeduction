@@ -36,3 +36,19 @@ playtest.on
 # Unity MCP connection (contains this machine's user path)
 /.mcp.json
 !/Tools/CompileCheck/*.csproj
+
+# Local inspection screenshots and additional Unity recovery scenes
+/Assets/Logs/
+/Assets/Logs.meta
+/Assets/_Recovery/0 (1).unity
+/Assets/_Recovery/0 (1).unity.meta
+/Claude outputs/Duseok_Spear_v1_preview.png
+
+# Python caches and intermediate document inspection files
+__pycache__/
+*.pyc
+/ArtSource/DocumentRefresh20261012/Incoming*.blend
+/ArtSource/DocumentRefresh20261012/Incoming*-inspection.json
+/ArtSource/DocumentRefresh20261012/ImportedInspection.blend
+/ArtSource/DocumentRefresh20261012/Preview/
+/ArtSource/DocumentRefresh20261012/*-inspection.json

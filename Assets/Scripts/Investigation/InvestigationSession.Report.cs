@@ -10,6 +10,7 @@ namespace RedCliffMystery.Investigation
         bool reportFromNavalCamp;
         bool visitingCommandTent;
         bool tentVisitFromNaval;
+        bool tentVisitFromSupply;
         bool reportUncertain;
         string reportSuspect;
         string reportRequest;
@@ -24,8 +25,20 @@ namespace RedCliffMystery.Investigation
             { this.title = title; this.text = text; this.response = response; }
         }
 
+        public void TalkToCaoCaoOnFoot()
+        {
+            if(!introductionFinished || reportActive || FinalReportCompleted) return;
+            SetSavePoint("field");
+            SetModal("조조군 지휘 천막", "조조", "“확인한 내용을 보고하겠느냐?”", "Esc 대화 닫기 · 천막 입구로 걸어 나갈 수 있습니다.");
+            view.AddChoice("조사 결과 보고", BeginFinalReport, CanReportNow);
+            if(!OrderChapterActive && HasHouseholdRegistryEvidence && !SearchAuthorized && !investigationTime.DeadlineReached)
+                view.AddChoice("개인 서류 조사 허가 요청", RequestPersonalSearch);
+            view.AddChoice("대화를 마치고 걸어서 돌아가기", CloseModal);
+        }
+
         public void VisitCommandTent()
         {
+            if(route!=null && route.AtCommandTent && !visitingCommandTent) { TalkToCaoCaoOnFoot(); return; }
             SetSavePoint("tent");
             if (!introductionFinished || reportActive || FinalReportCompleted) return;
             if (introductionStage == null || introductionStage.player == null || introductionStage.tent == null
@@ -36,6 +49,7 @@ namespace RedCliffMystery.Investigation
                 return;
             }
             tentVisitFromNaval = route.AtNavalCamp;
+            tentVisitFromSupply = route.AtSupplyTent;
             visitingCommandTent = true;
             introductionStage.Begin();
             view.SetPlayerIdentity(PlayerName, LocationName);
@@ -49,11 +63,12 @@ namespace RedCliffMystery.Investigation
             view.AddChoice("문서고로 돌아가기", () => LeaveCommandTent(false));
         }
 
-        void LeaveCommandTent(bool naval)
+        void LeaveCommandTent(bool naval, bool supply = false)
         {
             visitingCommandTent = false;
             introductionStage.EnterArchive();
-            if (naval) route.EnterNavalCamp(); else route.EnterArchive();
+            if (supply && route.SupplyTentReady) route.EnterSupplyTent();
+            else if (naval) route.EnterNavalCamp(); else route.EnterArchive();
             view.SetPlayerIdentity(PlayerName, LocationName);
             UpdateObjective();
             CloseModal();

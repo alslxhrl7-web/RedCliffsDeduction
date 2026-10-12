@@ -45,9 +45,11 @@ namespace RedCliffMystery.Investigation
         int modalClosedFrame = -1;
         bool enteringName;
         bool titleScreenActive;
+        float nextArchiveCapture;
         bool introductionFinished;
-        string LocationName => visitingCommandTent || reportActive ? "조조군 지휘 천막"
-            : route != null && route.AtNavalCamp ? "조조군 수군 진영" : route!=null && route.connectedWalkway && route.OnOutdoorGround ? "수군 진영 연결 길" : "조조군 문서고";
+        string LocationName => visitingCommandTent || reportActive || route != null && route.AtCommandTent ? "조조군 지휘 천막"
+            : route != null && route.OnConnectingRoad ? "진영 연결 길"
+            : route != null && route.AtSupplyTent ? "조조군 보급 천막" : route != null && route.AtNavalCamp ? "조조군 수군 진영" : route!=null && route.connectedWalkway && route.OnOutdoorGround ? "수군 진영 연결 길" : "조조군 문서고";
 
         void Start()
         {
@@ -111,7 +113,9 @@ namespace RedCliffMystery.Investigation
 
         void Update()
         {
+            if (RecordArchiveScreen.IsOpen) return;
             if (titleScreenActive) return;
+            if (Time.unscaledTime >= nextArchiveCapture) { nextArchiveCapture=Time.unscaledTime+.5f; RecordArchive.Capture(this); }
             if(route!=null && route.IsTravelling) return;
             RefreshInvestigationTime();
             if (HandleSaveShortcuts()) return;
@@ -134,6 +138,7 @@ namespace RedCliffMystery.Investigation
 
         void SetModal(string eyebrow, string title, string body, string footer = "Esc  닫기")
         {
+            RecordArchive.Capture(this);
             VarcoIdleMotion.StopSpeech();
             int quote = body.IndexOf('“'), endQuote = body.LastIndexOf('”');
             if (quote >= 0 && endQuote > quote) VarcoIdleMotion.Speak(title, body.Substring(quote + 1, endQuote - quote - 1));
@@ -158,7 +163,7 @@ namespace RedCliffMystery.Investigation
             if (dayTransitionActive) return;
             if (!introductionFinished) return;
             if (reportActive) { CancelFinalReport(); return; }
-            if (visitingCommandTent) { LeaveCommandTent(tentVisitFromNaval); return; }
+            if (visitingCommandTent) { LeaveCommandTent(tentVisitFromNaval, tentVisitFromSupply); return; }
             if (!OrderChapterActive && investigationTime.DeadlineReached && !skipDeadlinePrompt) { ShowDeadlineChoice(); return; }
             skipDeadlinePrompt = false;
             saveResumePoint = "field";
@@ -464,14 +469,23 @@ namespace RedCliffMystery.Investigation
             if (!introductionFinished) return;
             sequence = null;
             onSequenceComplete = null;
+            if (route != null && route.AtSupplyTent)
+            {
+                SetModal("조사 · 이동", "보급 천막", "기록 담당자와 문서 전령, 휴식 중인 병사가 이곳에 있다. 수군 진영 중앙의 채모·장윤과는 따로 떨어져 있다.\n\n수군 진영으로 돌아갈 수 있다.");
+                view.AddChoice("수군 진영으로 돌아가기", EnterNavalCamp, route.IsReady);
+                view.AddChoice("보급 천막 조사 계속", CloseModal);
+                view.AddChoice("수첩 다시 보기", ShowJournal);
+                return;
+            }
             bool atNaval = route != null && route.AtNavalCamp;
             SetModal("조사 · 이동", "다음 조사 선택", atNaval
-                ? (OrderChapterActive ? "왼쪽 천막 앞에 채모, 오른쪽에 장윤이 있다. 입구 부근에는 전달자와 수송 물품 보관소가 있다. 기록 담당자 앞에서 부본·승인 기록을, 중앙 탁자에서 배치도를 확인할 수 있다." : "왼쪽 천막 앞에 채모, 오른쪽 천막 앞에 장윤이 있다. 입구 왼편에는 기록 담당자와 경력 서류 탁자가 있다.\n\n문서고로 돌아가 다시 질문할 수도 있다.")
+                ? (OrderChapterActive ? "왼쪽 천막 앞에 채모, 오른쪽에 장윤이 있다. 중앙 탁자에서 배치도를 확인할 수 있다. 전달자, 기록 담당자, 경력 서류 탁자는 옆의 보급 천막에 있다." : "왼쪽 천막 앞에 채모, 오른쪽 천막 앞에 장윤이 있다. \n\n문서고로 돌아가 다시 질문할 수도 있다.")
                 : "수군 진영에서 채모·장윤의 설명을 들을 수 있다.\n\n문서고에 남아 추가로 조사해도 좋다. 뒤쪽 출입문 옆의 창을 든 경비가 두석이다.",
                 "이름과 조사 기록은 유지됩니다.  ·  Esc 현재 장소에서 계속");
             if (atNaval)
             {
                 view.AddChoice("문서고로 돌아가기", ReturnToArchive);
+                view.AddChoice("보급 천막으로 이동", EnterSupplyTent, route != null && route.SupplyTentReady);
                 view.AddChoice("조조군 지휘 천막으로 이동", VisitCommandTent);
                 view.AddChoice("수군 진영 조사 계속", CloseModal);
             }
@@ -533,10 +547,28 @@ namespace RedCliffMystery.Investigation
             view.AddChoice("정리를 마치고 닫기", CloseModal);
         }
 
+        public void EnterSupplyTent()
+        {
+            if (!introductionFinished || route == null || !route.SupplyTentReady) return;
+            if (route.IsTravelling) return;
+            route.EnterSupplyTent();
+            view.SetPlayerIdentity(PlayerName, LocationName);
+            UpdateObjective();
+            CloseModal();
+        }
+
         public void EnterNavalCamp()
         {
             if (!introductionFinished || route == null || !route.IsReady) return;
             if(route.IsTravelling) return;
+            if (route.AtSupplyTent || route.AtCommandTent)
+            {
+                route.EnterNavalCamp();
+                view.SetPlayerIdentity(PlayerName, LocationName);
+                UpdateObjective();
+                CloseModal();
+                return;
+            }
             if(route.animateDeparture && route.curtain!=null && !route.AtNavalCamp)
             {
                 view.HideModal(); VarcoIdleMotion.StopSpeech();

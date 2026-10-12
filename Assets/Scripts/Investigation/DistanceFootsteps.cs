@@ -17,10 +17,13 @@ namespace RedCliffMystery.Investigation
         {
             var feet = new GameObject("FootstepSource"); feet.transform.SetParent(transform,false);
             feet.transform.localPosition = Vector3.up*.12f;
-            source=feet.AddComponent<AudioSource>(); source.playOnAwake=false; source.spatialBlend=.15f;
+            // Player footsteps stay audible regardless of camera height or viewing direction.
+            source=feet.AddComponent<AudioSource>(); source.playOnAwake=false; source.spatialBlend=0;
+            source.volume=InvestigationAudioSettings.Effects;
             source.minDistance=2; source.maxDistance=14; source.rolloffMode=AudioRolloffMode.Logarithmic; source.dopplerLevel=0;
             ResetMotion();
         }
+        void Update() { if(source!=null) source.volume=InvestigationAudioSettings.Effects; }
         public void ResetMotion() { previous=transform.position; PendingDistance=0; }
         public void RecordMovement(bool grounded, bool outdoors)
         {
@@ -39,7 +42,8 @@ namespace RedCliffMystery.Investigation
             previousClip=selected;
             source.pitch=Random.Range(.97f,1.03f);
             source.panStereo=(variation++%2==0?-.035f:.035f);
-            source.PlayOneShot(clips[selected],(outdoors?.18f:.16f)*Random.Range(.94f,1.03f)*InvestigationAudioSettings.Effects); StepsPlayed++;
+            source.volume=InvestigationAudioSettings.Effects;
+            source.PlayOneShot(clips[selected],(outdoors?.85f:.80f)*Random.Range(.97f,1.03f)); StepsPlayed++;
         }
         void OnDisable() { if(source!=null) source.Stop(); ResetMotion(); }
     }

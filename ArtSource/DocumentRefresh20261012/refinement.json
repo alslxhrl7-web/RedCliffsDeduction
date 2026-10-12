@@ -1,0 +1,19 @@
+{
+  "source": "VARCO bridge 9dabdfc6-2394-4298-a106-0916228f31a4",
+  "beforeVertices": 10360,
+  "afterVertices": 4934,
+  "triangles": 10480,
+  "sourceDimensions": [
+    0.8287804126739502,
+    0.9956972599029541,
+    0.29181158542633057
+  ],
+  "refinedDimensions": [
+    0.5,
+    0.34,
+    0.016
+  ],
+  "boundaryEdges": 0,
+  "material": "CC0 Wood049; no generated text; no metallic/normal map",
+  "evidenceText": "Unity existing overlays and evidence UI retained"
+}

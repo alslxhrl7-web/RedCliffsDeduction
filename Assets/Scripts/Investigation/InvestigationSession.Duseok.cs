@@ -29,7 +29,7 @@ namespace RedCliffMystery.Investigation
             if (OrderChapterActive) { ShowOrderCourier(); return; }
             SetSavePoint("courier");
             if (!EnsureInquiry("courier", "전령 · 문서 확인 시점", TalkToDocumentCourier)) return;
-            SetModal("수군 진영 · 문서 전달 전령", "전령", "“사건 당일 대비책을 전달하고 돌려놓은 일을 말씀드리겠습니다.”");
+            SetModal("보급 천막 · 문서 전달 전령", "전령", "“사건 당일 대비책을 전달하고 돌려놓은 일을 말씀드리겠습니다.”");
             view.AddChoice("마지막으로 문서를 본 때는?", () => RecordDuseokStatement("전령",
                 "저녁 군량 배급 전에 화공대비책을 사용처에서 받아 지정된 보관함에 돌려놓았습니다. 표제를 확인했습니다. 그 뒤로 보관함을 계속 지켜본 것은 아닙니다.",
                 () => DocumentReturnedHeard = true, TalkToDocumentCourier));
@@ -70,7 +70,7 @@ namespace RedCliffMystery.Investigation
         {
             SetSavePoint("duseok_timeline");
             SetModal("두석 · 경비 시간대 조사", "경비 공백을 확인한다", DuseokInvestigationGuide()
-                + "\n\n교대 병사는 문서고 입구 맞은편, 전령과 병사는 수군 진영 입구 부근에 있다. 새 조사와 시간대 재질문은 각각 1회다. 확보한 증언은 수첩에서 정리할 수 있다.");
+                + "\n\n교대 병사는 문서고 입구 맞은편, 전령과 병사는 보급 천막에 있다. 새 조사와 시간대 재질문은 각각 1회다. 확보한 증언은 수첩에서 정리할 수 있다.");
             if (DuseokTestimonyHeard && GuardDepartureHeard && GuardReturnHeard)
                 view.AddChoice("배급 북 이후부터 교대 직전까지 어디 있었나?", StartDuseokRequestion);
             if (DuseokTestimonyHeard)

@@ -38,7 +38,7 @@ namespace RedCliffMystery.Investigation
                 "열나흗날 밤까지 경위를 보고하라. 사소한 전달 착오로 여겨 덮어둘 일이 아니다. 관련자의 말과 남은 기록을 함께 확인하라."
             }, () => {
                 SetModal("임무 수령", "군령의 인계 경로를 밝혀라",
-                    "문서고의 보관 자리와 반출 대장을 확인할 수 있다. 수군 진영에서는 채모·장윤과 전달자를 만날 수 있다. 모든 조사를 마치지 않아도 이동할 수 있다.\n\nJ 수첩 · Esc 이동/저장\n새 조사 묶음은 1회, 같은 묶음의 질문·재열람·비교는 무료다. 이번 구간은 임시 12회 안에서 진행한다.\n\n문서를 회수한 뒤 내용과 출고 경위를 조사하라. 조사를 마치면 조조에게 최종 보고할 결론과 근거를 직접 선택한다.");
+                    "문서고의 보관 자리와 반출 대장을 확인할 수 있다. 수군 진영에서는 채모·장윤을, 진영에서 이동하는 보급 천막에서는 전달자와 기록 담당자를 만날 수 있다. 모든 조사를 마치지 않아도 이동할 수 있다.\n\nJ 수첩 · Esc 이동/저장\n새 조사 묶음은 1회, 같은 묶음의 질문·재열람·비교는 무료다. 이번 구간은 임시 12회 안에서 진행한다.\n\n문서를 회수한 뒤 내용과 출고 경위를 조사하라. 조사를 마치면 조조에게 최종 보고할 결론과 근거를 직접 선택한다.");
                 view.AddChoice("문서고로 향한다", FinishIntroduction);
                 onAdvance = FinishIntroduction;
             });
@@ -68,6 +68,7 @@ namespace RedCliffMystery.Investigation
                     view.AddChoice("조사 계속", CloseModal); break;
                 case InvestigationTarget.TargetKind.ReliefGuard:
                 case InvestigationTarget.TargetKind.GamblingSoldier:
+                    RecordArchive.RecordPerson(kind==InvestigationTarget.TargetKind.ReliefGuard?7:8);
                     OrderModal("근무와 인계", "이 병사의 개인 사정만으로 군령의 행방을 알 수 없다. 두석의 동선 설명과 보관소 반입 기록을 확인할 수 있다.");
                     view.AddChoice("조사 계속", CloseModal); break;
                 default: return false;
@@ -108,7 +109,7 @@ namespace RedCliffMystery.Investigation
         {
             if (HasOrder(OrderFact.Verified)) { ShowOrderFollowUp(); return; }
             OrderModal("다음 조사 선택", "전달자의 인계 주장, 두석의 목격, 설평의 서류 취급 중 무엇을 확인할지 선택하자. 추가 질문 없이 현장 조사로 돌아가도 된다.");
-            view.AddChoice("전달자의 인계 경위", () => OrderDirections("수군 진영 입구의 문서 전달 전령에게 물을 수 있다."));
+            view.AddChoice("전달자의 인계 경위", () => OrderDirections("수군 진영에서 Esc 이동 메뉴로 보급 천막에 가면 문서 전달 전령에게 물을 수 있다."));
             view.AddChoice("두석의 동선 설명", () => OrderDirections("문서고 입구의 두석에게 물을 수 있다."));
             view.AddChoice("설평의 서류 취급 · 선택", () => OrderDirections("문서고의 설평에게 물을 수 있다. 과거 전체를 조사할 필요는 없다."));
             view.AddChoice("추가 질문 없이 돌아간다", CloseModal);

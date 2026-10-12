@@ -8,6 +8,7 @@ namespace RedCliffMystery.Investigation
         public Transform tentSpawn;
         public Transform archiveSpawn;
         public GameObject tent;
+        public bool keepTentAccessible;
 
         public void Begin()
         {
@@ -18,7 +19,7 @@ namespace RedCliffMystery.Investigation
         public void EnterArchive()
         {
             player.TeleportTo(archiveSpawn);
-            tent.SetActive(false);
+            tent.SetActive(keepTentAccessible);
         }
     }
 }

@@ -53,6 +53,39 @@ public static partial class OrderChapterChecks
             }),
             ("early report cannot end game", () => { S.BeginFinalReport(); Require(!S.FinalReportCompleted && !S.OrderState.ReadyToReport, "Early ending"); S.CloseModal(); }),
             ("free travel before archive completion", () => { S.route.EnterNavalCamp(); Require(S.route.AtNavalCamp, "Naval travel blocked"); S.route.EnterArchive(); }),
+            ("supply tent travel and save round trip", () => {
+                Require(S.route.SupplyTentReady, "Supply arrival missing");
+                S.route.EnterNavalCamp(); S.EnterSupplyTent();
+                Require(S.route.AtSupplyTent && !S.route.AtNavalCamp, "Supply location incorrect");
+                var saved = Capture();
+                Require(saved.supplyTent && saved.PreviewSummary().Contains("보급 천막"), "Supply save preview missing");
+                string path = InvestigationSaveStore.ManualPath(3);
+                InvestigationSaveStore.Write(path, saved);
+                S.route.EnterArchive();
+                Call("LoadInvestigation", (Action)(() => {}), InvestigationSaveStore.Read(path));
+                Require(S.route.AtSupplyTent, "Supply load returned elsewhere");
+                S.EnterNavalCamp(); Require(S.route.AtNavalCamp && !S.route.AtSupplyTent, "Supply exit failed");
+                Require(Capture().inquiryIds.Length == 0, "Travel consumed inquiry"); S.route.EnterArchive();
+            }),
+            ("supply report cancel and saved draft preserve return location", () => {
+                S.route.EnterSupplyTent(); S.BeginOrderFinal();
+                Require(S.OrderReport.fromSupply && !S.OrderReport.fromNaval, "Supply report origin lost");
+                var saved = Capture();
+                Require(saved.orderReport.fromSupply, "Draft copy lost supply origin");
+                string path = InvestigationSaveStore.ManualPath(3);
+                InvestigationSaveStore.Write(path, saved);
+                Click("제출하지 않고 조사로 돌아가기");
+                Require(S.route.AtSupplyTent, "Report cancelled to archive");
+                Call("LoadInvestigation", (Action)(() => {}), InvestigationSaveStore.Read(path));
+                Call("CancelOrderFinal"); Require(S.route.AtSupplyTent, "Loaded report cancelled elsewhere");
+                S.VisitCommandTent(); S.CloseModal();
+                Require(S.route.AtSupplyTent, "Command tent escape lost supply origin");
+                S.route.EnterArchive(); S.BeginOrderFinal();
+                Require(!S.OrderReport.fromSupply, "Supply origin leaked into archive report");
+                Click("제출하지 않고 조사로 돌아가기");
+                Require(!S.route.AtSupplyTent && !S.route.AtNavalCamp, "Archive return changed");
+            }),
+            ("walk between all four camps and preserve command save", CheckConnectedCampWalk),
             ("archive first inquiry consumes one", () => { Pay(S.InspectDocument); Require(Capture().inquiryIds.Length == 1, "Inquiry not charged"); Click("반출 대장 확인"); }),
             ("revisit and optional inquiry free", () => { S.InspectDocument(); Require(Capture().inquiryIds.Length == 1, "Repeat charged"); S.ShowOrderSeol(); Click("과거 서류를 다시 본 이유 · 선택"); Require(Capture().inquiryIds.Length == 1, "Optional charged"); }),
             ("courier claim", () => { S.route.EnterNavalCamp(); Pay(S.TalkToDocumentCourier); Click("언제 누구에게 넘겼는가?"); }),

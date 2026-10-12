@@ -207,6 +207,35 @@ namespace RedCliffMystery.Investigation
             CreateLabel(go.transform, "Label", label, 23, 0, interactable ? LabelColor : MutedLabelColor);
         }
 
+        // Two short choices share one row so a screen with five choices keeps its body text visible.
+        public void AddChoicePair(string labelA, UnityAction actionA, string labelB, UnityAction actionB)
+        {
+            ReserveChoiceHeight(52);
+            var row = new GameObject("ChoicePair", typeof(RectTransform), typeof(UnityEngine.UI.HorizontalLayoutGroup), typeof(UnityEngine.UI.LayoutElement));
+            row.transform.SetParent(choices, false);
+            row.GetComponent<UnityEngine.UI.LayoutElement>().preferredHeight = 52;
+            var group = row.GetComponent<UnityEngine.UI.HorizontalLayoutGroup>();
+            group.spacing = 8; group.childControlWidth = true; group.childControlHeight = true;
+            group.childForceExpandWidth = true; group.childForceExpandHeight = true;
+            AddPairButton(row.transform, labelA, actionA);
+            AddPairButton(row.transform, labelB, actionB);
+        }
+
+        void AddPairButton(Transform parent, string label, UnityAction action)
+        {
+            var go = new GameObject(label, typeof(RectTransform), typeof(UnityEngine.UI.Image), typeof(UnityEngine.UI.Button));
+            go.transform.SetParent(parent, false);
+            go.GetComponent<UnityEngine.UI.Image>().color = new Color(.20f, .25f, .26f, 1);
+            var button = go.GetComponent<UnityEngine.UI.Button>();
+            var colors = button.colors;
+            colors.highlightedColor = new Color(1f, .84f, .53f);
+            colors.pressedColor = new Color(.72f, .62f, .42f);
+            button.colors = colors;
+            button.onClick.AddListener(() => PlaytestObserver.Click(label, button.interactable));
+            if (action != null) button.onClick.AddListener(action);
+            CreateLabel(go.transform, "Label", label, 23, 0, LabelColor);
+        }
+
         public void AddVolumeSlider(string label, float value, Action<float> changed)
         {
             ReserveChoiceHeight(76);

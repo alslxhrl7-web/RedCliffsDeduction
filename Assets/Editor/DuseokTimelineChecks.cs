@@ -28,8 +28,8 @@ public static class DuseokTimelineChecks
             Require(EndingRules.Resolve("설평", true, true) == InvestigationEnding.True && !session.DuseokTimelineComplete, "Optional investigation changed ending rules");
             foreach (var pair in new[] {
                 ("InvestigationRoutes/ArchiveEntrance/ReliefGuard", InvestigationTarget.TargetKind.ReliefGuard),
-                ("InvestigationRoutes/NavalCamp/DocumentCourier", InvestigationTarget.TargetKind.DocumentCourier),
-                ("InvestigationRoutes/NavalCamp/GamblingSoldier", InvestigationTarget.TargetKind.GamblingSoldier) })
+                ("InvestigationRoutes/SupplyTent/DocumentCourier", InvestigationTarget.TargetKind.DocumentCourier),
+                ("InvestigationRoutes/SupplyTent/GamblingSoldier", InvestigationTarget.TargetKind.GamblingSoldier) })
             {
                 var go = GameObject.Find(pair.Item1);
                 Require(go != null && go.GetComponent<InvestigationTarget>().kind == pair.Item2 && go.GetComponentInChildren<Collider>() != null, "Witness connection missing: " + pair.Item1);

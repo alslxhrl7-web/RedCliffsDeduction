@@ -1,0 +1,40 @@
+{
+  "source": "9dabdfc6-2394-4298-a106-0916228f31a4",
+  "beforeVertices": 10360,
+  "beforeTriangles": 10480,
+  "afterVertices": 4895,
+  "afterTriangles": 5873,
+  "dimensionsMetres": [
+    0.5035938620567322,
+    0.38319435715675354,
+    0.010670480318367481
+  ],
+  "method": "Retopology using sampled VARCO surface; bounded shallow deformation; rebuilt clean edges and fastening; original kept hidden in blend",
+  "materials": {
+    "PaperEdge": [
+      0.5299999713897705,
+      0.4000000059604645,
+      0.23000000417232513,
+      1.0
+    ],
+    "PaperIvory": [
+      0.6399999856948853,
+      0.5,
+      0.3100000023841858,
+      1.0
+    ],
+    "InkFaded": [
+      0.07500000298023224,
+      0.06499999761581421,
+      0.04699999839067459,
+      1.0
+    ],
+    "HempCord": [
+      0.3100000023841858,
+      0.2199999988079071,
+      0.11999999731779099,
+      1.0
+    ]
+  },
+  "readableEvidence": "Existing Unity evidence text unchanged"
+}

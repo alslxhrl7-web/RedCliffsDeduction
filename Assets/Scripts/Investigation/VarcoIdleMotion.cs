@@ -26,15 +26,19 @@ namespace RedCliffMystery
         public static float MouthHeightFraction(int profile) => MouthHeights[Mathf.Clamp(profile, 0, MouthHeights.Length - 1)];
         public static void StopSpeech()
         {
-            foreach (var motion in FindObjectsByType<VarcoIdleMotion>(FindObjectsSortMode.None)) motion.speech = null;
+            Investigation.ConversationPresentation.End();
+            foreach (var motion in FindObjectsByType<VarcoIdleMotion>()) motion.speech = null;
         }
         public static void Speak(string speaker, string text)
         {
             StopSpeech();
             int profile = System.Array.IndexOf(Speakers, speaker);
+            if(speaker=="문서 전달자")profile=6;
+            if(speaker=="발급 기록 담당자")profile=5;
+            if(speaker=="연락관 한진")profile=9;
             if (speaker == "병사") profile = 8;
-            foreach (var motion in FindObjectsByType<VarcoIdleMotion>(FindObjectsSortMode.None))
-                if (motion.Profile == profile) motion.StartSpeech(text, Time.time);
+            foreach (var motion in FindObjectsByType<VarcoIdleMotion>())
+                if (motion.Profile == profile) { motion.StartSpeech(text, Time.time); Investigation.ConversationPresentation.Begin(motion); }
         }
         public void StartSpeech(string text, float time) { speech = text; speechStart = time; }
         public bool IsSpeaking => !string.IsNullOrEmpty(speech) && MouthShape(speech, Time.time - speechStart) != Vector2.zero;

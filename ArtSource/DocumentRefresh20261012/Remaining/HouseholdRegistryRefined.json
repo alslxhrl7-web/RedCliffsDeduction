@@ -1,0 +1,52 @@
+{
+  "source": "8ae33142-18df-43e4-be34-895a6e47fe46",
+  "beforeVertices": 9122,
+  "beforeTriangles": 10026,
+  "afterVertices": 6215,
+  "afterTriangles": 5689,
+  "dimensionsMetres": [
+    0.41575533151626587,
+    0.34299999475479126,
+    0.018802979961037636
+  ],
+  "method": "Retopology using sampled VARCO surface; bounded shallow deformation; rebuilt clean edges and fastening; original kept hidden in blend",
+  "materials": {
+    "BambooHoney0": [
+      0.30000001192092896,
+      0.17000000178813934,
+      0.06499999761581421,
+      1.0
+    ],
+    "BambooHoney1": [
+      0.3179999887943268,
+      0.18199999630451202,
+      0.07199999690055847,
+      1.0
+    ],
+    "BambooHoney2": [
+      0.335999995470047,
+      0.1940000057220459,
+      0.07900000363588333,
+      1.0
+    ],
+    "BambooHoney3": [
+      0.3540000021457672,
+      0.20600000023841858,
+      0.0860000029206276,
+      1.0
+    ],
+    "InkFaded": [
+      0.04800000041723251,
+      0.041999999433755875,
+      0.028999999165534973,
+      1.0
+    ],
+    "HempCord": [
+      0.27000001072883606,
+      0.18000000715255737,
+      0.08500000089406967,
+      1.0
+    ]
+  },
+  "readableEvidence": "Existing Unity evidence text unchanged"
+}
