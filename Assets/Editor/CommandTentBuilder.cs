@@ -8,7 +8,6 @@ namespace RedCliffMystery.EditorTools
 {
     public static class CommandTentBuilder
     {
-        [MenuItem("적벽추리/지휘 천막 도입부 추가")]
         public static void AddToInvestigation()
         {
             if (Application.isPlaying) throw new InvalidOperationException("Exit Play Mode first.");

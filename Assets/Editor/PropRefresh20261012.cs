@@ -18,7 +18,6 @@ namespace RedCliffMystery.EditorTools
         static GameObject Find(string name) => SceneManager.GetActiveScene().GetRootGameObjects()
             .SelectMany(g => g.GetComponentsInChildren<Transform>(true)).First(t => t.name == name).gameObject;
 
-        [MenuItem("적벽추리/소품 개선/블렌더 소품 적용")]
         public static void Apply()
         {
             var scene = SceneManager.GetActiveScene();
@@ -108,12 +107,9 @@ namespace RedCliffMystery.EditorTools
             wrapper.transform.SetParent(parent,true);
         }
 
-        [MenuItem("적벽추리/소품 개선/수정 전 확인")]
         public static void Before() { Audit(); Capture("before"); }
-        [MenuItem("적벽추리/소품 개선/수정 후 확인")]
         public static void After() { Audit(); Capture("after"); }
 
-        [MenuItem("적벽추리/소품 개선/저장과 배치 검사")]
         public static void ValidateSaved()
         {
             var scene=SceneManager.GetActiveScene();
@@ -139,7 +135,6 @@ namespace RedCliffMystery.EditorTools
             Debug.Log("PROP_VALIDATION_PASS triangles="+triangles);
         }
 
-        [MenuItem("적벽추리/소품 개선/주요 탁자 외형 통일")]
         public static void FinishTables()
         {
             var scene=SceneManager.GetActiveScene();
@@ -171,7 +166,6 @@ namespace RedCliffMystery.EditorTools
             File.WriteAllText(Logs+"/tables.txt","PASS five further desks replaced; original documents, maps and collider locations retained.");
         }
 
-        [MenuItem("적벽추리/소품 개선/보관함 기록과 천막 충돌 보완")]
         public static void FinishDetails()
         {
             var scene=SceneManager.GetActiveScene();

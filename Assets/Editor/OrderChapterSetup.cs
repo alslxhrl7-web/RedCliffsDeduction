@@ -8,7 +8,6 @@ using RedCliffMystery.Investigation;
 
 public static class OrderChapterSetup
 {
-    [MenuItem("적벽추리/군령 조사/씬 연결 적용")]
     public static void Apply()
     {
         if (EditorApplication.isPlayingOrWillChangePlaymode) throw new InvalidOperationException("실행을 정지한 뒤 적용하세요.");
@@ -54,7 +53,6 @@ public static class OrderChapterSetup
         Debug.Log("군령 조사 씬 연결 완료: 전달자 옆 수송 물품과 조사 표기 적용.");
     }
 
-    [MenuItem("적벽추리/군령 조사/보관소 시야 검사")]
     public static void CheckStorageVisibility()
     {
         if (EditorApplication.isPlayingOrWillChangePlaymode) throw new InvalidOperationException("Edit mode required");

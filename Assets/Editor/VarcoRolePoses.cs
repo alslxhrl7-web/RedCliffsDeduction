@@ -13,9 +13,7 @@ namespace RedCliffMystery.EditorTools
         static readonly string[] Names = { "CaoCao", "Seolpyeong", "Duseok", "Caimao", "Zhangyun", "RecordsClerk", "DocumentCourier", "ReliefGuard", "GamblingSoldier" };
         // Keep the original v2 pose installer limited to its nine source models.
         static readonly string[] InspectionNames = Names.Concat(new[] { "HanJin" }).ToArray();
-        [MenuItem("적벽추리/전체 인물 포즈와 대기 움직임 적용")]
         public static void ApplyAll() => Apply();
-        [MenuItem("적벽추리/대화 화자 연결 검증")]
         public static void VerifySpeakerRouting()
         {
             if (!EditorApplication.isPlaying) throw new System.Exception("Run in Play Mode");
@@ -54,7 +52,6 @@ namespace RedCliffMystery.EditorTools
             Directory.CreateDirectory("Logs/VarcoPreviews");
             File.WriteAllText("Logs/VarcoPreviews/speaker-check.txt", report.ToString());
         }
-        [MenuItem("적벽추리/대화 입모양 검증")]
         public static void VerifySpeech()
         {
             var report = new StringBuilder();
@@ -90,7 +87,6 @@ namespace RedCliffMystery.EditorTools
             }
             finally { EditorSceneManager.ClosePreviewScene(preview); }
         }
-        [MenuItem("적벽추리/인물 대기 움직임 검증")]
         public static void VerifyMovement()
         {
             var report = new StringBuilder();
@@ -131,10 +127,8 @@ namespace RedCliffMystery.EditorTools
             }
             finally { EditorSceneManager.ClosePreviewScene(preview); }
         }
-        [MenuItem("적벽추리/추가 인물 직책 포즈 적용")]
         public static void Apply() => Apply(false);
 
-        [MenuItem("적벽추리/서기 팔 자세 수정")]
         public static void ApplyClerkPoses() => Apply(true);
 
         static void Apply(bool clerksOnly)
@@ -236,7 +230,6 @@ namespace RedCliffMystery.EditorTools
             Preview();
         }
 
-        [MenuItem("적벽추리/추가 인물 포즈 미리보기")]
         public static void Preview()
         {
             var originalScene = SceneManager.GetActiveScene();
@@ -274,7 +267,6 @@ namespace RedCliffMystery.EditorTools
             }
             finally { EditorSceneManager.ClosePreviewScene(preview); }
         }
-        [MenuItem("적벽추리/인물 포즈 구조 확인")]
         public static void Inspect()
         {
             var report = new StringBuilder();

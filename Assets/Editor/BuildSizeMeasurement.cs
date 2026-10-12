@@ -12,7 +12,6 @@ namespace RedCliffMystery.EditorTools
     // Comparison only: never replaces release output or changes player/import settings.
     public static class BuildSizeMeasurement
     {
-        [MenuItem("적벽추리/데모 수정/빌드 용량 비교 측정")]
         static void Queue()
         {
             Directory.CreateDirectory("Logs/BuildSize");

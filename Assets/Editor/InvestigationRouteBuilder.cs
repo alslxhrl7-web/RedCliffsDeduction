@@ -15,7 +15,6 @@ namespace RedCliffMystery.EditorTools
         static Material wood, darkWood, paper, brass, canvas, skin, hair, armour;
         static Material earth, path, guardCloth, caimaoCloth, zhangyunCloth, banner;
 
-        [MenuItem("적벽추리/두석 시간대 조사 인물 연결")]
         public static void BuildDuseokWitnesses()
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode) throw new InvalidOperationException("Exit Play Mode first.");
@@ -44,7 +43,6 @@ namespace RedCliffMystery.EditorTools
             catch { Undo.RevertAllDownToGroup(group); throw; }
         }
 
-        [MenuItem("적벽추리/목패와 개인 서류함 연결")]
         public static void BuildPersonalEvidence()
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode) throw new InvalidOperationException("Exit Play Mode first.");
@@ -89,7 +87,6 @@ namespace RedCliffMystery.EditorTools
             FollowUpConnectionChecks.Verify();
         }
 
-        [MenuItem("적벽추리/경력 기록 탁자 추가")]
         public static void BuildCareerRecords()
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode)
@@ -129,7 +126,6 @@ namespace RedCliffMystery.EditorTools
             catch { Undo.RevertAllDownToGroup(group); throw; }
         }
 
-        [MenuItem("적벽추리/문서고와 수군 진영 연결")]
         public static void Build()
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode)

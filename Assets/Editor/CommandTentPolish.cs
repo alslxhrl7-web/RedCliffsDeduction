@@ -17,7 +17,6 @@ namespace RedCliffMystery.EditorTools
         const string Log = "Logs/CommandTentPolish";
         static GameObject Tent => UnityEngine.Object.FindAnyObjectByType<IntroductionStage>().tent;
 
-        [MenuItem("적벽추리/천막 개선/지휘 천막 개선 적용")]
         public static void Apply()
         {
             var scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
@@ -203,9 +202,7 @@ namespace RedCliffMystery.EditorTools
             foreach(var mesh in transient)UnityEngine.Object.DestroyImmediate(mesh);
         }
 
-        [MenuItem("적벽추리/천막 개선/수정 전 기록")]
         public static void Before() => Capture("before");
-        [MenuItem("적벽추리/천막 개선/수정 후 기록")]
         public static void After() => Capture("after");
 
         static void Capture(string name)

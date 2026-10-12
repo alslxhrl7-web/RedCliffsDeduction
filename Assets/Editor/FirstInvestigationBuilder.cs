@@ -16,7 +16,6 @@ namespace RedCliffMystery.EditorTools
         static Material wood, darkWood, plaster, paper, cloth, gold, stone;
         static Font editorFont;
 
-        [MenuItem("적벽추리/첫 조사 장면 생성 또는 열기")]
         public static void CreateOrOpen()
         {
             if (Application.isPlaying) throw new InvalidOperationException("Exit Play Mode before opening the scene.");

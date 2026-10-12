@@ -51,7 +51,6 @@ namespace RedCliffMystery.EditorTools
             importer.maxTextureSize=1024;importer.mipmapEnabled=false;importer.alphaIsTransparency=true;importer.textureCompression=TextureImporterCompression.CompressedHQ;importer.SaveAndReimport();
             return AssetDatabase.LoadAssetAtPath<Texture2D>(path);
         }
-        [MenuItem("적벽추리/문서 개선/남은 문서 3종 적용")]
         public static void Apply()
         {
             Guard();Directory.CreateDirectory(Logs);string backup=Logs+"/Investigation-before-remaining.unity";if(!File.Exists(backup))File.Copy(SceneManager.GetActiveScene().path,backup);
@@ -75,7 +74,6 @@ namespace RedCliffMystery.EditorTools
                 File.WriteAllText(Logs+"/apply.txt","Duty model on existing table; registry and letter assigned with discovery gates; all three evidence previews assigned. Original assets retained.\n");
             }catch{Undo.RevertAllDownToGroup(group);throw;}
         }
-        [MenuItem("적벽추리/문서 개선/남은 문서 저장 검사")]
         public static void Validate()
         {
             Guard();EditorSceneManager.OpenScene(SceneManager.GetActiveScene().path);Directory.CreateDirectory(Logs);File.WriteAllText(Logs+"/checks.txt","Remaining documents saved-scene checks\n");
@@ -93,7 +91,6 @@ namespace RedCliffMystery.EditorTools
             }
             File.AppendAllText(Logs+"/checks.txt","PASS duty collision and interaction; registry/letter start hidden; saved scene reopened\nCOMPLETE failures=0\n");
         }
-        [MenuItem("적벽추리/문서 개선/근무 기록 근접 보기")]
         static void Focus(){var view=EditorWindow.GetWindow<SceneView>();view.LookAt(Find("DutyRecord").transform.position,Quaternion.LookRotation(new Vector3(-.4f,-1,.8f)),1.05f,false,true);view.Repaint();}
     }
 }

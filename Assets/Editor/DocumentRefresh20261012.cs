@@ -17,7 +17,6 @@ namespace RedCliffMystery.EditorTools
         static void Guard() { var s=SceneManager.GetActiveScene(); if(Application.isPlaying||s.isDirty||s.path!="Assets/Scenes/Investigation.unity") throw new InvalidOperationException("Saved Investigation scene outside Play required"); }
         static Bounds BoundsOf(GameObject go) { var rr=go.GetComponentsInChildren<Renderer>(true).Where(r=>r.enabled).ToArray();var b=rr[0].bounds;foreach(var r in rr.Skip(1))b.Encapsulate(r.bounds);return b; }
 
-        [MenuItem("적벽추리/문서 개선/군령 모델 적용")]
         public static void Apply()
         {
             Guard();var root=Find("MaintenanceOrder");
@@ -48,7 +47,6 @@ namespace RedCliffMystery.EditorTools
             } catch {Undo.RevertAllDownToGroup(group);throw;}
         }
 
-        [MenuItem("적벽추리/문서 개선/군령 저장 검사")]
         public static void Validate()
         {
             Guard();EditorSceneManager.OpenScene(SceneManager.GetActiveScene().path);

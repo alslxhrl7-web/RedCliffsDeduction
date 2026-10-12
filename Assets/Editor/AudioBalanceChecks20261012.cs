@@ -17,7 +17,6 @@ public static class AudioBalanceChecks20261012
     static void Require(bool ok,string message) { if(!ok) throw new InvalidOperationException(message); }
     static void Log(string message) { File.AppendAllText(Folder+"/checks.txt",message+"\n"); }
 
-    [MenuItem("적벽추리/소리 보정/권장 음량 적용")]
     static void Apply()
     {
         Directory.CreateDirectory(Folder);
@@ -27,7 +26,6 @@ public static class AudioBalanceChecks20261012
         InvestigationAudioSettings.Save();
     }
 
-    [MenuItem("적벽추리/소리 보정/동시 재생과 음량 검사")]
     static void Begin()
     {
         Require(EditorApplication.isPlaying,"Play Mode required");

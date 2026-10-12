@@ -12,7 +12,6 @@ namespace RedCliffMystery.EditorTools
 {
     public static class DemoInteractionChecks
     {
-        [MenuItem("적벽추리/데모 수정/보관함과 목패 배치 수정")]
         public static void RepairLayout()
         {
             if (Application.isPlaying || UnityEngine.SceneManagement.SceneManager.GetActiveScene().path != FirstInvestigationBuilder.ScenePath)
@@ -43,7 +42,6 @@ namespace RedCliffMystery.EditorTools
         static void Require(bool condition, string message)
         { if (!condition) throw new InvalidOperationException(message); }
 
-        [MenuItem("적벽추리/데모 수정/조사 판정 검증")]
         public static void CheckAim()
         {
             var mover = UnityEngine.Object.FindAnyObjectByType<FirstPersonInvestigator>();
@@ -122,7 +120,6 @@ namespace RedCliffMystery.EditorTools
             button.onClick.Invoke();
         }
 
-        [MenuItem("적벽추리/데모 수정/미완료 조사 보고 검증")]
         public static void CheckEarlyReport()
         {
             Require(Application.isPlaying, "Enter Play Mode first");
@@ -163,7 +160,6 @@ namespace RedCliffMystery.EditorTools
                 session.CloseModal();
             }
         }
-        [MenuItem("적벽추리/데모 수정/배치 진단")]
         public static void Inspect()
         {
             var text = new StringBuilder();

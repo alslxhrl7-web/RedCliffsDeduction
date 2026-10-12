@@ -17,16 +17,13 @@ namespace RedCliffMystery.EditorTools
         static GameObject Find(string name)=>SceneManager.GetActiveScene().GetRootGameObjects().SelectMany(g=>g.GetComponentsInChildren<Transform>(true)).Single(t=>t.name==name).gameObject;
         static Bounds BoundsOf(GameObject go) {var rr=go.GetComponentsInChildren<Renderer>().Where(r=>r.enabled).ToArray();var b=rr[0].bounds;foreach(var r in rr.Skip(1))b.Encapsulate(r.bounds);return b;}
         static void Guard() {var s=SceneManager.GetActiveScene();if(Application.isPlaying||s.isDirty||s.path!="Assets/Scenes/Investigation.unity")throw new InvalidOperationException("Saved Investigation scene in Edit mode required");}
-        [MenuItem("적벽추리/문서 개선/경력 서류 근접 보기")]
         static void FocusPersonnel()=>Focus("PersonnelRecord");
-        [MenuItem("적벽추리/문서 개선/군령 근접 보기")]
         static void FocusOrder()=>Focus("MaintenanceOrder");
         static void Focus(string name)
         {
             var root=Find(name);var view=EditorWindow.GetWindow<SceneView>();
             view.LookAt(root.transform.position,Quaternion.LookRotation(new Vector3(-.4f,-1,.8f)),1.05f,false,true);view.Repaint();
         }
-        [MenuItem("적벽추리/문서 개선/검사 저장 경로 정리")]
         static void ResetTestPath()
         {
             if(Application.isPlaying)throw new InvalidOperationException("Edit mode required");
@@ -53,7 +50,6 @@ namespace RedCliffMystery.EditorTools
             if(name=="InkFaded")mat.SetFloat("_Cull",0);
             AssetDatabase.CreateAsset(mat,path);return mat;
         }
-        [MenuItem("적벽추리/문서 개선/군령과 경력 서류 2차 보정 적용")]
         public static void Apply()
         {
             Guard();Directory.CreateDirectory(Logs);
@@ -88,7 +84,6 @@ namespace RedCliffMystery.EditorTools
             }catch{Undo.RevertAllDownToGroup(group);throw;}
             File.WriteAllText(Logs+"/apply.txt","Applied both models; original renderers and previous revision retained. Run saved-scene validation after imports settle.");
         }
-        [MenuItem("적벽추리/문서 개선/2차 보정 저장 검사")]
         public static void Validate()
         {
             Guard();EditorSceneManager.OpenScene(SceneManager.GetActiveScene().path);Directory.CreateDirectory(Logs);File.WriteAllText(Logs+"/checks.txt","Document polish V2\n");

@@ -4,7 +4,6 @@ using RedCliffMystery.Investigation;
 
 public static class InvestigationBudgetChecks
 {
-    [UnityEditor.MenuItem("적벽추리/플레이 검증/조사 시간 계산")]
     public static void Verify()
     {
         var clock = new InvestigationTime();

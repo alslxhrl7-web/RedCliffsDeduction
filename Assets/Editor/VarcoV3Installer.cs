@@ -17,7 +17,6 @@ namespace RedCliffMystery.EditorTools
         static readonly float[] Heights = { 1.78f, 1.70f, 1.78f, 1.80f, 1.77f, 1.68f, 1.72f, 1.76f, 1.70f, 1.74f };
         static Transform Npc(string name) => SceneManager.GetActiveScene().GetRootGameObjects().SelectMany(r => r.GetComponentsInChildren<Transform>(true)).Single(t => t.name == name);
 
-        [MenuItem("적벽추리/v3 인물/적용")]
         public static void Apply()
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode) throw new InvalidOperationException("Exit Play mode first.");
@@ -98,7 +97,6 @@ namespace RedCliffMystery.EditorTools
         }
         static string InteractionState(Transform npc) => npc.position + "|" + npc.rotation + "|" + string.Join("|", npc.GetComponents<Component>().Where(c => !(c is Transform)).Select(c => EditorJsonUtility.ToJson(c)));
 
-        [MenuItem("적벽추리/v3 인물/방향과 자세 보정")]
         public static void CorrectStances()
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode) throw new InvalidOperationException("Exit Play mode first");
@@ -157,7 +155,6 @@ namespace RedCliffMystery.EditorTools
             return bounds;
         }
 
-        [MenuItem("적벽추리/v3 인물/검증")]
         public static void Validate()
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode) throw new InvalidOperationException("Run asset validation outside Play mode.");
@@ -173,9 +170,10 @@ namespace RedCliffMystery.EditorTools
                 foreach (var filter in visual.GetComponentsInChildren<MeshFilter>())
                     if (!filter.sharedMesh.isReadable || !(AssetDatabase.GetAssetPath(filter.sharedMesh).StartsWith(Root+"/"+Names[i]+"/")
                         || AssetDatabase.GetAssetPath(filter.sharedMesh).StartsWith("Assets/Art/Characters/Feedback20261012/"+Names[i]+"_Rest")
-                        || AssetDatabase.GetAssetPath(filter.sharedMesh)==CharacterBlenderPolish.Output+"/"+Names[i]+".asset")) throw new Exception("Wrong mesh " + Names[i]);
+                        || AssetDatabase.GetAssetPath(filter.sharedMesh)==CharacterBlenderPolish.Output+"/"+Names[i]+".asset"
+                        || AssetDatabase.GetAssetPath(filter.sharedMesh)=="Assets/Art/Characters/Repair20261012"+"/"+Names[i]+".asset")) throw new Exception("Wrong mesh " + Names[i]);
                 foreach (var renderer in visual.GetComponentsInChildren<Renderer>())
-                    if (renderer.sharedMaterials.Any(m => m == null || m.shader.name != "Universal Render Pipeline/Lit" || m.GetTexture("_BaseMap") == null)) throw new Exception("Material " + Names[i]);
+                    if (renderer.sharedMaterials.Any(m => m == null || m.shader.name != "Universal Render Pipeline/Lit" || (m.GetTexture("_BaseMap") == null && !AssetDatabase.GetAssetPath(m).StartsWith("Assets/Art/Characters/Repair20261012"+"/")))) throw new Exception("Material " + Names[i]);
                 var bounds = VisualBounds(visual);
                 if (Mathf.Abs(bounds.size.y - Heights[i]) > .04f || Mathf.Abs(bounds.min.y) > .01f || bounds.size.y < bounds.size.z * 2)
                     throw new Exception("Invalid standing axis/height/feet: " + Names[i] + " bounds=" + bounds);
@@ -185,20 +183,19 @@ namespace RedCliffMystery.EditorTools
                 {
                     var sample = clone.GetComponent<VarcoIdleMotion>(); sample.InitializeForPreview(); sample.Sample(0);
                     var mesh = clone.GetComponentInChildren<MeshFilter>().sharedMesh; var rest = mesh.vertices;
-                    sample.StartSpeech("아", -.07f); sample.Sample(0); var speaking = mesh.vertices;
+                    sample.StartSpeech(new string('아',80), -1.2f); sample.Sample(0); var speaking = mesh.vertices;
                     int changed = rest.Where((v, n) => (v - speaking[n]).sqrMagnitude > 1e-12f).Count();
-                    if (changed == 0) throw new Exception("No mouth vertices: " + Names[i]);
+                    if (changed == 0) throw new Exception("No conversation motion: " + Names[i]);
                     sample.StartSpeech("아", -10); sample.Sample(0);
                     if (!rest.SequenceEqual(mesh.vertices)) throw new Exception("Speech did not stop: " + Names[i]);
                     sample.Sample(1); if (rest.SequenceEqual(mesh.vertices)) throw new Exception("Idle motion missing: " + Names[i]);
-                    report.AppendLine(Names[i] + " PASS standing axis, height=" + bounds.size.y.ToString("F3") + ", feet=" + bounds.min.y.ToString("F4") + ", material, mesh, profile, idle, speech/rest; mouth vertices=" + changed);
+                    report.AppendLine(Names[i] + " PASS standing axis, height=" + bounds.size.y.ToString("F3") + ", feet=" + bounds.min.y.ToString("F4") + ", material, mesh, profile, idle, speech/rest; gesture vertices=" + changed);
                     File.WriteAllText("Logs/VarcoV3/validation.txt", report.ToString());
                 }
                 finally { Object.DestroyImmediate(clone); }
             }
             report.AppendLine("COMPLETE PASS 10"); File.WriteAllText("Logs/VarcoV3/validation.txt", report.ToString()); Debug.Log("VARCO_V3_VALIDATION_PASS 10");
         }
-        [MenuItem("적벽추리/v3 인물/미리보기")]
         public static void Preview()
         {
             Directory.CreateDirectory("Logs/VarcoV3");

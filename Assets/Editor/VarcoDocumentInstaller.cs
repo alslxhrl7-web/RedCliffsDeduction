@@ -13,7 +13,6 @@ namespace RedCliffMystery.EditorTools
     {
         const string Root = "Assets/Art/Evidence/Varco/";
         static readonly string[] Names = { "MaintenanceOrder", "PersonnelRecord", "DutyRecord", "HouseholdRegistry", "SecretLetter" };
-        [MenuItem("적벽추리/바르코 증거 문서 적용")]
         public static void Apply()
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode) throw new InvalidOperationException("Exit Play Mode first.");

@@ -26,7 +26,6 @@ namespace RedCliffMystery.EditorTools
         static void Cost() => Call("AcceptInvestigationCost", S);
         static void Private(string name) => typeof(InvestigationSession).GetMethod(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance).Invoke(S, null);
 
-        [MenuItem("적벽추리/플레이 검증/추가 진술과 후속 조사")]
         public static void FollowUp()
         {
             Require(Application.isPlaying && S.ContradictionFound, "Run base route first");
@@ -74,7 +73,6 @@ namespace RedCliffMystery.EditorTools
             Debug.Log("PLAY_FOLLOWUP_PASS: new accounts, cancellation, permission, letter date, interrogation, all journal pages");
         }
 
-        [MenuItem("적벽추리/플레이 검증/저장 복원")]
         public static void SaveLoad()
         {
             Require(Application.isPlaying && S.HasWuLetterEvidence, "Complete follow-up first");
@@ -106,7 +104,6 @@ namespace RedCliffMystery.EditorTools
             }
         }
 
-        [MenuItem("적벽추리/플레이 검증/진엔딩 보고")]
         public static void TrueEnding()
         {
             Require(Application.isPlaying && S.HasWuLetterEvidence, "Complete follow-up first");
@@ -128,18 +125,15 @@ namespace RedCliffMystery.EditorTools
             S.BeginFinalReport(); Click("특정 인물을 지목한다"); Click(suspect);
             Click("제출 선택 완료 (0건)"); Click("현재 결과로 보고를 마친다"); Click("이 내용으로 보고 완료");
         }
-        [MenuItem("적벽추리/플레이 검증/노멀엔딩")]
         public static void NormalEnding() {
             RestoreBeforeFollowUp(); Report("설평");
             Require(S.CurrentEnding == InvestigationEnding.Normal, "Normal ending missing");
             Click("그 뒤"); Click("보고서를 덮는다");
         }
-        [MenuItem("적벽추리/플레이 검증/노멀 암전 확인")]
         public static void CheckNormalFade() {
             Require(S.view.title.text == "엔딩?", "Normal fade/hint missing"); Layout();
             Debug.Log("PLAY_NORMAL_PASS: incomplete proof, unknown whereabouts, fade and alternate-ending hint");
         }
-        [MenuItem("적벽추리/플레이 검증/오지목 배드엔딩")]
         public static void BadEndings() {
             foreach (var suspect in new[] { "채모", "장윤", "두석" }) {
                 RestoreBeforeFollowUp(); Report(suspect);
@@ -148,19 +142,16 @@ namespace RedCliffMystery.EditorTools
             }
             Click("마지막 명령"); Click("계속");
         }
-        [MenuItem("적벽추리/플레이 검증/배드 암전 확인")]
         public static void CheckBadFade() {
             Require(S.view.title.text == "다시 조사하시겠습니까?", "Bad fade/retry missing"); Layout();
             Debug.Log("PLAY_BAD_PASS: three wrong accusations, fourth-day handoff, execution fade and retry");
             Click("예 · 처음부터 다시 조사");
         }
-        [MenuItem("적벽추리/플레이 검증/재시작 확인")]
         public static void CheckRestart() {
             Require(!S.FinalReportCompleted && !S.DocumentInspected && UnityEngine.Object.FindAnyObjectByType<InvestigationTitleScreen>() != null, "Restart did not reset to title");
             Debug.Log("PLAY_RESTART_PASS");
         }
 
-        [MenuItem("적벽추리/플레이 검증/기한 만료")]
         public static void Deadline() {
             Require(Application.isPlaying && S.HasWuLetterEvidence, "Complete follow-up first");
             Require(S.InterrogationCompleted && S.InvestigationDate.Contains("남은 조사 0회"), "Full route should complete the last interrogation within twelve slots");
@@ -176,7 +167,6 @@ namespace RedCliffMystery.EditorTools
             Debug.Log("PLAY_DEADLINE_PASS: 12th inquiry completed, 13th blocked, report locked, unresolved ending and fourth-day label");
         }
 
-        [MenuItem("적벽추리/플레이 검증/화면 캡처")]
         public static void Capture() {
             Directory.CreateDirectory("Temp");
             ScreenCapture.CaptureScreenshot("Temp/InvestigationPlayCheck.png");

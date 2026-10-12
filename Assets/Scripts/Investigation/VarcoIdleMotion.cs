@@ -1,3 +1,4 @@
+using System.IO;
 using UnityEngine;
 
 namespace RedCliffMystery
@@ -8,6 +9,7 @@ namespace RedCliffMystery
         public int Profile;
         public float Amplitude = .005f;
         [Range(0, 1)] public float MouthHeightOverride;
+        public TextAsset ConversationMotion;
         struct Surface
         {
             public MeshFilter Filter;
@@ -16,18 +18,22 @@ namespace RedCliffMystery
             public float[] Weight;
             public float[] MouthWeight;
             public float Height, MouthY;
+            public ConversationMotionClip.Offset[] GestureOffsets;
         }
         Surface[] surfaces;
         float nextSample;
         string speech;
         float speechStart;
+        float speechDuration, motionStopTime;
+        Vector3 stoppedMotion, entryMotion;
+        ConversationMotionClip conversationClip;
         static readonly string[] Speakers = { "조조", "설평", "두석", "채모", "장윤", "기록 담당자", "전령", "교대 병사", "동석 병사", "한진" };
         static readonly float[] MouthHeights = { .840f, .872f, .870f, .875f, .855f, .875f, .862f, .866f, .867f, .875f };
         public static float MouthHeightFraction(int profile) => MouthHeights[Mathf.Clamp(profile, 0, MouthHeights.Length - 1)];
         public static void StopSpeech()
         {
             Investigation.ConversationPresentation.End();
-            foreach (var motion in FindObjectsByType<VarcoIdleMotion>()) motion.speech = null;
+            foreach (var motion in FindObjectsByType<VarcoIdleMotion>()) motion.StopTalking(Time.time);
         }
         public static void Speak(string speaker, string text)
         {
@@ -40,7 +46,28 @@ namespace RedCliffMystery
             foreach (var motion in FindObjectsByType<VarcoIdleMotion>())
                 if (motion.Profile == profile) { motion.StartSpeech(text, Time.time); Investigation.ConversationPresentation.Begin(motion); }
         }
-        public void StartSpeech(string text, float time) { speech = text; speechStart = time; }
+        public void StartSpeech(string text, float time)
+        {
+            entryMotion = ConversationWeights(time);
+            speech = text; speechStart = time; speechDuration = 0;
+            if (text != null) foreach (char c in text)
+                speechDuration += char.IsWhiteSpace(c) ? .07f : char.IsPunctuation(c) ? .22f : .14f;
+        }
+        public void StopTalking(float time)
+        {
+            stoppedMotion = ConversationWeights(time); motionStopTime = time; speech = null;
+        }
+        public Vector3 ConversationWeights(float time)
+        {
+            if (conversationClip == null) return Vector3.zero;
+            if (string.IsNullOrEmpty(speech))
+                return stoppedMotion * (1 - Mathf.SmoothStep(0, 1, (time - motionStopTime) / .3f));
+            float elapsed = time - speechStart;
+            if (elapsed < 0 || elapsed >= speechDuration) return Vector3.zero;
+            float enter = Mathf.SmoothStep(0, 1, elapsed / .3f);
+            float leave = Mathf.SmoothStep(0, 1, (speechDuration - elapsed) / .3f);
+            return Vector3.Lerp(entryMotion, conversationClip.Sample(elapsed), enter) * leave;
+        }
         public bool IsSpeaking => !string.IsNullOrEmpty(speech) && MouthShape(speech, Time.time - speechStart) != Vector2.zero;
         public bool HasSpeech => !string.IsNullOrEmpty(speech);
         public static Vector2 MouthShape(string text, float elapsed)
@@ -68,6 +95,7 @@ namespace RedCliffMystery
         public void InitializeForPreview()
         {
             if (surfaces != null) return;
+            conversationClip = ConversationMotion != null ? ConversationMotionClip.Read(ConversationMotion) : null;
             var filters = GetComponentsInChildren<MeshFilter>(true);
             surfaces = new Surface[filters.Length];
             for (int index = 0; index < filters.Length; index++)
@@ -103,7 +131,9 @@ namespace RedCliffMystery
                 }
                 surfaces[index] = new Surface { Filter = filter, Original = filter.sharedMesh, Animated = mesh,
                     Rest = rest, Buffer = new Vector3[rest.Length], Weight = weight,
-                    MouthWeight = mouthWeight, Height = height, MouthY = mouthY };
+                    MouthWeight = mouthWeight, Height = height, MouthY = mouthY,
+                    GestureOffsets = conversationClip != null && conversationClip.Profile == Profile && conversationClip.VertexCount == rest.Length
+                        ? conversationClip.Bind(filter.transform.worldToLocalMatrix * transform.localToWorldMatrix) : null };
                 filter.sharedMesh = mesh;
             }
         }
@@ -142,7 +172,13 @@ namespace RedCliffMystery
             float phase = Profile * 1.37f;
             float breath = Mathf.Sin(time * (1.35f + Profile * .035f) + phase);
             float sway = Mathf.Sin(time * .61f + phase);
-            Vector2 mouth = MouthShape(speech, time - speechStart);
+            Vector3 gesture = ConversationWeights(time);
+            // Quiet, staggered glances and posture adjustments remain active between lines.
+            // Reuse the authored neck/arm masks so feet and the sentry's spear hand stay fixed.
+            float idleBlend = Mathf.Clamp01(Amplitude / .005f) * (1 - Mathf.Clamp01(gesture.magnitude * 2));
+            float cycle = time * (.32f + Profile * .009f) + phase;
+            gesture += new Vector3(.055f * (1 + Mathf.Sin(cycle)),
+                .16f * Mathf.Sin(cycle * .73f), .035f * (1 + Mathf.Sin(cycle * .61f))) * idleBlend;
             foreach (var surface in surfaces)
             {
                 var toVisual = transform.worldToLocalMatrix * surface.Filter.transform.localToWorldMatrix;
@@ -150,10 +186,7 @@ namespace RedCliffMystery
                 for (int i = 0; i < surface.Rest.Length; i++)
                 {
                     Vector3 p = toVisual.MultiplyPoint3x4(surface.Rest[i]);
-                    float lip = surface.MouthWeight[i];
-                    p.x *= 1 + mouth.y * lip;
-                    p.y -= mouth.x * surface.Height * .006f * lip;
-                    p.z -= Mathf.Max(0, -mouth.y) * surface.Height * .004f * lip;
+                    // No speech-driven mouth deformation: preserve the authored face.
                     float weight = surface.Weight[i];
                     p.x *= 1 + breath * Amplitude * weight;
                     p.z *= 1 + breath * Amplitude * 1.5f * weight;
@@ -161,6 +194,7 @@ namespace RedCliffMystery
                     p.y += breath * Amplitude * .2f * weight;
                     surface.Buffer[i] = toMesh.MultiplyPoint3x4(p);
                 }
+                ConversationMotionClip.Apply(surface.Buffer, surface.GestureOffsets, gesture);
                 surface.Animated.vertices = surface.Buffer;
             }
         }
@@ -169,6 +203,8 @@ namespace RedCliffMystery
         void Release()
         {
             speech = null;
+            stoppedMotion = entryMotion = Vector3.zero;
+            conversationClip = null;
             if (surfaces == null) return;
             foreach (var surface in surfaces)
             {
@@ -180,6 +216,77 @@ namespace RedCliffMystery
                 }
             }
             surfaces = null;
+        }
+    }
+}
+
+namespace RedCliffMystery
+{
+    // Blender shape-key deltas in visual-local coordinates, with baked action weights.
+    // Sparse offsets preserve the existing mesh, UVs, mouth movement and planted feet.
+    public sealed class ConversationMotionClip
+    {
+        public struct Offset
+        {
+            public int Index;
+            public Vector3 Basis, Nod, Turn, Hand;
+        }
+        public int Profile { get; private set; }
+        public int VertexCount { get; private set; }
+        public float Duration => (frames.Length - 1) / (float)fps;
+        public Offset[] Offsets { get; private set; }
+        Vector3[] frames;
+        int fps;
+
+        static Vector3 ReadVector(BinaryReader reader) => new Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
+        public static ConversationMotionClip Read(TextAsset asset)
+        {
+            using (var stream = new MemoryStream(asset.bytes))
+            using (var reader = new BinaryReader(stream))
+            {
+                if (reader.ReadInt32() != 0x4D444352 || reader.ReadInt32() != 1)
+                    throw new InvalidDataException("Invalid conversation motion: " + asset.name);
+                var clip = new ConversationMotionClip { Profile = reader.ReadInt32(), VertexCount = reader.ReadInt32(), fps = reader.ReadInt32() };
+                int frameCount = reader.ReadInt32(), count = reader.ReadInt32();
+                if (clip.VertexCount < 1 || clip.fps < 1 || frameCount < 2 || frameCount > 10000 || count < 0 || count > clip.VertexCount
+                    || stream.Length != 28L + frameCount * 12L + count * 52L)
+                    throw new InvalidDataException("Invalid motion dimensions: " + asset.name);
+                clip.frames = new Vector3[frameCount];
+                for (int i = 0; i < frameCount; i++) clip.frames[i] = ReadVector(reader);
+                clip.Offsets = new Offset[count];
+                int previous = -1;
+                for (int i = 0; i < count; i++)
+                {
+                    var offset = new Offset { Index = reader.ReadInt32(), Basis = ReadVector(reader), Nod = ReadVector(reader), Turn = ReadVector(reader), Hand = ReadVector(reader) };
+                    if (offset.Index <= previous || offset.Index >= clip.VertexCount) throw new InvalidDataException("Invalid motion vertex index");
+                    clip.Offsets[i] = offset; previous = offset.Index;
+                }
+                return clip;
+            }
+        }
+        public Vector3 Sample(float elapsed)
+        {
+            float frame = Mathf.Repeat(Mathf.Max(0, elapsed), Duration) * fps;
+            int a = Mathf.Min((int)frame, frames.Length - 2);
+            return Vector3.LerpUnclamped(frames[a], frames[a + 1], frame - a);
+        }
+        public Offset[] Bind(Matrix4x4 visualToMesh)
+        {
+            var bound = new Offset[Offsets.Length];
+            for (int i = 0; i < bound.Length; i++)
+            {
+                var o = Offsets[i];
+                o.Nod = visualToMesh.MultiplyVector(o.Nod);
+                o.Turn = visualToMesh.MultiplyVector(o.Turn);
+                o.Hand = visualToMesh.MultiplyVector(o.Hand);
+                bound[i] = o;
+            }
+            return bound;
+        }
+        public static void Apply(Vector3[] vertices, Offset[] offsets, Vector3 weights)
+        {
+            if (offsets == null || weights.sqrMagnitude < 1e-12f) return;
+            foreach (var o in offsets) vertices[o.Index] += o.Nod * weights.x + o.Turn * weights.y + o.Hand * weights.z;
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -15,7 +15,7 @@ namespace RedCliffMystery.EditorTools
     // - Files sit at the zip root and Unity's *_BackUpThisFolder_ButDontShipItWithYourGame / *_DoNotShip folders are left out.
     public static class DemoReleaseZipper
     {
-        [MenuItem("적벽추리/데모 수정/배포 zip 만들기")]
+        [MenuItem("적벽추리/배포 ZIP 만들기")]
         public static void Zip()
         {
             string prefix = "RedCliffsDeduction-" + DemoReleaseBuilder.DemoVersion;
@@ -29,7 +29,7 @@ namespace RedCliffMystery.EditorTools
                 : null;
             if (source == null)
             {
-                Debug.LogError("[DemoZip] " + DemoReleaseBuilder.DemoVersion + " 빌드 폴더가 없습니다. 먼저 '적벽추리/데모 수정/수정 데모 빌드'를 실행하세요.");
+                Debug.LogError("[DemoZip] " + DemoReleaseBuilder.DemoVersion + " 빌드 폴더가 없습니다. 먼저 '적벽추리/Windows 빌드'를 실행하세요.");
                 return;
             }
 

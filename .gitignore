@@ -56,4 +56,13 @@ __pycache__/
 # Blender automatic backups and reproducible character transfer output
 *.blend[0-9]*
 /ArtSource/CharacterPolish20261012/Output/
+/ArtSource/CharacterRepair20261012/Output/
+
+# Blender authoring remains local; exported Unity assets are shared for project portability.
+/ArtSource/CharacterRepair20261012/
+/ArtSource/ConversationMotions20261012/
+/Assets/Editor/CharacterRepairSetup.cs
+/Assets/Editor/CharacterRepairSetup.cs.meta
+/Assets/Editor/ConversationMotionSetup.cs
+/Assets/Editor/ConversationMotionSetup.cs.meta
 /ArtSource/CharacterPolish20261012/export-complete.txt

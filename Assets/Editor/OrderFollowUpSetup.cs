@@ -9,7 +9,6 @@ using RedCliffMystery.Investigation;
 
 public static class OrderFollowUpSetup
 {
-    [MenuItem("적벽추리/군령 조사/후속 배치 적용")]
     public static void Apply()
     {
         if (Application.isPlaying) throw new InvalidOperationException("Exit Play mode first");
@@ -60,7 +59,6 @@ public static class OrderFollowUpSetup
         UnityEngine.Object.DestroyImmediate(part.GetComponent<Collider>());
         if (material) part.GetComponent<Renderer>().sharedMaterial = material;
     }
-    [MenuItem("적벽추리/군령 조사/후속 배치 확인")]
     public static void Inspect()
     {
         Directory.CreateDirectory("Logs/OrderFollowUp");
@@ -70,7 +68,6 @@ public static class OrderFollowUpSetup
             .SelectMany(t => t.GetComponentsInChildren<Collider>(true).Select(c => t.kind + " " + c.name + " enabled=" + c.enabled + " active=" + c.gameObject.activeInHierarchy + " center=" + c.bounds.center + " size=" + c.bounds.size)));
     }
 
-    [MenuItem("적벽추리/군령 조사/후속 장면 검증")]
     public static void VerifyScene()
     {
         Directory.CreateDirectory("Logs/OrderFollowUp");

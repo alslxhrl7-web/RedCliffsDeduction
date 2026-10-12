@@ -12,7 +12,6 @@ public static class ArchiveArtOptimizer
 {
     const string Folder="Assets/Resources/ArchiveArt";
     const string Log="Logs/ArchiveArt";
-    [MenuItem("적벽추리/피드백/삽화와 배경 최적화")]
     public static void Apply()
     {
         var scene=UnityEngine.SceneManagement.SceneManager.GetActiveScene();
@@ -53,7 +52,6 @@ public static class ArchiveArtOptimizer
         AssetDatabase.SaveAssets();EditorSceneManager.MarkSceneDirty(scene);EditorSceneManager.SaveScene(scene);
         File.WriteAllLines(Log+"/optimization.txt",report);
     }
-    [MenuItem("적벽추리/피드백/삽화 연결 검사")]
     public static void Validate()
     {
         Directory.CreateDirectory(Log);var results=new List<string>();

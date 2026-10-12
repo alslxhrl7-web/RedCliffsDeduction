@@ -10,7 +10,6 @@ public static class AudioSettingsChecks
     static float background,effects;
     static double finishAt;
     static bool captured;
-    [MenuItem("적벽추리/플레이 검증/소리 설정 확인")]
     static void Run()
     {
         if(!EditorApplication.isPlaying) throw new InvalidOperationException("Play Mode required");

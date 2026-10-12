@@ -9,7 +9,6 @@ using RedCliffMystery.Investigation;
 
 public static class InvestigationTitleChecks
 {
-    [MenuItem("적벽추리/타이틀/배경 가져오기 설정")]
     public static void ImportBackground()
     {
         const string path = "Assets/Resources/Title/RedCliffsTitleBackground.png";
@@ -42,7 +41,6 @@ public static class InvestigationTitleChecks
         }
     }
 
-    [MenuItem("적벽추리/타이틀/화면과 버튼 확인")]
     public static void Capture()
     {
         if (!Application.isPlaying) throw new Exception("Enter Play Mode first");
@@ -73,7 +71,6 @@ public static class InvestigationTitleChecks
         File.WriteAllText("Logs/TitleScreen/check.txt", "PASS title, subtitle, cover art, movement lock, hidden HUD and both button hit targets\nResolution: " + Screen.width + "x" + Screen.height);
     }
 
-    [MenuItem("적벽추리/타이틀/시작 버튼 확인")]
     public static void StartGame()
     {
         var screen = UnityEngine.Object.FindAnyObjectByType<InvestigationTitleScreen>();
@@ -87,7 +84,6 @@ public static class InvestigationTitleChecks
         File.AppendAllText("Logs/TitleScreen/check.txt", "\nPASS start button opens Cao Cao name entry and save load option");
     }
 
-    [MenuItem("적벽추리/타이틀/종료 버튼 확인")]
     public static void QuitGame()
     {
         var screen = UnityEngine.Object.FindAnyObjectByType<InvestigationTitleScreen>();

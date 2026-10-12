@@ -11,7 +11,6 @@ namespace RedCliffMystery.EditorTools
 {
     public static class InvestigationShadowBudget
     {
-        [MenuItem("적벽추리/등불 그림자 예산 조정")]
         public static void Apply()
         {
             var scene = SceneManager.GetActiveScene();

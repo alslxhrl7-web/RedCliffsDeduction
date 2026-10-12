@@ -19,7 +19,6 @@ namespace RedCliffMystery.EditorTools
         static double start;
         static string previous;
         const string Log="Logs/CharacterPolish/editor-frames.txt";
-        [MenuItem("적벽추리/인물 보정/실행 프레임 확인 준비")]
         static void Prepare(){
             if(EditorApplication.isPlaying)throw new Exception("Edit mode required");
             previous=SessionState.GetString("RedCliffMystery.TestSaveDirectory","");
@@ -27,7 +26,6 @@ namespace RedCliffMystery.EditorTools
             SessionState.SetString("RedCliffMystery.TestSaveDirectory",Path.GetFullPath("Temp/OrderChecks/Frames-"+DateTime.Now.ToString("HHmmss")));
             EditorApplication.isPlaying=true;
         }
-        [MenuItem("적벽추리/인물 보정/실행 프레임 확인")]
         static void Begin(){
             if(!Application.isPlaying||!InvestigationSaveStore.SavePath.Contains("OrderChecks/Frames-".Replace('/',Path.DirectorySeparatorChar)))throw new Exception("Isolated Play required");
             Directory.CreateDirectory("Logs/CharacterPolish");

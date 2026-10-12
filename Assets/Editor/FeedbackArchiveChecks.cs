@@ -11,9 +11,7 @@ namespace RedCliffMystery.EditorTools
     {
         static string folder="Logs/FeedbackArchive";static int step;static double next;static InvestigationSession session;static RecordArchiveScreen screen;static Camera camera;static float fov;static Quaternion rotation;static string oldDirectory;static bool captured;
         static void Require(bool yes,string msg){if(!yes)throw new Exception(msg);File.AppendAllText(folder+"/checks.txt","PASS "+msg+"\n");}
-        [MenuItem("적벽추리/피드백/기록관 검사 시작 준비")]
         static void Prepare(){if(EditorApplication.isPlaying)throw new Exception("Edit mode required");oldDirectory=SessionState.GetString("RedCliffMystery.TestSaveDirectory","");SessionState.SetString("FeedbackArchive.PreviousDirectory",oldDirectory);SessionState.SetString("RedCliffMystery.TestSaveDirectory",Path.GetFullPath("Temp/OrderChecks/Archive-"+DateTime.Now.ToString("yyyyMMdd-HHmmss")));EditorApplication.isPlaying=true;}
-        [MenuItem("적벽추리/피드백/기록관과 대화 검사")]
         static void Begin(){if(!EditorApplication.isPlaying)throw new Exception("Play required");Directory.CreateDirectory(folder);File.WriteAllText(folder+"/checks.txt","");step=0;next=0;captured=false;EditorApplication.update-=Tick;EditorApplication.update+=Tick;}
         static void Capture(string name)=>ScreenCapture.CaptureScreenshot(Path.GetFullPath(folder+"/"+name+".png"));
         static void Tick()

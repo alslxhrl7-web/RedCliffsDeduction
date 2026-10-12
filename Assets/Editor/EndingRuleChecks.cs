@@ -5,7 +5,6 @@ using UnityEngine;
 
 public static class EndingRuleChecks
 {
-    [MenuItem("적벽추리/엔딩 조건 확인 (실행 없음)")]
     public static void Verify()
     {
         int count = 0;

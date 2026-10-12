@@ -9,7 +9,6 @@ namespace RedCliffMystery.EditorTools
 {
     public static class VarcoSpeechPreview
     {
-        [MenuItem("적벽추리/입모양 확대 미리보기")]
         public static void Render()
         {
             var motions = Object.FindObjectsByType<VarcoIdleMotion>()

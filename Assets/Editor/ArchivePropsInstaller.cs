@@ -12,7 +12,6 @@ public static class ArchivePropsInstaller
     const string Root="Assets/Art/Props/Archive";
     static Material bamboo,edge,cord,ink,wood,stone,clay;
     static readonly string[] Names={"BoundSlipRoll","OpenSlipLedger","TiedSlipStack","WritingKit","WoodDocumentCase","StorageChest","ClaySealBundle"};
-    [MenuItem("적벽추리/문서고 소품 제작과 적용")]
     public static void Apply()
     {
         if(EditorApplication.isPlayingOrWillChangePlaymode) throw new InvalidOperationException("Exit Play Mode first");

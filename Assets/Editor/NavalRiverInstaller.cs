@@ -12,7 +12,6 @@ public static class NavalRiverInstaller
 {
     const string Folder="Assets/Art/Environment/NavalRiver";
     const string Log="Logs/NavalRiver";
-    [MenuItem("적벽추리/피드백/강 배경 적용")]
     public static void Apply()
     {
         var scene=UnityEngine.SceneManagement.SceneManager.GetActiveScene();
@@ -76,7 +75,6 @@ public static class NavalRiverInstaller
         }
         var mesh=new Mesh{name="SixSidedBoatHull"};mesh.SetVertices(v);mesh.SetTriangles(t,0);mesh.RecalculateNormals();mesh.RecalculateBounds();return mesh;
     }
-    [MenuItem("적벽추리/피드백/강 배경 검사")]
     public static void Validate()
     {
         Directory.CreateDirectory(Log);var root=GameObject.Find("NavalRiverBackdrop");var a=root?root.GetComponent<NavalRiverAtmosphere>():null;
@@ -91,7 +89,6 @@ public static class NavalRiverInstaller
         int failed=checks.Count(s=>s.StartsWith("FAIL"));checks.Add("COMPLETE failures="+failed);File.WriteAllLines(Log+"/checks.txt",checks);
         if(failed>0)throw new Exception("River validation failed");
     }
-    [MenuItem("적벽추리/피드백/강 배경 실행 검사")]
     public static void CapturePhases()
     {
         if(!Application.isPlaying)throw new Exception("Play mode required");
@@ -110,14 +107,12 @@ public static class NavalRiverInstaller
             File.WriteAllText(Log+"/play-checks.txt","PASS four clock phases rendered\nPASS near investigation area outside fog start\nCOMPLETE failures=0\n");
         }finally{a.ApplyTime(a.session.InvestigationTimeSlot);RenderTexture.active=previous;cam.targetTexture=null;rt.Release();UnityEngine.Object.DestroyImmediate(rt);UnityEngine.Object.DestroyImmediate(cameraObject);}
     }
-    [MenuItem("적벽추리/피드백/강 하늘 보정")]
     static void UpdateSky()
     {
         if(Application.isPlaying)throw new Exception("Edit mode required");
         var sky=AssetDatabase.LoadAssetAtPath<Material>(Folder+"/RiverSky.mat");
         sky.shader=Shader.Find("RedCliffs/RiverSky");EditorUtility.SetDirty(sky);AssetDatabase.SaveAssets();
     }
-    [MenuItem("적벽추리/피드백/강 검사 저장경로 복원")]
     static void RestoreTestPath()
     {
         if(Application.isPlaying)throw new Exception("Edit mode required");

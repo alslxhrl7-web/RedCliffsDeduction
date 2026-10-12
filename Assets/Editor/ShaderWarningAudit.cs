@@ -7,7 +7,6 @@ using UnityEngine;
 
 public static class ShaderWarningAudit
 {
-    [MenuItem("적벽추리/렌더링 검증/저장 후 편집기 종료")]
     public static void CloseForCacheReset() {
         if (EditorApplication.isPlayingOrWillChangePlaymode) throw new Exception("Stop Play first");
         UnityEditor.SceneManagement.EditorSceneManager.SaveOpenScenes();
@@ -26,7 +25,6 @@ public static class ShaderWarningAudit
         "Packages/com.unity.render-pipelines.universal/Shaders/Terrain/TerrainDetailLit.shader",
         "Packages/com.unity.render-pipelines.universal/Shaders/Terrain/WavingGrassBillboard.shader"
     };
-    [MenuItem("적벽추리/렌더링 검증/셰이더 상태 기록")]
     public static void Inspect() {
         Directory.CreateDirectory(Folder);
         var report = new StringBuilder(DateTimeOffset.Now.ToString() + "\n");
@@ -38,7 +36,6 @@ public static class ShaderWarningAudit
         }
         File.WriteAllText(Folder + "/shader-state.txt", report.ToString());
     }
-    [MenuItem("적벽추리/렌더링 검증/실패 셰이더 재가져오기")]
     public static void Repair() {
         if (EditorApplication.isPlayingOrWillChangePlaymode) throw new Exception("Stop Play first");
         var flags = ImportAssetOptions.ForceUpdate | ImportAssetOptions.ForceSynchronousImport;
@@ -56,7 +53,6 @@ public static class ShaderWarningAudit
         }
         Inspect();
     }
-    [MenuItem("적벽추리/렌더링 검증/캐시 초기화 검증 빌드")]
     public static void QueueBuild() {
         if (EditorApplication.isPlayingOrWillChangePlaymode) throw new Exception("Stop Play first");
         Directory.CreateDirectory(Folder);

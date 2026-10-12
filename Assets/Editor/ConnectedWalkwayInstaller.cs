@@ -7,7 +7,6 @@ using RedCliffMystery.Investigation;
 
 public static class ConnectedWalkwayInstaller
 {
-    [MenuItem("적벽추리/이동 연출/문서고 연결 길 적용")]
     public static void Apply()
     {
         if(EditorApplication.isPlayingOrWillChangePlaymode) throw new InvalidOperationException("Exit Play Mode first");

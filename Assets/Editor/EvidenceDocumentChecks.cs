@@ -13,7 +13,6 @@ namespace RedCliffMystery.EditorTools
         static int step;
         static double next;
         static readonly string[] Headings={"동쪽 수채의 정비 닷새","형주 인력 인계 명부","이전 근무 기록","형주 남군 강릉의 신고 신원 대조","목연에게 내린 지시","업무 서신 안쪽의 접지","개인 서류 조사에는 허가가 필요하다"};
-        [MenuItem("적벽추리/플레이 검증/증거 문서 화면 확인")]
         static void Begin()
         {
             if(!EditorApplication.isPlaying) throw new InvalidOperationException("Enter isolated play test first.");

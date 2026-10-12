@@ -35,7 +35,6 @@ namespace RedCliffMystery.EditorTools
             }
             return false;
         }
-        [MenuItem("적벽추리/플레이 검증/발소리와 천막 연출 확인")]
         static void Begin()
         {
             try { Run(); }

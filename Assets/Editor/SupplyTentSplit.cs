@@ -21,7 +21,6 @@ namespace RedCliffMystery.EditorTools
         static readonly Vector3 ZoneOffset = new Vector3(-40f, 0f, 0f);
         static readonly Vector3 ZoneCenter = new Vector3(-40f, 0f, -23.5f);
 
-        [MenuItem("적벽추리/보급 천막 분리")]
         public static void Run()
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode)

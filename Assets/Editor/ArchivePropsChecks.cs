@@ -7,7 +7,6 @@ using RedCliffMystery.Investigation;
 
 public static class ArchivePropsChecks
 {
-    [MenuItem("적벽추리/문서고 소품 검증과 화면 확인")]
     public static void Run()
     {
         if(EditorApplication.isPlaying) throw new InvalidOperationException("Exit Play Mode first");

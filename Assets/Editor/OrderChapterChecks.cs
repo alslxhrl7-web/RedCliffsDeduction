@@ -27,7 +27,6 @@ public static partial class OrderChapterChecks
     static InvestigationSaveData Capture() => (InvestigationSaveData)Call("CaptureSave");
     static void Pay(Action open) { open(); Click("조사 시작 · 1회 사용"); }
 
-    [MenuItem("적벽추리/군령 조사/진행과 저장 검사")]
     public static void RunPlay()
     {
         if (!Application.isPlaying || S == null || running) throw new InvalidOperationException("타이틀 화면이 있는 Play 상태에서 실행하세요.");

@@ -21,7 +21,6 @@ namespace RedCliffMystery.EditorTools
         static void Guard() {
             if(Application.isPlaying || EditorSceneManager.GetActiveScene().isDirty)throw new Exception("Saved scene in Edit mode required");
         }
-        [MenuItem("적벽추리/인물 보정/블렌더 작업용 내보내기")]
         public static void Export() {
             Guard();Directory.CreateDirectory(Source+"/Input");
             foreach(var actor in Actors()) {
@@ -35,7 +34,6 @@ namespace RedCliffMystery.EditorTools
             }
             File.WriteAllText(Source+"/export-complete.txt","10 current posed meshes exported");
         }
-        [MenuItem("적벽추리/인물 보정/블렌더 보정본 적용")]
         public static void Apply() {
             Guard();Directory.CreateDirectory(Output);AssetDatabase.Refresh();
             Directory.CreateDirectory("Logs/CharacterPolish");

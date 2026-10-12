@@ -27,7 +27,6 @@ public static class InvestigationRegressionRun
     static readonly BindingFlags Flags = BindingFlags.Instance | BindingFlags.NonPublic;
     static InvestigationRegressionRun() { EditorApplication.playModeStateChanged += OnPlayState; }
 
-    [MenuItem("적벽추리/플레이 검증/전체 회귀 검사")]
     public static void Begin()
     {
         if (EditorApplication.isPlayingOrWillChangePlaymode) throw new Exception("Begin in edit mode");
@@ -121,7 +120,6 @@ public static class InvestigationRegressionRun
     }
 
     static void Add(string label, Action check, double delay = .25) => steps.Enqueue((label, check, delay));
-    [MenuItem("적벽추리/플레이 검증/보고 후 새 조사 시간 표시")]
     public static void BeginInquiryTimeCheck() {
         Begin();
         steps.Clear();

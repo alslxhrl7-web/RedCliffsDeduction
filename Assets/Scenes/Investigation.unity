@@ -369,6 +369,7 @@ MonoBehaviour:
   Profile: 7
   Amplitude: 0.004
   MouthHeightOverride: 0.9
+  ConversationMotion: {fileID: 4900000, guid: 4ec14b14e76bd5145bb850081a54675c, type: 3}
 --- !u!1 &2140171
 GameObject:
   m_ObjectHideFlags: 0
@@ -2324,6 +2325,7 @@ MonoBehaviour:
   Profile: 5
   Amplitude: 0.005
   MouthHeightOverride: 0.9
+  ConversationMotion: {fileID: 4900000, guid: 68436dc01238e2c48b99e7090fedc20d, type: 3}
 --- !u!1001 &55676214
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9501,7 +9503,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 212627884}
-  m_Mesh: {fileID: 4300000, guid: bb54bc81cb9f68449bc4742227ec1951, type: 2}
+  m_Mesh: {fileID: 4300000, guid: b023d4a4ca406d64ab4ca0fad05a0be9, type: 2}
 --- !u!1 &213124156
 GameObject:
   m_ObjectHideFlags: 0
@@ -14202,6 +14204,7 @@ MonoBehaviour:
   Profile: 3
   Amplitude: 0.003
   MouthHeightOverride: 0.9
+  ConversationMotion: {fileID: 4900000, guid: 73317fbd87b6ec741a06436e79162723, type: 3}
 --- !u!1 &285434542
 GameObject:
   m_ObjectHideFlags: 0
@@ -19252,7 +19255,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 374762493}
-  m_Mesh: {fileID: 4300000, guid: a58870b834577494bbc60b21dcc58433, type: 2}
+  m_Mesh: {fileID: 4300000, guid: c755523455bd7b0469485eb24a2c9178, type: 2}
 --- !u!1001 &377555327
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -30850,6 +30853,7 @@ MonoBehaviour:
   Profile: 0
   Amplitude: 0.003
   MouthHeightOverride: 0.9
+  ConversationMotion: {fileID: 4900000, guid: fd7414bd421d56d4ebb8cdafaa79ae58, type: 3}
 --- !u!1 &650316535
 GameObject:
   m_ObjectHideFlags: 0
@@ -32296,6 +32300,7 @@ MeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 099e205e99f395f4e9c8c8f94b35c636, type: 2}
+  - {fileID: 2100000, guid: 58d5112a7e298c54e9fd804c2ee61b3f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -32326,7 +32331,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 685773026}
-  m_Mesh: {fileID: 4300000, guid: 4bee9c82af54a1c4a8d6cafc4f38586f, type: 2}
+  m_Mesh: {fileID: 4300000, guid: f7585f71480eb4840921e2d8d419e186, type: 2}
 --- !u!1 &688535524
 GameObject:
   m_ObjectHideFlags: 0
@@ -37508,7 +37513,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 789854162}
-  m_Mesh: {fileID: 4300000, guid: bb3c29642771dfc4696984aa2509fbc1, type: 2}
+  m_Mesh: {fileID: 4300000, guid: 31f884e42157f6b4fbe9977d7d9381ec, type: 2}
 --- !u!1 &790933613
 GameObject:
   m_ObjectHideFlags: 0
@@ -45788,7 +45793,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 942972466}
-  m_Mesh: {fileID: 4300000, guid: 9aba486febeef5a4785ec081f2136e9f, type: 2}
+  m_Mesh: {fileID: 4300000, guid: c5546d218b5c2d8449193955d6391582, type: 2}
 --- !u!1 &944209975
 GameObject:
   m_ObjectHideFlags: 0
@@ -53293,6 +53298,7 @@ MonoBehaviour:
   Profile: 6
   Amplitude: 0.005
   MouthHeightOverride: 0.9
+  ConversationMotion: {fileID: 4900000, guid: 23eddef20afdc854e8f0bfd1854ef0a8, type: 3}
 --- !u!1 &1112770149
 GameObject:
   m_ObjectHideFlags: 0
@@ -58379,7 +58385,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1230917047}
-  m_Mesh: {fileID: 4300000, guid: 7b818e3a555c9044aaa44ef21a461f92, type: 2}
+  m_Mesh: {fileID: 4300000, guid: 0105e029334f2cc45848159f191b0bbc, type: 2}
 --- !u!1 &1232767351
 GameObject:
   m_ObjectHideFlags: 0
@@ -66751,7 +66757,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1441111098}
-  m_Mesh: {fileID: 4300000, guid: 008b15a123f881b458ea5cbb48578a97, type: 2}
+  m_Mesh: {fileID: 4300000, guid: db19bdfd516d8ad479bc55c6130925ae, type: 2}
 --- !u!1 &1442288306
 GameObject:
   m_ObjectHideFlags: 0
@@ -68803,6 +68809,7 @@ MonoBehaviour:
   Profile: 8
   Amplitude: 0.007
   MouthHeightOverride: 0.9
+  ConversationMotion: {fileID: 4900000, guid: 067ab2d94762f4a4386c3ae2cfcaf92e, type: 3}
 --- !u!1 &1481872445
 GameObject:
   m_ObjectHideFlags: 0
@@ -70404,6 +70411,7 @@ MonoBehaviour:
   Profile: 9
   Amplitude: 0.005
   MouthHeightOverride: 0.9
+  ConversationMotion: {fileID: 4900000, guid: 8a67852293d91064fa0be003d22d1458, type: 3}
 --- !u!1 &1506896527
 GameObject:
   m_ObjectHideFlags: 0
@@ -80266,7 +80274,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1741264197}
-  m_Mesh: {fileID: 4300000, guid: fa054ea771f69b049ab6c438ec52f37d, type: 2}
+  m_Mesh: {fileID: 4300000, guid: 1643269f0c161b648bd2083dbdcee16c, type: 2}
 --- !u!1 &1742612438
 GameObject:
   m_ObjectHideFlags: 0
@@ -85730,6 +85738,7 @@ MonoBehaviour:
   Profile: 1
   Amplitude: 0.005
   MouthHeightOverride: 0.9
+  ConversationMotion: {fileID: 4900000, guid: 911b1fc08ba90e7479ba625048af06b9, type: 3}
 --- !u!1 &1874609129
 GameObject:
   m_ObjectHideFlags: 0
@@ -91438,6 +91447,7 @@ MonoBehaviour:
   Profile: 2
   Amplitude: 0.004
   MouthHeightOverride: 0.9
+  ConversationMotion: {fileID: 4900000, guid: 406003b367ff96445a42c0d8c7a82ef4, type: 3}
 --- !u!1 &1994193895
 GameObject:
   m_ObjectHideFlags: 0
@@ -92737,7 +92747,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2021188940}
-  m_Mesh: {fileID: 4300000, guid: de4148d2104e3eb4d89ea9df30f81edf, type: 2}
+  m_Mesh: {fileID: 4300000, guid: 849dd07775c5d2847a3e2fbf85190ded, type: 2}
 --- !u!1 &2023176276
 GameObject:
   m_ObjectHideFlags: 0
@@ -93845,7 +93855,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2033885401}
-  m_Mesh: {fileID: 4300000, guid: 78dd63fe15f5f57479d2a9fc00d71f57, type: 2}
+  m_Mesh: {fileID: 4300000, guid: beccc7098b136734e86d126648fd9f45, type: 2}
 --- !u!1 &2037761957
 GameObject:
   m_ObjectHideFlags: 0
@@ -93894,6 +93904,7 @@ MonoBehaviour:
   Profile: 4
   Amplitude: 0.005
   MouthHeightOverride: 0.9
+  ConversationMotion: {fileID: 4900000, guid: cf29642c2a7ef5645a449e3ae72a70d9, type: 3}
 --- !u!1 &2037782293
 GameObject:
   m_ObjectHideFlags: 0

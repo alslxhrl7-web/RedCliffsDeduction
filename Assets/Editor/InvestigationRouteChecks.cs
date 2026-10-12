@@ -14,15 +14,12 @@ namespace RedCliffMystery.EditorTools
         const string WrongRations = "훈련을 중단했으니 군량도 지급할 수 없다";
         const string WrongAccusation = "문서고 서기이므로 절도범이다";
 
-        [MenuItem("적벽추리/조사 동선 검사 (문서 먼저)")]
         public static void RunDocumentFirst() => Run(true);
 
-        [MenuItem("적벽추리/조사 동선 검사 (진술 먼저)")]
         public static void RunTestimonyFirst() => Run(false);
 
         public static void RunElevenSlotBase() => Run(true, false);
 
-        [MenuItem("적벽추리/현재 게임 화면 저장")]
         public static void CaptureGameView()
         {
             Require(Application.isPlaying, "Enter Play Mode first.");

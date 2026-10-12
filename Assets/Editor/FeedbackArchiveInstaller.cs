@@ -14,7 +14,6 @@ namespace RedCliffMystery.EditorTools
     {
         const string Folder="Assets/Art/Characters/Feedback20261012";
         const string Log="Logs/FeedbackArchive";
-        [MenuItem("적벽추리/피드백/인물 현재 상태 확인")]
         public static void Inspect()
         {
             Directory.CreateDirectory(Log);var report=new StringBuilder();
@@ -23,9 +22,7 @@ namespace RedCliffMystery.EditorTools
             File.WriteAllText(Log+"/before.txt",report.ToString());
             Focus();
         }
-        [MenuItem("적벽추리/피드백/장윤 자세 보기")]
         public static void Focus(){var m=Object.FindObjectsByType<VarcoIdleMotion>(FindObjectsInactive.Include).Single(x=>x.Profile==4);var b=m.GetComponentInChildren<Renderer>().bounds;EditorWindow.GetWindow<SceneView>().LookAt(b.center,Quaternion.LookRotation(m.transform.forward+Vector3.down*.1f),1.45f,false,true);}
-        [MenuItem("적벽추리/피드백/포즈와 대화 연출 적용")]
         public static void Apply()
         {
             var scene=SceneManager.GetActiveScene();if(Application.isPlaying||scene.path!="Assets/Scenes/Investigation.unity"||scene.isDirty)throw new InvalidOperationException("Saved Investigation scene required");

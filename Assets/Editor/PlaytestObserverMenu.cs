@@ -11,14 +11,12 @@ namespace RedCliffMystery.EditorTools
     {
         static string ProjectFlag => Path.Combine(PlaytestObserver.GameFolder, PlaytestObserver.FlagFileName);
 
-        [MenuItem("적벽추리/플레이테스트 기록/에디터에서 기록 켜기·끄기")]
         public static void ToggleEditor()
         {
             if (File.Exists(ProjectFlag)) { File.Delete(ProjectFlag); Debug.Log("PLAYTEST_LOG_OFF: 에디터 플레이 기록을 껐습니다."); }
             else { File.WriteAllText(ProjectFlag, "playtest log on\n"); Debug.Log("PLAYTEST_LOG_ON: 다음 Play부터 " + PlaytestObserver.LogFolderName + " 폴더에 기록합니다."); }
         }
 
-        [MenuItem("적벽추리/플레이테스트 기록/최근 빌드에 기록 켜기 파일 넣기")]
         public static void EnableLatestBuild()
         {
             var build = new DirectoryInfo("Builds").Exists
@@ -31,7 +29,6 @@ namespace RedCliffMystery.EditorTools
             Debug.Log("PLAYTEST_BUILD_ON: " + build.FullName + " · 배포 zip에는 이 파일과 기록 폴더가 들어가지 않습니다.");
         }
 
-        [MenuItem("적벽추리/플레이테스트 기록/에디터 기록 폴더 열기")]
         public static void OpenLogs()
         {
             string folder = Path.Combine(PlaytestObserver.GameFolder, PlaytestObserver.LogFolderName);

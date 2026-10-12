@@ -11,14 +11,12 @@ public static class WalkNetwork20261012
     const string Log = "Logs/WalkNetwork20261012";
     static Transform[] Objects => UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects().SelectMany(r=>r.GetComponentsInChildren<Transform>(true)).ToArray();
     static string PathOf(Transform t) => t.parent==null ? t.name : PathOf(t.parent)+"/"+t.name;
-    [MenuItem("적벽추리/연결 진영/배치 기록")]
     public static void Audit()
     {
         Directory.CreateDirectory(Log);
         File.WriteAllLines(Log+"/layout.txt", Objects.Where(t=>t.GetComponent<Collider>()!=null || t.name.Contains("Arrival") || t.name.Contains("Spawn") || t.name.Contains("Tent_")).Select(t=>PathOf(t)+" active="+t.gameObject.activeInHierarchy+" pos="+t.position+" bounds="+(t.GetComponent<Collider>()!=null?t.GetComponent<Collider>().bounds.ToString():t.GetComponent<Renderer>()!=null?t.GetComponent<Renderer>().bounds.ToString():"")));
     }
 
-    [MenuItem("적벽추리/연결 진영/걸어서 이동하는 길 적용")]
     public static void Apply()
     {
         var scene=UnityEngine.SceneManagement.SceneManager.GetActiveScene();
@@ -105,7 +103,6 @@ public static class WalkNetwork20261012
         var font=AssetDatabase.LoadAssetAtPath<Font>("Assets/Resources/Title/RedCliffsSerif-SemiBold.ttf");tm.font=font;t.GetComponent<Renderer>().sharedMaterial=font.material;
         t.gameObject.AddComponent<CampDirectionSign>();
     }
-    [MenuItem("적벽추리/연결 진영/표지판 마무리와 저장")]
     public static void FinishSigns()
     {
         if(Application.isPlaying) throw new InvalidOperationException("Edit mode required");
@@ -121,7 +118,6 @@ public static class WalkNetwork20261012
         EditorSceneManager.MarkSceneDirty(route.gameObject.scene);EditorSceneManager.SaveScene(route.gameObject.scene);AssetDatabase.SaveAssets();Audit();
     }
 
-    [MenuItem("적벽추리/연결 진영/통행 검사")]
     public static void CheckPaths()
     {
         Directory.CreateDirectory(Log);Physics.SyncTransforms();var results=new System.Collections.Generic.List<string>();int failures=0;
@@ -163,7 +159,6 @@ public static class WalkNetwork20261012
         foreach(float x in new[]{36.2f,43.8f}) Box(root,"EntrySideCollision",new Vector3(x,1.4f,-4.5f),new Vector3(4.4f,2.8f,.16f),cloth);
         foreach(float x in new[]{38.3f,41.7f}) Box(root,"DoorJamb",new Vector3(x,1.45f,-4.35f),new Vector3(.14f,2.9f,.14f),wood);
     }
-    [MenuItem("적벽추리/연결 진영/출입구 외형 마무리")]
     public static void FinishDoor()
     {
         if(Application.isPlaying) throw new InvalidOperationException("Edit mode required");
@@ -186,7 +181,6 @@ public static class WalkNetwork20261012
         EditorSceneManager.MarkSceneDirty(route.gameObject.scene);EditorSceneManager.SaveScene(route.gameObject.scene);AssetDatabase.SaveAssets();
         Capture();CheckPaths();
     }
-    [MenuItem("적벽추리/연결 진영/안내와 바닥 가장자리 보완")]
     public static void FinishEdges()
     {
         if(Application.isPlaying) throw new InvalidOperationException("Edit mode required");
@@ -204,7 +198,6 @@ public static class WalkNetwork20261012
         EditorSceneManager.MarkSceneDirty(route.gameObject.scene);EditorSceneManager.SaveScene(route.gameObject.scene);
         CheckPaths();
     }
-    [MenuItem("적벽추리/연결 진영/장면 확인 이미지")]
     public static void Capture()
     {
         Directory.CreateDirectory(Log);

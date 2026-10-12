@@ -15,7 +15,6 @@ public static class ConnectedWalkwayChecks
     const string Report="Logs/ConnectedWalkway/result.txt";
     static void Require(bool condition,string message) { if(!condition) throw new InvalidOperationException(message); }
     static void Pass(string message) { File.AppendAllText(Report,"PASS "+message+"\n"); }
-    [MenuItem("적벽추리/플레이 검증/연결 길 왕복 확인")]
     public static void Begin()
     {
         Require(EditorApplication.isPlaying,"Play Mode required");

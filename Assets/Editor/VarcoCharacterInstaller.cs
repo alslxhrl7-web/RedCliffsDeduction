@@ -23,10 +23,8 @@ namespace RedCliffMystery.EditorTools
             RenderAssetPreview();
         }
 
-        [MenuItem("적벽추리/바르코 인물 모델 적용")]
         public static void ApplyAvailable() => ApplyCharacters(Characters);
 
-        [MenuItem("적벽추리/바르코 추가 조사 인물만 적용")]
         public static void ApplyAdditionalAvailable() => ApplyCharacters(AdditionalCharacters);
 
         static void ApplyCharacters(string[] characters)
@@ -191,7 +189,6 @@ namespace RedCliffMystery.EditorTools
 
         static float SurfaceNormalStrength(string character) => IsClothCharacter(character) ? .18f : .28f;
 
-        [MenuItem("적벽추리/바르코 인물 표면 다듬기")]
         public static void PolishSurfaceMaterials()
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode)

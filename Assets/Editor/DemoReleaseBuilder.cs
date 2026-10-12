@@ -25,6 +25,7 @@ namespace RedCliffMystery.EditorTools
         // Batch review builds exercise Unity's real JSON save round trip before packaging.
         public static void BuildChecked()
         {
+            ProjectBuildChecks.ValidateSources();
             if (Application.isPlaying) throw new InvalidOperationException("Exit Play Mode first");
             Debug.Log("SAVE_CHECKS: " + InvestigationSaveChecks.Verify());
             InvestigationBudgetChecks.Verify();
@@ -44,9 +45,10 @@ namespace RedCliffMystery.EditorTools
             Debug.Log("REVIEW_BUILD_PASS: " + executable);
         }
 
-        [MenuItem("적벽추리/데모 수정/수정 데모 빌드")]
+        [MenuItem("적벽추리/Windows 빌드")]
         public static void Build()
         {
+            ProjectBuildChecks.ValidateSources();
             if (Application.isPlaying) throw new InvalidOperationException("Exit Play Mode first");
             string product = PlayerSettings.productName, version = PlayerSettings.bundleVersion;
             int width = PlayerSettings.defaultScreenWidth, height = PlayerSettings.defaultScreenHeight;
@@ -79,7 +81,6 @@ namespace RedCliffMystery.EditorTools
             }
         }
 
-        [MenuItem("적벽추리/데모 수정/배치 화면 저장")]
         public static void CaptureProps()
         {
             var camera = UnityEngine.Object.FindAnyObjectByType<FirstPersonInvestigator>().viewCamera;

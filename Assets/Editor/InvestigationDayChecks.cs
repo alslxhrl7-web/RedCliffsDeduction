@@ -21,7 +21,6 @@ public static class InvestigationDayChecks
         inquiryTitles = InquiryIds.Take(slots).ToArray()
     };
 
-    [MenuItem("적벽추리/플레이 검증/날짜 전환과 시간 보내기")]
     public static void Verify() {
         Check(Application.isPlaying, "Enter Play Mode first");
         var s = UnityEngine.Object.FindAnyObjectByType<InvestigationSession>();

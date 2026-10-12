@@ -12,7 +12,6 @@ namespace RedCliffMystery.EditorTools
     public static class MovementPresentationInstaller
     {
         const string Root="Assets/Audio/Movement";
-        [MenuItem("적벽추리/이동 연출/발소리 음색 다듬기")]
         public static void RefineFootsteps()
         {
             if(EditorApplication.isPlayingOrWillChangePlaymode) throw new InvalidOperationException("Exit Play Mode first.");
@@ -20,7 +19,6 @@ namespace RedCliffMystery.EditorTools
             AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
             Debug.Log("FOOTSTEP_REFINEMENT_APPLIED");
         }
-        [MenuItem("적벽추리/이동 연출/발소리와 천막 적용")]
         public static void Apply()
         {
             if(EditorApplication.isPlayingOrWillChangePlaymode) throw new InvalidOperationException("Apply outside Play Mode.");

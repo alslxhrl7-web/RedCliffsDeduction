@@ -10,7 +10,6 @@ namespace RedCliffMystery.EditorTools
         static bool active, originalEnabled;
         static EnterPlayModeOptions originalOptions;
         static ManualPlaytestSession() { EditorApplication.playModeStateChanged += Finish; }
-        [MenuItem("적벽추리/플레이 검증/화면 조작 테스트 시작")]
         public static void Begin()
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode) throw new InvalidOperationException("Start outside play mode");
