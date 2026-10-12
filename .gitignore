@@ -54,7 +54,6 @@ __pycache__/
 /ArtSource/DocumentRefresh20261012/*-inspection.json
 
 # Blender automatic backups and reproducible character transfer output
-*.blend1
-*.blend2
+*.blend[0-9]*
 /ArtSource/CharacterPolish20261012/Output/
 /ArtSource/CharacterPolish20261012/export-complete.txt
