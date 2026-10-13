@@ -66,3 +66,38 @@ __pycache__/
 /Assets/Editor/ConversationMotionSetup.cs
 /Assets/Editor/ConversationMotionSetup.cs.meta
 /ArtSource/CharacterPolish20261012/export-complete.txt
+
+# Retired duplicate exports and legacy character assets (2026-10-13)
+/ArtSource/CharacterRefresh2026-10-10/BlenderRefined/*_refined.fbx
+/ArtSource/CharacterRefresh2026-10-10/BlenderRefined/*_refined.glb
+/Assets/Art/Characters/Varco/
+/Assets/Art/Characters/Varco.meta
+/Assets/Art/Characters/Feedback20261012/
+/Assets/Art/Characters/Feedback20261012.meta
+/Assets/_Recovery/
+/Assets/_Recovery.meta
+
+# Desk inspection output; keep editable source, bake report and final Unity assets.
+/ArtSource/CommandDesk20261013/*-preview.png
+
+# Reproducible role-animation transfer data and review renders.
+/ArtSource/RoleActivities20261013/Input/
+/ArtSource/RoleActivities20261013/Output/
+/ArtSource/RoleActivities20261013/Preview/
+
+# Download caches and review renders; keep editable environment master and game assets.
+/ArtSource/EnvironmentRefresh20261013/Downloads/
+/ArtSource/EnvironmentRefresh20261013/preview.png
+
+# Character detail source downloads, transfer files and previews.
+/ArtSource/CharacterDetail20261013/Downloads/
+/ArtSource/CharacterDetail20261013/Output/
+/ArtSource/CharacterDetail20261013/Preview/
+
+# Unused hand reconstruction experiment remains local.
+/ArtSource/CharacterDetail20261013/extract_hands.py
+/ArtSource/CharacterDetail20261013/hand-source.json
+
+# Hand transfer data and visual review images are reproducible from the editable source.
+/ArtSource/HandRefinement20261013/Output/
+/ArtSource/HandRefinement20261013/Preview/

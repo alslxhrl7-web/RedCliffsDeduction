@@ -1,0 +1,72 @@
+[
+  {
+    "name": "CaoCao",
+    "removedTriangles": 7611,
+    "hands": 2,
+    "triangles": 10148,
+    "clippedBoundaryVertices": 118
+  },
+  {
+    "name": "Seolpyeong",
+    "removedTriangles": 8489,
+    "hands": 2,
+    "triangles": 10224,
+    "clippedBoundaryVertices": 226
+  },
+  {
+    "name": "Duseok",
+    "removedTriangles": 5467,
+    "hands": 2,
+    "triangles": 10094,
+    "clippedBoundaryVertices": 78
+  },
+  {
+    "name": "Caimao",
+    "removedTriangles": 7639,
+    "hands": 2,
+    "triangles": 10074,
+    "clippedBoundaryVertices": 122
+  },
+  {
+    "name": "Zhangyun",
+    "removedTriangles": 6881,
+    "hands": 2,
+    "triangles": 10052,
+    "clippedBoundaryVertices": 89
+  },
+  {
+    "name": "RecordsClerk",
+    "removedTriangles": 6428,
+    "hands": 2,
+    "triangles": 10050,
+    "clippedBoundaryVertices": 107
+  },
+  {
+    "name": "DocumentCourier",
+    "removedTriangles": 9448,
+    "hands": 2,
+    "triangles": 10104,
+    "clippedBoundaryVertices": 73
+  },
+  {
+    "name": "ReliefGuard",
+    "removedTriangles": 6138,
+    "hands": 2,
+    "triangles": 10128,
+    "clippedBoundaryVertices": 93
+  },
+  {
+    "name": "GamblingSoldier",
+    "removedTriangles": 12648,
+    "hands": 2,
+    "triangles": 10204,
+    "clippedBoundaryVertices": 123
+  },
+  {
+    "name": "HanJin",
+    "removedTriangles": 8846,
+    "hands": 2,
+    "triangles": 10172,
+    "clippedBoundaryVertices": 189
+  }
+]

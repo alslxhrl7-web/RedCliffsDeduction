@@ -1,0 +1,14 @@
+{
+  "author": "Quaternius",
+  "license": "CC0-1.0",
+  "source": "https://github.com/Mesh2Motion/mesh2motion-assets/blob/main/CC0-packs/Quaternius/Quaternius-human-packs.blend",
+  "sha256": "11dcb101b2006f83e726fd8d3bc56d80fe49a7d453bd3a79c5467b5951d6cc0e",
+  "actions": [
+    "Idle_A",
+    "Idle_Talking",
+    "Idle_ShakeOff",
+    "Idle_FoldArms",
+    "Yes"
+  ],
+  "downloaded": "2026-10-13"
+}

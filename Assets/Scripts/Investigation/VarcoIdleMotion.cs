@@ -8,13 +8,24 @@ namespace RedCliffMystery
     {
         public int Profile;
         public float Amplitude = .005f;
+        // Global visibility floor for older scene instances; do not amplify breathing scale.
+        public const float IdlePostureDistance = .014f;
         [Range(0, 1)] public float MouthHeightOverride;
         public TextAsset ConversationMotion;
+        public TextAsset RoleActivity;
+        public TextAsset DetailMotion;
+        DetailMotionClip detailClip;
+        RefinedHand[] refinedHands;
+        public SkinnedMeshRenderer HeldRecord;
+        public Vector3 HeldRecordOffset;
         struct Surface
         {
             public MeshFilter Filter;
+            public WristSurface Wrist;
             public Mesh Original, Animated;
             public Vector3[] Rest, Buffer;
+            public Vector3[] Normals;
+            public RoleActivityClip.Vertex[] ActivityOffsets;
             public float[] Weight;
             public float[] MouthWeight;
             public float Height, MouthY;
@@ -27,6 +38,7 @@ namespace RedCliffMystery
         float speechDuration, motionStopTime;
         Vector3 stoppedMotion, entryMotion;
         ConversationMotionClip conversationClip;
+        RoleActivityClip activityClip;
         static readonly string[] Speakers = { "조조", "설평", "두석", "채모", "장윤", "기록 담당자", "전령", "교대 병사", "동석 병사", "한진" };
         static readonly float[] MouthHeights = { .840f, .872f, .870f, .875f, .855f, .875f, .862f, .866f, .867f, .875f };
         public static float MouthHeightFraction(int profile) => MouthHeights[Mathf.Clamp(profile, 0, MouthHeights.Length - 1)];
@@ -96,6 +108,9 @@ namespace RedCliffMystery
         {
             if (surfaces != null) return;
             conversationClip = ConversationMotion != null ? ConversationMotionClip.Read(ConversationMotion) : null;
+            activityClip = RoleActivity != null ? RoleActivityClip.Read(RoleActivity) : null;
+            detailClip = DetailMotion != null ? DetailMotionClip.Read(DetailMotion) : null;
+            refinedHands = GetComponentsInChildren<RefinedHand>(true);
             var filters = GetComponentsInChildren<MeshFilter>(true);
             surfaces = new Surface[filters.Length];
             for (int index = 0; index < filters.Length; index++)
@@ -129,12 +144,25 @@ namespace RedCliffMystery
                         * Mathf.Max(0, 1 - Mathf.Abs(y - mouthY) / (height * .015f))
                         * Mathf.Clamp01(1 - (p.z - front) / (height * .035f));
                 }
-                surfaces[index] = new Surface { Filter = filter, Original = filter.sharedMesh, Animated = mesh,
-                    Rest = rest, Buffer = new Vector3[rest.Length], Weight = weight,
+                surfaces[index] = new Surface { Filter = filter, Wrist = filter.GetComponent<WristSurface>(), Original = filter.sharedMesh, Animated = mesh,
+                    Rest = rest, Buffer = new Vector3[rest.Length], Normals = mesh.normals, Weight = weight,
+                    ActivityOffsets = activityClip != null && activityClip.Profile == Profile && activityClip.VertexCount == rest.Length
+                        ? activityClip.Bind(filter.transform.worldToLocalMatrix * transform.localToWorldMatrix) : null,
                     MouthWeight = mouthWeight, Height = height, MouthY = mouthY,
                     GestureOffsets = conversationClip != null && conversationClip.Profile == Profile && conversationClip.VertexCount == rest.Length
                         ? conversationClip.Bind(filter.transform.worldToLocalMatrix * transform.localToWorldMatrix) : null };
                 filter.sharedMesh = mesh;
+                if(surfaces[index].ActivityOffsets != null)
+                {
+                    var bounds=mesh.bounds;
+                    foreach(var v in surfaces[index].ActivityOffsets)
+                    {
+                        bounds.Encapsulate(rest[v.Index]+v.Rest);
+                        bounds.Encapsulate(rest[v.Index]+v.A);
+                        bounds.Encapsulate(rest[v.Index]+v.B);
+                    }
+                    bounds.Expand(detailClip != null ? .18f : .001f);mesh.bounds=bounds;
+                }
             }
         }
         void LateUpdate()
@@ -148,14 +176,16 @@ namespace RedCliffMystery
         }
         static readonly Plane[] frustum = new Plane[6];
         static int frustumFrame = -1;
+        static Camera frustumCamera;
         // Out-of-view figures skip the vertex update; the pose is time-driven so it catches up on the next sample.
         bool InCameraView(Camera camera)
         {
             if (surfaces == null) return false;
-            if (frustumFrame != Time.frameCount)
+            if (frustumFrame != Time.frameCount || frustumCamera != camera)
             {
                 GeometryUtility.CalculateFrustumPlanes(camera, frustum);
                 frustumFrame = Time.frameCount;
+                frustumCamera = camera;
             }
             foreach (var surface in surfaces)
             {
@@ -172,13 +202,26 @@ namespace RedCliffMystery
             float phase = Profile * 1.37f;
             float breath = Mathf.Sin(time * (1.35f + Profile * .035f) + phase);
             float sway = Mathf.Sin(time * .61f + phase);
+            if(HeldRecord != null)
+                HeldRecord.transform.localPosition=HeldRecordOffset+new Vector3(sway*Mathf.Max(Amplitude*.9f,IdlePostureDistance)*.5f,breath*Amplitude*.275f,0);
             Vector3 gesture = ConversationWeights(time);
+            Vector3 activity = activityClip != null ? activityClip.Sample(time) : Vector3.zero;
+            if(activityClip != null)
+            {
+                activity = Vector3.Lerp(activity,Vector3.right,Mathf.Clamp01(gesture.magnitude)*.8f);
+                gesture.z *= .2f;
+            }
+            if(HeldRecord != null && activityClip != null)
+            {
+                HeldRecord.SetBlendShapeWeight(0,activity.y*100);
+                HeldRecord.SetBlendShapeWeight(1,activity.z*100);
+            }
             // Quiet, staggered glances and posture adjustments remain active between lines.
             // Reuse the authored neck/arm masks so feet and the sentry's spear hand stay fixed.
-            float idleBlend = Mathf.Clamp01(Amplitude / .005f) * (1 - Mathf.Clamp01(gesture.magnitude * 2));
+            float idleBlend = activityClip != null ? 0 : Mathf.Clamp01(Amplitude / .005f) * (1 - Mathf.Clamp01(gesture.magnitude * 2));
             float cycle = time * (.32f + Profile * .009f) + phase;
-            gesture += new Vector3(.055f * (1 + Mathf.Sin(cycle)),
-                .16f * Mathf.Sin(cycle * .73f), .035f * (1 + Mathf.Sin(cycle * .61f))) * idleBlend;
+            gesture += new Vector3(.12f * (1 + Mathf.Sin(cycle)),
+                .38f * Mathf.Sin(cycle * .73f), .065f * (1 + Mathf.Sin(cycle * .61f))) * idleBlend;
             foreach (var surface in surfaces)
             {
                 var toVisual = transform.worldToLocalMatrix * surface.Filter.transform.localToWorldMatrix;
@@ -190,12 +233,19 @@ namespace RedCliffMystery
                     float weight = surface.Weight[i];
                     p.x *= 1 + breath * Amplitude * weight;
                     p.z *= 1 + breath * Amplitude * 1.5f * weight;
-                    p.x += sway * Amplitude * .45f * weight;
-                    p.y += breath * Amplitude * .2f * weight;
+                    // Visible weight shifts in visual-space metres; foot weights stay zero.
+                    float posture = Amplitude > 0 ? Mathf.Max(Amplitude * .9f, IdlePostureDistance) : 0;
+                    p.x += sway * posture * weight;
+                    p.y += breath * Mathf.Max(Amplitude, 0) * .55f * weight;
                     surface.Buffer[i] = toMesh.MultiplyPoint3x4(p);
                 }
                 ConversationMotionClip.Apply(surface.Buffer, surface.GestureOffsets, gesture);
+                RoleActivityClip.Apply(surface.Buffer,surface.Normals,surface.ActivityOffsets,activity);
+                if(detailClip != null && detailClip.Profile == Profile)detailClip.Apply(surface.Buffer,surface.Normals,toVisual,toMesh,time);
+                if(surface.Wrist!=null)surface.Wrist.Apply(surface.Buffer,surface.Normals);
                 surface.Animated.vertices = surface.Buffer;
+                if(surface.ActivityOffsets != null)surface.Animated.normals=surface.Normals;
+                foreach(var hand in refinedHands)hand.Follow(surface.Filter,surface.Buffer);
             }
         }
         void OnDisable() => Release();
@@ -205,6 +255,9 @@ namespace RedCliffMystery
             speech = null;
             stoppedMotion = entryMotion = Vector3.zero;
             conversationClip = null;
+            activityClip = null;
+            detailClip = null;
+            refinedHands = null;
             if (surfaces == null) return;
             foreach (var surface in surfaces)
             {

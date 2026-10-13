@@ -1,0 +1,23 @@
+{
+  "triangles": 12728,
+  "vertices": 6625,
+  "atlas": 2048,
+  "bakes": [
+    "DIFFUSE color only",
+    "tangent NORMAL",
+    "AO",
+    "EMIT metallic/smoothness"
+  ],
+  "materials": 1,
+  "uv_channels": 1,
+  "editable_collection": "EditableDeskParts",
+  "editable_parts": 56,
+  "bake_margin": 8,
+  "blender_version": "5.2.2 LTS",
+  "source": "Authored mesh and map; reused ambientCG Wood049 CC0 from project",
+  "size": [
+    2.9000000953674316,
+    1.247999906539917,
+    1.1080000400543213
+  ]
+}

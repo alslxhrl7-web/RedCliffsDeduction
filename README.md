@@ -30,9 +30,11 @@
 
 Windows 실행본은 Unity 메뉴 **적벽추리 → Windows 빌드**로 만든다. 현재 빌드 버전은 `0.1.0-demo.8`이며 `Builds/RedCliffsDeduction-0.1.0-demo.8-windows-x64/`에 저장한다. 같은 버전 폴더가 있으면 시각을 붙여 새 폴더를 만든다. **적벽추리 → 배포 ZIP 만들기**는 현재 버전의 가장 최근 실행본을 묶는다. 실행 파일과 같은 폴더의 Data·DLL 파일을 함께 유지한다.
 
-메뉴에는 빌드와 배포 ZIP 두 항목만 표시한다. 기존 제작·검사 도구는 `Assets/Editor/`에 보존하며 메뉴 등록만 제거했다. 과거 패치노트에 적힌 제작·검사 메뉴는 현재 메뉴 구성을 나타내지 않는다.
+`적벽추리` 메뉴에는 빌드와 배포 ZIP 항목이 있다. 이번 보정의 적용·검사 도구는 별도로 `Tools → Character Hands / Character Motion / Command Desk`에 등록되어 있다. 과거 패치노트의 메뉴와 현재 코드를 구분한다.
 
 ## 다른 컴퓨터에서 이어서 작업하기
+
+**2026-10-13 최신 이전 절차와 작업 재개 지점:** [다른 PC 작업 인계](Docs/다른%20PC%20작업%20인계.md). 최신 손·얼굴·대기·책상·진영의 Blender 편집 원본 5개와 재현 입력을 Git LFS로 포함한다.
 
 1. Git과 Git LFS를 설치한 뒤 저장소를 받는다.
 
@@ -46,11 +48,13 @@ Windows 실행본은 Unity 메뉴 **적벽추리 → Windows 빌드**로 만든�
 
 2. Unity Hub에서 **6000.6.0f1**과 Windows 빌드 지원 모듈을 설치하고, `Assets`, `Packages`, `ProjectSettings`가 있는 저장소 루트를 연다. 처음에는 패키지 다운로드와 Library 재생성을 기다린다.
 3. `Assets/Scenes/Investigation.unity`에서 이어서 작업하거나 위 빌드 메뉴를 사용한다. 실행용 보정 메시·텍스처·모션 데이터와 `.meta`가 포함되어 있어 Blender나 VARCO 연결 없이 Unity 편집·빌드가 가능하다.
-4. 최근 Blender 편집 원본(`ArtSource/CharacterRepair20261012`, `ArtSource/ConversationMotions20261012`)은 요청에 따라 Git에서 제외한다. 이 Blender 작업 자체를 이어가려면 해당 두 폴더를 별도로 옮겨야 한다. Unity용 에셋은 저장소에 포함한다.
+4. Blender 작업은 이전 안내의 CharacterRepair/ConversationMotions 폴더가 아니라 위 인계 문서의 최신 원본에서 이어간다. 최신 5개 `.blend`는 텍스처가 패킹되어 있으며 Unity용 최종 자산도 포함한다. Git LFS 파일 다운로드를 완료해야 한다.
 
 `Library`, `Temp`, `Logs`, `Builds`, `LocalArchive`는 로컬 생성물이다. 다른 컴퓨터에 복사할 필요가 없다. `com.unity.pipeline`은 `Packages/com.unity.pipeline`에 포함된 프로젝트 내부 패키지이며 개인 PC의 절대 경로를 사용하지 않는다. .NET 기반 별도 컴파일 도구를 사용할 때 Unity 설치 경로가 다르면 `UNITY_MANAGED` 환경 변수로 지정한다.
 
 ## 기획과 기록
+
+- [아트 제작과 유지보수](Docs/아트%20제작과%20유지보수.md): 소품·인물 베이킹, 편집 원본 보존, 재작업 절차.
 
 - [피로도·대화 분산 개선](Docs/조사%20피로도와%20대화%20분산%20개선%202026-10-09.md): 자동 기록, 세 질문 비교, 인물과 문서 역할 분리.
 - [후속 수사 구현 기록](Docs/군령%20후속%20수사%20구현%20기록%202026-10-09.md): 새 조사 지점, 진행 경로와 남은 수정 사항.

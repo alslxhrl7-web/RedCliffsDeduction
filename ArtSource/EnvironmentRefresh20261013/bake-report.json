@@ -1,0 +1,32 @@
+[
+  {
+    "name": "SupplyCrate",
+    "triangles": 6200,
+    "materials": 1,
+    "texture_size": 1024
+  },
+  {
+    "name": "StoragePot",
+    "triangles": 3592,
+    "materials": 1,
+    "texture_size": 1024
+  },
+  {
+    "name": "RiverRock",
+    "triangles": 3710,
+    "materials": 1,
+    "texture_size": 1024
+  },
+  {
+    "name": "FieldTent",
+    "triangles": 18004,
+    "materials": 1,
+    "texture_size": 2048
+  },
+  {
+    "name": "SupplyCanopy",
+    "triangles": 7712,
+    "materials": 1,
+    "texture_size": 2048
+  }
+]

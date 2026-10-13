@@ -3,7 +3,7 @@ from pathlib import Path
 from mathutils import Vector
 root=Path(__file__).parent/'BlenderRefined'
 result=[]
-for file in sorted(root.glob('*_refined.*')):
+for file in sorted((root.parents[2]/'Assets/Art/Characters/VarcoV3').glob('*/*.fbx')):
     if file.suffix not in ['.fbx','.glb']:continue
     bpy.ops.wm.read_factory_settings(use_empty=True)
     if file.suffix=='.fbx':bpy.ops.import_scene.fbx(filepath=str(file))
@@ -16,4 +16,4 @@ for file in sorted(root.glob('*_refined.*')):
     result.append(entry)
 (root/'export-validation.json').write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding='utf8')
 print('EXPORT_VALIDATION',sum(r['pass'] for r in result),'/',len(result),flush=True)
-assert len(result)==20 and all(r['pass'] for r in result)
+assert len(result)==10 and all(r['pass'] for r in result)

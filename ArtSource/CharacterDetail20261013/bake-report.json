@@ -1,0 +1,102 @@
+[
+  {
+    "name": "CaoCao",
+    "activity": "Consider the report, hands gathered",
+    "vertices": 27479,
+    "affected": 10621,
+    "frames": 201,
+    "seconds": 10.0,
+    "feet_displacement": 0.0,
+    "uv_unchanged": true
+  },
+  {
+    "name": "Seolpyeong",
+    "activity": "Check a folded record",
+    "vertices": 27414,
+    "affected": 9491,
+    "frames": 210,
+    "seconds": 10.45,
+    "feet_displacement": 0.0,
+    "uv_unchanged": true
+  },
+  {
+    "name": "Duseok",
+    "activity": "Keep the spear steady, check the belt",
+    "vertices": 27658,
+    "affected": 9007,
+    "frames": 218,
+    "seconds": 10.85,
+    "feet_displacement": 0.0,
+    "uv_unchanged": true
+  },
+  {
+    "name": "Caimao",
+    "activity": "Survey the camp, deliberate left and right glances",
+    "vertices": 27728,
+    "affected": 3606,
+    "frames": 227,
+    "seconds": 11.3,
+    "feet_displacement": 0.0,
+    "uv_unchanged": true
+  },
+  {
+    "name": "Zhangyun",
+    "activity": "Inspect the opposite forearm guard",
+    "vertices": 29391,
+    "affected": 10449,
+    "frames": 235,
+    "seconds": 11.7,
+    "feet_displacement": 0.0,
+    "uv_unchanged": true
+  },
+  {
+    "name": "RecordsClerk",
+    "activity": "Review the hands and organise work",
+    "vertices": 26694,
+    "affected": 9067,
+    "frames": 244,
+    "seconds": 12.15,
+    "feet_displacement": 0.0,
+    "uv_unchanged": true
+  },
+  {
+    "name": "DocumentCourier",
+    "activity": "Hold a dispatch close, look up",
+    "vertices": 28001,
+    "affected": 11571,
+    "frames": 253,
+    "seconds": 12.6,
+    "feet_displacement": 0.0,
+    "uv_unchanged": true
+  },
+  {
+    "name": "ReliefGuard",
+    "activity": "Check a sleeve, then watch the approach",
+    "vertices": 26920,
+    "affected": 9438,
+    "frames": 261,
+    "seconds": 13.0,
+    "feet_displacement": 0.0,
+    "uv_unchanged": true
+  },
+  {
+    "name": "GamblingSoldier",
+    "activity": "Rub palms while waiting",
+    "vertices": 27825,
+    "affected": 12217,
+    "frames": 270,
+    "seconds": 13.45,
+    "feet_displacement": 0.0,
+    "uv_unchanged": true
+  },
+  {
+    "name": "HanJin",
+    "activity": "Straighten a cuff and glance aside",
+    "vertices": 26728,
+    "affected": 11941,
+    "frames": 278,
+    "seconds": 13.85,
+    "feet_displacement": 0.0,
+    "uv_unchanged": true
+  }
+]

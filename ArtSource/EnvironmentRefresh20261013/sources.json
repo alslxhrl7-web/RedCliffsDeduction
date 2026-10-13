@@ -1,0 +1,100 @@
+[
+  {
+    "id": "wooden_crate_01",
+    "url": "https://polyhaven.com/a/wooden_crate_01",
+    "authors": {
+      "James Ray Cock": "All"
+    },
+    "license": "CC0-1.0",
+    "files": [
+      {
+        "path": "metadata.json",
+        "md5": "3dad3546ed906146f2d6caa3e598aec0"
+      },
+      {
+        "path": "wooden_crate_01.blend",
+        "md5": "9e8dbf019a10a3eb3c09ed678993b322"
+      },
+      {
+        "path": "textures\\wooden_crate_01_diff_1k.jpg",
+        "md5": "266e0462d06e77c5745f66e89820544f"
+      },
+      {
+        "path": "textures\\wooden_crate_01_metal_1k.exr",
+        "md5": "3af06f4aaa67aedfb83bbacbf10da52c"
+      },
+      {
+        "path": "textures\\wooden_crate_01_nor_gl_1k.exr",
+        "md5": "efdaa82c290404c056522985d104fc90"
+      },
+      {
+        "path": "textures\\wooden_crate_01_rough_1k.exr",
+        "md5": "c0ef08246cb948880e0b3eade3423f91"
+      }
+    ]
+  },
+  {
+    "id": "ceramic_pot",
+    "url": "https://polyhaven.com/a/ceramic_pot",
+    "authors": {
+      "Aron Łyczek": "All"
+    },
+    "license": "CC0-1.0",
+    "files": [
+      {
+        "path": "ceramic_pot.blend",
+        "md5": "794c20f0efd9f90699ae973ef1350bf1"
+      },
+      {
+        "path": "metadata.json",
+        "md5": "7b002c478b56dc6b9b8c1001632cd0ff"
+      },
+      {
+        "path": "textures\\ceramic_pot_diff_1k.jpg",
+        "md5": "85746a999ed333628143b3ad2c0b7f42"
+      },
+      {
+        "path": "textures\\ceramic_pot_metal_1k.exr",
+        "md5": "05b984527940372673b4993a4bc00c87"
+      },
+      {
+        "path": "textures\\ceramic_pot_nor_gl_1k.exr",
+        "md5": "2d2ce3d8f107c33f7784011b949c7fff"
+      },
+      {
+        "path": "textures\\ceramic_pot_rough_1k.exr",
+        "md5": "dd83f77819068184b2affd5352838781"
+      }
+    ]
+  },
+  {
+    "id": "rock_07",
+    "url": "https://polyhaven.com/a/rock_07",
+    "authors": {
+      "Jenelle van Heerden": "All"
+    },
+    "license": "CC0-1.0",
+    "files": [
+      {
+        "path": "metadata.json",
+        "md5": "b2ca47ad3a910558c1fffd07651590e8"
+      },
+      {
+        "path": "rock_07.blend",
+        "md5": "8b9908a42bebf102ea390d96e66e1219"
+      },
+      {
+        "path": "textures\\rock_07_diff_1k.jpg",
+        "md5": "b68ac1824bb3bd3867641b830ad02099"
+      },
+      {
+        "path": "textures\\rock_07_nor_gl_1k.exr",
+        "md5": "bd03d02784c1aa79b6b5f6df8969aa26"
+      },
+      {
+        "path": "textures\\rock_07_rough_1k.exr",
+        "md5": "92adfbc932e5cad744b814823374a380"
+      }
+    ]
+  }
+]
