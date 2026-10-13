@@ -110,56 +110,6 @@ namespace RedCliffMystery.EditorTools
             }
         }
 
-        static object SessionCall(InvestigationSession session, string method, params object[] args) =>
-            typeof(InvestigationSession).GetMethod(method, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).Invoke(session, args);
-        static void Click(InvestigationSession session, string label)
-        {
-            var button = session.view.choices.GetComponentsInChildren<UnityEngine.UI.Button>()
-                .Single(b => b.GetComponentInChildren<UnityEngine.UI.Text>().text == label);
-            Require(button.interactable, "Disabled choice: " + label);
-            button.onClick.Invoke();
-        }
-
-        public static void CheckEarlyReport()
-        {
-            Require(Application.isPlaying, "Enter Play Mode first");
-            var session = UnityEngine.Object.FindAnyObjectByType<InvestigationSession>();
-            var snapshot = (InvestigationSaveData)SessionCall(session, "CaptureSave");
-            try
-            {
-                for (int heard = 0; heard < 3; heard++)
-                {
-                    var data = new InvestigationSaveData { version = 1, playerName = "검증 참모", inquiryIds = Array.Empty<string>(), inquiryTitles = Array.Empty<string>(), CaimaoTestimonyHeard = heard == 1, ZhangyunTestimonyHeard = heard == 2 };
-                    SessionCall(session, "RestoreSave", data);
-                    session.introductionStage.EnterArchive();
-                    session.view.SetPrologueLayout(false);
-                    session.ShowStageSelection();
-                    Click(session, "현재 기록으로 조사 정리");
-                    Require(session.view.body.text.Contains("미확인"), "Missing evidence presented as acquired");
-                    Click(session, "조조에게 최종 보고");
-                    Click(session, "특정 인물을 지목한다");
-                    Click(session, "설평");
-                    if (heard == 0)
-                    {
-                        Require(session.view.title.text == "제출할 기록 없음", "Invented report evidence");
-                        Click(session, "후속 조치 선택");
-                    }
-                    else Click(session, "제출 선택 완료 (0건)");
-                    Click(session, "현재 결과로 보고를 마친다");
-                    Click(session, "이 내용으로 보고 완료");
-                    Require(session.FinalReportCompleted && session.CurrentEnding == InvestigationEnding.Normal, "Early report did not reach normal ending");
-                    Require(!session.ContradictionFound && !session.HasHouseholdRegistryEvidence && !session.HasWuLetterEvidence, "Unconfirmed evidence awarded");
-                }
-                Debug.Log("DEMO_EARLY_REPORT_PASS: zero clues, only Caimao, only Zhangyun; evidence and true-ending gates preserved");
-            }
-            finally
-            {
-                SessionCall(session, "RestoreSave", snapshot);
-                session.introductionStage.EnterArchive();
-                if (snapshot.navalCamp) session.route.EnterNavalCamp(); else session.route.EnterArchive();
-                session.CloseModal();
-            }
-        }
         public static void Inspect()
         {
             var text = new StringBuilder();

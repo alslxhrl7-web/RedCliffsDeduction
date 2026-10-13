@@ -28,7 +28,6 @@ namespace RedCliffMystery.Investigation
         string identityName = "";
         string identityLocation = "조조군 문서고";
         string modalCategory = "";
-        EvidenceDocumentView documentView;
         static readonly Color LabelColor = new Color(.97f, .93f, .84f);
         static readonly Color MutedLabelColor = new Color(.65f, .69f, .68f);
 
@@ -123,32 +122,6 @@ namespace RedCliffMystery.Investigation
 
         public void SetObjective(string text) { objective.text = text; PlaytestObserver.Objective(text); }
 
-        public System.Collections.IEnumerator FadeEndingToBlack()
-        {
-            var overlay = new GameObject("EndingBlackout", typeof(RectTransform), typeof(UnityEngine.UI.Image));
-            overlay.transform.SetParent(modal.transform.parent, false);
-            overlay.transform.SetAsLastSibling();
-            var rect = overlay.GetComponent<RectTransform>();
-            rect.anchorMin = Vector2.zero;
-            rect.anchorMax = Vector2.one;
-            rect.offsetMin = rect.offsetMax = Vector2.zero;
-            var shade = overlay.GetComponent<UnityEngine.UI.Image>();
-            shade.raycastTarget = true;
-            float elapsed = 0;
-            while (elapsed < 1.2f)
-            {
-                elapsed += Time.unscaledDeltaTime;
-                shade.color = new Color(0, 0, 0, Mathf.Clamp01(elapsed / 1.2f));
-                yield return null;
-            }
-            shade.color = Color.black;
-            yield return new WaitForSecondsRealtime(.8f);
-            CacheLayoutReferences();
-            modalShade.color = Color.black;
-            controls.SetActive(false);
-            modal.transform.SetAsLastSibling();
-            Destroy(overlay);
-        }
         public void SetPrompt(string text) => prompt.text = text;
         public void SetFooterHint(string text) { modalHint = text; footer.text = text; }
 
@@ -165,8 +138,6 @@ namespace RedCliffMystery.Investigation
             footer.text = hint;
             foreach (Transform child in choices) { child.gameObject.SetActive(false); Destroy(child.gameObject); }
             choiceHeight = 0;
-            if (documentView == null) documentView = GetComponent<EvidenceDocumentView>();
-            if (documentView != null) documentView.Show(heading, modalPanel, font);
             ResizeChoiceArea();
             if (bodyScroll != null) { bodyScroll.StopMovement(); bodyScroll.verticalNormalizedPosition = 1; body.rectTransform.anchoredPosition = Vector2.zero; }
             // Hidden playtest log: only the screen name and body length, never the body text.
@@ -293,10 +264,9 @@ namespace RedCliffMystery.Investigation
             choices.offsetMax = new Vector2(choices.offsetMax.x, 62 + choiceHeight);
             var rect = bodyScrollRoot != null ? bodyScrollRoot : body.rectTransform;
             rect.anchorMin = Vector2.zero;
-            rect.anchorMax = documentView != null && documentView.Visible ? new Vector2(.59f,1) : Vector2.one;
+            rect.anchorMax = Vector2.one;
             rect.offsetMin = new Vector2(40, 80 + choiceHeight);
             rect.offsetMax = new Vector2(-40, -145);
-            if (documentView != null) documentView.Resize(choiceHeight);
         }
 
         UnityEngine.UI.Text CreateLabel(Transform parent, string name, string content, int fontSize, float verticalPadding, Color color)

@@ -14,7 +14,7 @@ namespace RedCliffMystery.Investigation
             var presentation=FindAnyObjectByType<ConversationPresentation>();
             if(presentation==null)return;
             presentation.subject=actor;
-            if(presentation.session.OrderChapterActive)RecordArchive.RecordPerson(actor.Profile);
+            RecordArchive.RecordPerson(actor.Profile);
         }
         public static void End(){var p=FindAnyObjectByType<ConversationPresentation>();if(p)p.subject=null;}
         public static void BeforeTravel(){var p=FindAnyObjectByType<ConversationPresentation>();if(p){p.subject=null;p.Restore();}}

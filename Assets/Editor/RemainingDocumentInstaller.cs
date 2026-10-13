@@ -66,23 +66,18 @@ namespace RedCliffMystery.EditorTools
                 var papers=Find("PersonalPapers");var lid=papers.transform.Find("Lid").GetComponent<Renderer>().bounds;
                 var letter=Place(Models[2],papers.transform,new Bounds(new Vector3(lid.center.x,lid.max.y+.005f,lid.center.z),new Vector3(.40f,.008f,.34f)));
                 Undo.RecordObject(registry,"Hide undiscovered registry");registry.SetActive(false);Undo.RecordObject(letter,"Hide undiscovered letter");letter.SetActive(false);
-                var session=UnityEngine.Object.FindAnyObjectByType<InvestigationSession>();
-                var visibility=session.GetComponent<DiscoveredDocumentVisuals>()??Undo.AddComponent<DiscoveredDocumentVisuals>(session.gameObject);
-                Undo.RecordObject(visibility,"Bind discovered documents");visibility.session=session;visibility.householdRegistry=registry;visibility.secretLetter=letter;
-                var view=session.view.GetComponent<EvidenceDocumentView>();Undo.RecordObject(view,"Apply refined document previews");view.dutyRecord=textures[0];view.householdRegistry=textures[1];view.secretLetter=textures[2];
+                // Art remains available; retired case preview components are not installed.
                 Undo.CollapseUndoOperations(group);AssetDatabase.SaveAssets();var scene=SceneManager.GetActiveScene();EditorSceneManager.MarkSceneDirty(scene);if(!EditorSceneManager.SaveScene(scene))throw new InvalidOperationException("Scene save failed");
-                File.WriteAllText(Logs+"/apply.txt","Duty model on existing table; registry and letter assigned with discovery gates; all three evidence previews assigned. Original assets retained.\n");
+                File.WriteAllText(Logs+"/apply.txt","Duty model on existing table; retired registry and letter remain hidden; preview textures retained as source assets. Original assets retained.\n");
             }catch{Undo.RevertAllDownToGroup(group);throw;}
         }
         public static void Validate()
         {
             Guard();EditorSceneManager.OpenScene(SceneManager.GetActiveScene().path);Directory.CreateDirectory(Logs);File.WriteAllText(Logs+"/checks.txt","Remaining documents saved-scene checks\n");
-            var session=UnityEngine.Object.FindAnyObjectByType<InvestigationSession>();var gate=session.GetComponent<DiscoveredDocumentVisuals>();var view=session.view.GetComponent<EvidenceDocumentView>();
-            if(!gate||gate.session!=session||!gate.householdRegistry||!gate.secretLetter)throw new InvalidOperationException("Visibility binding missing");
-            if(gate.householdRegistry.activeSelf||gate.secretLetter.activeSelf)throw new InvalidOperationException("Undiscovered clues visible");
+            foreach (string name in Models.Skip(1)) if (Find(name).activeSelf) throw new InvalidOperationException("Retired clue must stay hidden");
             var duty=Find("DutyRecord");if(!duty.transform.Find(Models[0])||duty.GetComponent<Renderer>().enabled)throw new InvalidOperationException("Duty visual missing");
             var collider=duty.GetComponent<Collider>();Physics.SyncTransforms();if(!collider.enabled||!collider.Raycast(new Ray(collider.bounds.center+Vector3.up,Vector3.down),out var hit,2)||!duty.GetComponentInParent<InvestigationTarget>())throw new InvalidOperationException("Duty interaction missing");
-            var previews=new[]{view.dutyRecord,view.householdRegistry,view.secretLetter};
+            var previews=Models.Select(Preview).ToArray();
             for(int i=0;i<Models.Length;i++){
                 var prefab=AssetDatabase.LoadAssetAtPath<GameObject>(Folder+Models[i]+".prefab");
                 if(!prefab||prefab.GetComponentsInChildren<Renderer>().Any(r=>r.sharedMaterials.Any(m=>!m||m.shader.name!="Universal Render Pipeline/Lit"||m.GetFloat("_Metallic")!=0)))throw new InvalidOperationException("Invalid materials");

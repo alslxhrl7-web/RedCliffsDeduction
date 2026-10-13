@@ -6,27 +6,6 @@ using UnityEngine.InputSystem;
 
 namespace RedCliffMystery.Investigation
 {
-    [Serializable]
-    public sealed class InvestigationReportSave
-    {
-        public bool uncertain, deadlineLocked, fromNaval;
-        public string suspect, request;
-        public int page;
-        public int[] evidence;
-        public void Validate() {
-            if (page < 0 || page > 32 || evidence == null || evidence.Length > 32)
-                throw new InvalidDataException("보고 선택 기록이 손상되었습니다.");
-            if (!string.IsNullOrEmpty(suspect) && suspect != "채모" && suspect != "장윤" && suspect != "설평" && suspect != "두석")
-                throw new InvalidDataException("보고 대상 기록이 손상되었습니다.");
-            if (request != "신원과 경력 기록 확인 요청" && request != "문서 반출 경로와 전달자 조사 요청"
-                && request != "신병 확보와 소지품 확인 요청" && request != "현재 결과로 보고를 마친다")
-                throw new InvalidDataException("보고 요청 기록이 손상되었습니다.");
-            var unique = new HashSet<int>();
-            foreach (int index in evidence)
-                if (index < 0 || index >= 32 || !unique.Add(index)) throw new InvalidDataException("보고 근거 기록이 손상되었습니다.");
-        }
-    }
-
     public sealed partial class InvestigationSession
     {
         string saveResumePoint = "field";
@@ -36,33 +15,12 @@ namespace RedCliffMystery.Investigation
         InvestigationSaveData pendingManualSave;
 
         Dictionary<string, Action> SavePoints => new Dictionary<string, Action> {
-            { "order_journal", ShowOrderJournal },
-            { "order_final", ResumeOrderFinal },
-            { "field", CloseModal },
-            { "document", InspectDocument }, { "maintenance", InspectMaintenanceOrder },
-            { "seol", TalkToSeolpyeong }, { "duseok", TalkToDuseok },
-            { "caimao", TalkToCaimao }, { "zhangyun", TalkToZhangyun },
-            { "token", InspectPersonalToken }, { "seol_followup", ShowSeolpyeongFollowUp },
-            { "registry", ShowRegistryComparison }, { "papers", InspectPersonalPapers },
-            { "token_compare", ShowTokenComparison }, { "letter", ShowLetterInterrogation },
-            { "records", TalkToRecordsClerk }, { "career", ShowCareerRecords },
-            { "courier", TalkToDocumentCourier }, { "relief", TalkToReliefGuard },
-            { "gambling", TalkToGamblingSoldier }, { "duseok_timeline", ShowDuseokTimelineInquiry },
-            { "comparison", ShowTestimonyComparison }, { "travel", ShowStageSelection },
-            { "followup", ShowFollowUpSelection }, { "review", ShowInvestigationReview },
-            { "schedule", ShowInvestigationSchedule }, { "deadline", ShowDeadlineChoice },
-            { "search_permission", () => { reportActive = false; RequestPersonalSearch(); } },
-            { "tent", VisitCommandTent },
-            { "report_conclusion", ShowReportConclusion }, { "report_suspects", ShowReportSuspects },
-            { "report_evidence", () => ShowReportEvidence(evidencePage) },
-            { "report_request", ShowReportRequest }, { "report_confirm", ShowReportConfirmation }
+            { "order_journal", ShowOrderJournal }, { "order_final", ResumeOrderFinal },
+            { "field", CloseModal }, { "travel", ShowStageSelection }, { "tent", VisitCommandTent }
         };
-        public static bool IsKnownSavePoint(string point) => point == "order_journal" || point == "order_final" || string.IsNullOrEmpty(point)
-            || Array.IndexOf(new[] { "field", "document", "maintenance", "seol", "duseok", "caimao", "zhangyun",
-                "token", "seol_followup", "registry", "papers", "token_compare", "letter", "records", "career",
-                "courier", "relief", "gambling", "duseok_timeline", "comparison", "travel", "followup", "review",
-                "schedule", "deadline", "search_permission", "tent", "report_conclusion", "report_suspects", "report_evidence",
-                "report_request", "report_confirm" }, point) >= 0;
+        public static bool IsKnownSavePoint(string point) => string.IsNullOrEmpty(point)
+            || point == "field" || point == "order_journal" || point == "order_final"
+            || point == "travel" || point == "tent";
 
         void SetSavePoint(string point) { if (!saveMenuOpen) saveResumePoint = point; }
         void ResumeSavedPoint() {
@@ -117,11 +75,11 @@ namespace RedCliffMystery.Investigation
                 string path = InvestigationSaveStore.ManualPath(slot);
                 bool readable = ReadSavePreview(out var data, out var preview, path);
                 view.AddChoice("수동 슬롯 " + slot + (readable ? " · " + data.savedAt : " · 기록 없음 / 읽기 실패"),
-                    () => ConfirmLoadPath(path, () => ShowLoadSlots(back)), readable);
+                    () => ConfirmLoadPath(path, () => ShowLoadSlots(back)), readable || File.Exists(path));
             }
             bool hasAuto = ReadSavePreview(out var automatic, out var autoPreview, InvestigationSaveStore.AutoSavePath);
             view.AddChoice("최근 자동저장" + (hasAuto ? " · " + automatic.savedAt : " · 기록 없음 / 읽기 실패"),
-                () => ConfirmLoadPath(InvestigationSaveStore.AutoSavePath, () => ShowLoadSlots(back)), hasAuto);
+                () => ConfirmLoadPath(InvestigationSaveStore.AutoSavePath, () => ShowLoadSlots(back)), hasAuto || File.Exists(InvestigationSaveStore.AutoSavePath));
             view.AddChoice("돌아가기", () => back());
             onEscape = back;
         }
@@ -154,27 +112,5 @@ namespace RedCliffMystery.Investigation
             } catch (Exception e) { Debug.LogWarning("자동저장 상태 확인 실패: " + e.Message, this); }
         }
 
-        InvestigationReportSave CaptureReportSave() => OrderChapterActive || !reportActive ? null : new InvestigationReportSave {
-            uncertain = reportUncertain, deadlineLocked = deadlineReportLocked, fromNaval = reportFromNavalCamp,
-            suspect = reportSuspect, request = reportRequest, page = evidencePage,
-            evidence = new List<int>(submittedEvidence).ToArray()
-        };
-        void RestoreReportSave(InvestigationReportSave saved) {
-            if (saved == null) return;
-            reportActive = true;
-            visitingCommandTent = false;
-            reportUncertain = saved.uncertain;
-            reportSuspect = string.IsNullOrEmpty(saved.suspect) ? null : saved.suspect;
-            reportRequest = saved.request;
-            deadlineReportLocked = saved.deadlineLocked || investigationTime.DeadlineReached;
-            reportFromNavalCamp = saved.fromNaval;
-            CollectReportEvidence();
-            submittedEvidence.Clear();
-            foreach (int index in saved.evidence) if (index < reportEvidence.Count) submittedEvidence.Add(index);
-            evidencePage = saved.page;
-            introductionStage.Begin();
-            view.SetPlayerIdentity(PlayerName, "조조군 지휘 천막");
-            view.SetObjective("조조에게 조사 결과를 보고하라");
-        }
     }
 }

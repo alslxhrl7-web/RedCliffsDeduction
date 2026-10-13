@@ -260,16 +260,6 @@ namespace RedCliffMystery.Investigation
             return button;
         }
 
-        static void Link(UGUI.Button upper, UGUI.Button lower)
-        {
-            var a = upper.navigation;
-            a.mode = UGUI.Navigation.Mode.Explicit; a.selectOnDown = lower; a.selectOnUp = lower;
-            upper.navigation = a;
-            var b = lower.navigation;
-            b.mode = UGUI.Navigation.Mode.Explicit; b.selectOnUp = upper; b.selectOnDown = upper;
-            lower.navigation = b;
-        }
-
         Texture2D MakeGradient(int width, int height, Func<float, float, float> alpha) => MakeGradient(width, height, alpha, Ink);
 
         Texture2D MakeGradient(int width, int height, Func<float, float, float> alpha, Color tint)

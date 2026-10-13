@@ -16,7 +16,6 @@ public static class TestDemoBuild
         string output = Path.GetFullPath(args[index + 1]);
         Directory.CreateDirectory(Path.GetDirectoryName(output));
 
-        EndingRuleChecks.Verify();
         InvestigationBudgetChecks.Verify();
         Debug.Log(InvestigationSaveChecks.Verify());
 

@@ -24312,7 +24312,6 @@ GameObject:
   m_Component:
   - component: {fileID: 440293314}
   - component: {fileID: 440293313}
-  - component: {fileID: 440293315}
   - component: {fileID: 440293316}
   m_Layer: 0
   m_Name: InvestigationSession
@@ -24351,21 +24350,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &440293315
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 440293312}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 31b8b4a7e482dc840baca3f2721f7dae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RedCliffMystery.Investigation.DiscoveredDocumentVisuals
-  session: {fileID: 440293313}
-  householdRegistry: {fileID: 758916429}
-  secretLetter: {fileID: 347106438}
 --- !u!114 &440293316
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -105188,7 +105172,6 @@ GameObject:
   - component: {fileID: 2057872661}
   - component: {fileID: 2057872660}
   - component: {fileID: 2057872659}
-  - component: {fileID: 2057872664}
   m_Layer: 0
   m_Name: InvestigationUI
   m_TagString: Untagged
@@ -105306,23 +105289,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &2057872664
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2057872658}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c105feb1edb75244ca56e080352072e8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RedCliffMystery.Investigation.EvidenceDocumentView
-  maintenanceOrder: {fileID: 2800000, guid: 8703a7f419f2f59459c9a71edd6762ed, type: 3}
-  personnelRecord: {fileID: 2800000, guid: 0c0f4b80ccf75824dada3f9c7b6526d5, type: 3}
-  dutyRecord: {fileID: 2800000, guid: 0eb85ebc720276f43bacc2248f083fa4, type: 3}
-  householdRegistry: {fileID: 2800000, guid: 8dd76c09d55b73148b8c24e4cebecb89, type: 3}
-  secretLetter: {fileID: 2800000, guid: 2a4713379dae90e4ba64c2e3772640e6, type: 3}
 --- !u!1001 &2058076136
 PrefabInstance:
   m_ObjectHideFlags: 0

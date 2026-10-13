@@ -41,6 +41,8 @@ public static partial class OrderChapterChecks
         SessionState.SetString(SaveKey, Path.GetFullPath("Temp/OrderChecks/Saves-" + Guid.NewGuid().ToString("N")));
         int failures = 0;
         var checks = new List<(string, Action)> {
+            ("current save contract and retired version rejection", () => InvestigationSaveChecks.Verify()),
+            ("budget and day boundaries", InvestigationBudgetChecks.Verify),
             ("state guards and alternate path", CheckState),
             ("title, name and new briefing", () => {
                 var title = UnityEngine.Object.FindAnyObjectByType<InvestigationTitleScreen>();
@@ -48,8 +50,9 @@ public static partial class OrderChapterChecks
                 S.BeginIntroduction("군령 검증");
                 S.AdvanceDialogue(); S.AdvanceDialogue(); S.AdvanceDialogue();
                 Require(S.view.body.text.Contains("최종 보고"), "Wrong briefing");
-                Click("문서고로 향한다"); Require(S.OrderChapterActive, "Wrong story");
+                Click("문서고로 향한다"); Require(Capture().version == 2, "Wrong story");
             }),
+            ("old save warning preserves current progress", CheckRetiredSave),
             ("early report cannot end game", () => { S.BeginFinalReport(); Require(!S.FinalReportCompleted && !S.OrderState.ReadyToReport, "Early ending"); S.CloseModal(); }),
             ("free travel before archive completion", () => { S.route.EnterNavalCamp(); Require(S.route.AtNavalCamp, "Naval travel blocked"); S.route.EnterArchive(); }),
             ("supply tent travel and save round trip", () => {
@@ -151,6 +154,21 @@ public static partial class OrderChapterChecks
         try { new OrderInvestigationState { facts = (int)OrderFact.Reported }.Validate(); } catch (InvalidDataException) { rejected = true; }
         Require(rejected, "Corrupt dependency accepted");
     }
+    static void CheckRetiredSave()
+    {
+        var snapshot = Capture();
+        var legacy = JsonUtility.FromJson<InvestigationSaveData>(JsonUtility.ToJson(snapshot));
+        legacy.version = 1;
+        string path = InvestigationSaveStore.ManualPath(3);
+        string json = JsonUtility.ToJson(legacy); File.WriteAllText(path, json);
+        Call("ShowLoadSlots", (Action)(() => S.CloseModal()));
+        Click("수동 슬롯 3 · 기록 없음 / 읽기 실패");
+        Require(S.view.body.text.Contains("구버전 설평 사건") && S.view.body.text.Contains("현재 진행은 유지"), "Legacy explanation missing");
+        Require(S.PlayerName == snapshot.playerName && S.OrderState.facts == snapshot.order.facts
+            && Capture().inquiryIds.Length == snapshot.inquiryIds.Length, "Failed load changed progress");
+        Require(File.ReadAllText(path) == json, "Legacy slot altered");
+        Click("돌아가기"); Click("돌아가기");
+    }
     static void CheckSave()
     {
         var saved = Capture(); saved.Validate();
@@ -162,7 +180,7 @@ public static partial class OrderChapterChecks
         var read = InvestigationSaveStore.Read(path);
         Require(read.version == 2 && read.order.facts == before && read.inquiryIds.Length == saved.inquiryIds.Length, "Save mismatch");
         Call("LoadInvestigation", (Action)(() => {}), read);
-        Require(S.OrderState.facts == before && S.OrderChapterActive && !S.FinalReportCompleted, "Load mismatch");
+        Require(S.OrderState.facts == before && !S.FinalReportCompleted, "Load mismatch");
         var bad = JsonUtility.FromJson<InvestigationSaveData>(JsonUtility.ToJson(saved));
         bad.inquiryIds[0] = "seol_initial";
         bool rejected = false;

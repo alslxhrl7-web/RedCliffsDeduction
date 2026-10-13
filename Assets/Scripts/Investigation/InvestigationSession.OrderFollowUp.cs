@@ -225,7 +225,6 @@ namespace RedCliffMystery.Investigation
             }
             view.AddChoicePair("제출 자료와 비교", ShowOrderSubmission, "수첩으로", ShowOrderFollowUp);
         }
-        public void ShowOrderJudgment() => ShowOrderReplyOrder();
         string FollowRouteHint()
         {
             if (!HasFollowUp(OrderFollowUpFact.Assignment)) return "문서고: 한진 앞 반환 묶음에서 작업 의뢰를 확인할 수 있다.";

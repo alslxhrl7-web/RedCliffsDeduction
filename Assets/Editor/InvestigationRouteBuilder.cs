@@ -84,7 +84,6 @@ namespace RedCliffMystery.EditorTools
         {
             EditorSceneManager.OpenScene(FirstInvestigationBuilder.ScenePath);
             BuildPersonalEvidence();
-            FollowUpConnectionChecks.Verify();
         }
 
         public static void BuildCareerRecords()

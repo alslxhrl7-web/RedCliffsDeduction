@@ -36,7 +36,7 @@ public static partial class OrderChapterChecks
                 Click("[미선택] 본진 철수로 생기는 강 입구 감시 공백");
                 Click("[미선택] 전달자의 반입 기록과 문서 회수 경위");
                 Click("조치 선택으로"); Click("제17호·대체 재발행 중지와 강 입구 배치 복원");
-                var snapshot = Capture(); Require(snapshot.resumePoint == "order_final" && snapshot.report == null && snapshot.orderReport.proofs == 63, "Wrong save namespace");
+                var snapshot = Capture(); Require(snapshot.resumePoint == "order_final" && snapshot.orderReport.proofs == 63, "Wrong save namespace");
                 S.OrderReport.proofs = 0; Require(snapshot.orderReport.proofs == 63, "Draft snapshot aliases live state");
                 string path=InvestigationSaveStore.ManualPath(3); InvestigationSaveStore.Write(path,snapshot);
                 Call("LoadInvestigation", (Action)(() => {}), InvestigationSaveStore.Read(path));

@@ -79,7 +79,7 @@ namespace RedCliffMystery.Investigation
         public static void RecordPerson(int profile){if(profile<0||profile>=10)return;Load();if(Add("person-"+profile))Save();}
         public static void Capture(InvestigationSession session)
         {
-            if(session==null||!session.OrderChapterActive)return;Load();bool changed=false;
+            if(session==null)return;Load();bool changed=false;
             foreach(var entry in Entries)if((entry.fact!=0&&session.OrderState.Has(entry.fact))||(entry.follow!=0&&session.OrderState.HasFollowUp(entry.follow)))changed|=Add(entry.id);
             if(changed)Save();
         }

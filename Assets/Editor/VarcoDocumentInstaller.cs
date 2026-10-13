@@ -19,11 +19,6 @@ namespace RedCliffMystery.EditorTools
             var scene = SceneManager.GetActiveScene();
             if (scene.path != "Assets/Scenes/Investigation.unity") throw new InvalidOperationException("Open Investigation first.");
             var objects = scene.GetRootGameObjects().SelectMany(r=>r.GetComponentsInChildren<Transform>(true)).ToArray();
-            var view = objects.Select(t=>t.GetComponent<InvestigationView>()).First(v=>v!=null);
-            var preview = view.GetComponent<EvidenceDocumentView>() ?? Undo.AddComponent<EvidenceDocumentView>(view.gameObject);
-            Undo.RecordObject(preview,"Apply evidence illustrations");
-            preview.maintenanceOrder = Reference(Names[0]); preview.personnelRecord = Reference(Names[1]);
-            preview.dutyRecord = Reference(Names[2]); preview.householdRegistry = Reference(Names[3]); preview.secretLetter = Reference(Names[4]);
             foreach (var name in Names.Take(3))
             {
                 var placeholder = objects.Single(t=>t!=null && t.name==name);

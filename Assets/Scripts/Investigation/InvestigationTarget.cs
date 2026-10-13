@@ -40,19 +40,6 @@ namespace RedCliffMystery.Investigation
             if (session.HandleOrderTarget(kind)) return;
             switch (kind)
             {
-                case TargetKind.MissingDocument: session.InspectDocument(); break;
-                case TargetKind.Seolpyeong: session.TalkToSeolpyeong(); break;
-                case TargetKind.Duseok: session.TalkToDuseok(); break;
-                case TargetKind.Caimao: session.TalkToCaimao(); break;
-                case TargetKind.Zhangyun: session.TalkToZhangyun(); break;
-                case TargetKind.MaintenanceOrder: session.InspectMaintenanceOrder(); break;
-                case TargetKind.RecordsClerk: session.TalkToRecordsClerk(); break;
-                case TargetKind.CareerRecords: session.ShowCareerRecords(); break;
-                case TargetKind.PersonalToken: session.InspectPersonalToken(); break;
-                case TargetKind.PersonalPapers: session.InspectPersonalPapers(); break;
-                case TargetKind.DocumentCourier: session.TalkToDocumentCourier(); break;
-                case TargetKind.ReliefGuard: session.TalkToReliefGuard(); break;
-                case TargetKind.GamblingSoldier: session.TalkToGamblingSoldier(); break;
                 case TargetKind.NavalCampExit: session.EnterNavalCamp(); break;
                 case TargetKind.ArchiveReturn: session.ShowTravel(); break;
             }

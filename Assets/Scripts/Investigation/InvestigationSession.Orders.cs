@@ -5,7 +5,6 @@ namespace RedCliffMystery.Investigation
 {
     public sealed partial class InvestigationSession
     {
-        public bool OrderChapterActive { get; private set; } = true;
         public OrderInvestigationState OrderState { get; private set; } = new OrderInvestigationState();
         public const string OrderBody = "군령 — 수군 제17호\n수령: 강 입구 감시선 부대\n\n감시선을 본진으로 철수시키고, 본진에서 배치 완료를 보고할 것.";
         public const string OrderReceipt = "인계 확인표 — 수군 제17호\n수령: 강 입구 감시선 부대\n\n강 입구에서 감시선 배치를 확인받을 것.\n전달자는 완료 서명을 받아 문서고로 회신한다.";
@@ -46,7 +45,6 @@ namespace RedCliffMystery.Investigation
 
         public bool HandleOrderTarget(InvestigationTarget.TargetKind kind)
         {
-            if (!OrderChapterActive) return false;
             switch (kind)
             {
                 case InvestigationTarget.TargetKind.MissingDocument: ShowOrderArchive(); break;
