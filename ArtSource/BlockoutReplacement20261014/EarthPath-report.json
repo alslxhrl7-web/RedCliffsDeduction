@@ -1,0 +1,16 @@
+{
+  "family": "EarthPath",
+  "parts": 1,
+  "vertices": 429,
+  "triangles": 768,
+  "maps": [
+    "BaseColor",
+    "Normal",
+    "AO",
+    "MetalSmooth"
+  ],
+  "size": 1024,
+  "source": "ArtSource\\BlockoutReplacement20261014\\EarthPath.blend",
+  "unity": "Assets\\Art\\Environment\\BlockoutReplacement20261014\\EarthPath",
+  "review": "Blender render produced; Unity review pending"
+}

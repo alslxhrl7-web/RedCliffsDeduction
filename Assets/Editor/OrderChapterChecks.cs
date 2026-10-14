@@ -50,8 +50,9 @@ public static partial class OrderChapterChecks
                 S.BeginIntroduction("군령 검증");
                 S.AdvanceDialogue(); S.AdvanceDialogue(); S.AdvanceDialogue();
                 Require(S.view.body.text.Contains("최종 보고"), "Wrong briefing");
-                Click("문서고로 향한다"); Require(Capture().version == 2, "Wrong story");
+                Click("문서고로 향한다"); Click("안내 건너뛰고 자유 수사"); Require(Capture().version == 2, "Wrong story");
             }),
+            ("player-selected guidance and compatible saves", CheckGuidance),
             ("old save warning preserves current progress", CheckRetiredSave),
             ("early report cannot end game", () => { S.BeginFinalReport(); Require(!S.FinalReportCompleted && !S.OrderState.ReadyToReport, "Early ending"); S.CloseModal(); }),
             ("free travel before archive completion", () => { S.route.EnterNavalCamp(); Require(S.route.AtNavalCamp, "Naval travel blocked"); S.route.EnterArchive(); }),
@@ -97,7 +98,7 @@ public static partial class OrderChapterChecks
             ("receipt available at recovery", () => { Click("함께 남은 인계 확인표"); Require(S.OrderState.CanCompare, "Receipt missing"); }),
             ("wrong comparison leaves evidence intact", () => { int before = S.OrderState.facts; S.ShowOrderComparison(); Click("전달자가 군령을 조작했다"); Require(S.OrderState.facts == before && !S.FinalReportCompleted, "Wrong guess mutated state"); }),
             ("compare unlock", () => { S.ShowOrderComparison(); Click("같은 번호인데 완료 회신 장소가 다르다"); Require(S.OrderState.Has(OrderFact.Compared), "Comparison missing"); }),
-            ("procedure and choice of suspect", () => { Pay(S.TalkToZhangyun); Click("정상 인계 절차 확인"); S.TalkToZhangyun(); Click("누구를 더 조사할지 정한다"); Click("추가 질문 없이 돌아간다"); Require(!S.BlocksMovement, "Decline inquiry blocked"); }),
+            ("procedure and choice of suspect", () => { Pay(S.TalkToZhangyun); Click("정상 인계 절차 확인"); S.TalkToZhangyun(); Click("누구를 더 조사할지 정한다"); Click("조사 계속"); Require(!S.BlocksMovement, "Decline inquiry blocked"); }),
             ("motive gated behind recovered document", () => { S.ShowOrderCourier(); Click("무엇이 달라 전달하지 않았는가?"); S.ShowOrderCourier(); Click("대조 완료라 적고 왜 보고하지 않았나?"); Require(S.OrderState.Has(OrderFact.Motive), "Motive missing"); }),
             ("independent copy and approval", () => { Pay(S.ShowOrderRecords); Require(S.OrderState.Has(OrderFact.RetainedCopy | OrderFact.Approval), "Document bundle not recorded"); }),
             ("verify refuses access equals guilt", () => { S.ShowOrderRecords(); Click("정식 변경 가능성을 판단한다"); Click("접근 권한이 있는 사람을 범인으로 확정"); Require(!S.FinalReportCompleted && !S.OrderState.Has(OrderFact.Verified), "Unsupported accusation accepted"); }),

@@ -15,6 +15,7 @@ public static class ConnectedWalkwayChecks
     const string Report="Logs/ConnectedWalkway/result.txt";
     static void Require(bool condition,string message) { if(!condition) throw new InvalidOperationException(message); }
     static void Pass(string message) { File.AppendAllText(Report,"PASS "+message+"\n"); }
+    [MenuItem("Tools/Model Quality/Check Connected Walkway")]
     public static void Begin()
     {
         Require(EditorApplication.isPlaying,"Play Mode required");

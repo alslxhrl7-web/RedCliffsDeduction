@@ -16,14 +16,20 @@ namespace RedCliffMystery.Investigation
         bool HasFollowUp(OrderFollowUpFact value) => OrderState.HasFollowUp(value);
         void FollowRecord(OrderFollowUpFact fact, string title, string text, Action back)
         {
+            bool fresh = !HasFollowUp(fact);
             if (!OrderState.TryRecordFollowUp(fact)) return;
+            if(fresh) RecordGuidanceNotice((fact & (OrderFollowUpFact.BeforeCourier | OrderFollowUpFact.Submitted | OrderFollowUpFact.Knowing | OrderFollowUpFact.Sequence | OrderFollowUpFact.OriginalCompared)) != 0 ? "판단 기록" : "새 기록", title);
+            ObserveTutorialRecord();
             UpdateObjective();
             back();
             view.SetFooterHint("수첩에 기록됨 · " + title + "  /  Esc 닫기");
         }
         void ReadFollowBundle(OrderFollowUpFact facts, string title, string text)
         {
+            bool fresh = !HasFollowUp(facts);
             if (!OrderState.TryRecordFollowUp(facts)) return;
+            if(fresh) RecordGuidanceNotice("새 자료", title);
+            ObserveTutorialRecord();
             PlaytestObserver.SourceRead(title);
             UpdateObjective();
             OrderModal(title, text);
@@ -112,6 +118,7 @@ namespace RedCliffMystery.Investigation
         public void ShowOrderIntake()
         {
             if (!OrderInquiry("rewrite", "제17호 · 재작성과 반환·출고", ShowOrderIntake)) return;
+            if(!HasFollowUp(OrderFollowUpFact.ClerkConfirmation)) RecordGuidanceNotice("새 진술", "발급 담당의 반납 확인");
             OrderState.TryRecordFollowUp(OrderFollowUpFact.ClerkConfirmation);
             UpdateObjective(); ShowOrderClerk();
             view.body.text = "“한진에게서 기존 묶음과 완성물을 직접 받았습니다. 같은 완성물을 출고 담당에게 넘겼습니다.”\n\n반납 접수 목록을 작성한 사람의 진술로 기록했다.";
@@ -121,6 +128,7 @@ namespace RedCliffMystery.Investigation
         public void ShowOrderReplyWitness()
         {
             if (!OrderInquiry("reply", "제17호 · 승인 회신과 도착 순서", ShowOrderReplyWitness)) return;
+            if(!HasFollowUp(OrderFollowUpFact.DeliveryWitness)) RecordGuidanceNotice("새 진술", "답신 전달 확인");
             OrderState.TryRecordFollowUp(OrderFollowUpFact.DeliveryWitness);
             UpdateObjective(); ShowOrderClerk(); view.body.text = ReplyWitness;
             RedCliffMystery.VarcoIdleMotion.Speak("기록 담당자", ReplyWitness);
@@ -178,7 +186,7 @@ namespace RedCliffMystery.Investigation
         {
             string question = !HasFollowUp(OrderFollowUpFact.BeforeCourier) ? "1 / 3 · 내용이 달라진 시점" : "2 / 3 · 바뀐 본문을 제출한 사람";
             OrderModal(question, SubmissionEvidence());
-            view.SetFooterHint(FollowRouteHint());
+            view.SetFooterHint("Q 조사 방향 선택 · 확보한 자료의 비교는 시간 소모 없음");
             if (!HasFollowUp(OrderFollowUpFact.BeforeCourier))
             {
                 // All options are always shown and look alike. Each wrong option cites a real fact but skips one record.
@@ -212,7 +220,7 @@ namespace RedCliffMystery.Investigation
             if (HasFollowUp(OrderFollowUpFact.Delivery)) lines.Add("[수령 기록] 한진의 답신 수령 → 철수 본문 반납.");
             if (HasFollowUp(OrderFollowUpFact.DeliveryWitness)) lines.Add("[직접 전달 진술] 발급 담당이 답신을 한진에게 건넨 뒤 완성물을 받음.");
             OrderModal("3 / 3 · 착오인가, 알고 제출했는가", string.Join("\n", lines));
-            view.SetFooterHint(FollowRouteHint());
+            view.SetFooterHint("Q 조사 방향 선택 · 확보한 자료의 비교는 시간 소모 없음");
             if (!HasFollowUp(OrderFollowUpFact.Knowing))
             {
                 bool ready = OrderState.CanOrderReply && HasOrder(OrderFact.Verified);
@@ -245,7 +253,7 @@ namespace RedCliffMystery.Investigation
             status += "3. 인지 여부: " + (HasFollowUp(OrderFollowUpFact.Knowing) ? "거절 수령 뒤 제출 · 고의 근거 확보" : "미판단") + "\n";
             status += "군령 중지와 배치 요청은 최종 보고에서 선택한다.";
             OrderModal("제17호 후속 수사", status);
-            view.SetFooterHint(FollowRouteHint());
+            view.SetFooterHint("Q 조사 방향 선택 · 확보한 자료의 비교는 시간 소모 없음");
             view.AddChoice(HasFollowUp(OrderFollowUpFact.Knowing) ? "판단 근거 다시 보기" : "확보한 자료로 추리 이어가기", HasFollowUp(OrderFollowUpFact.Submitted) ? ShowOrderReplyOrder : ShowOrderSubmission);
             view.AddChoice("자료 전문 · 선택 열람", ShowOrderFollowSources);
             view.AddChoice("군령·확인표·부본 다시 읽기", ShowOrderEvidence);

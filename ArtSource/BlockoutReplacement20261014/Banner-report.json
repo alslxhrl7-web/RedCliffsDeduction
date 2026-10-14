@@ -1,0 +1,16 @@
+{
+  "family": "Banner",
+  "parts": 5,
+  "vertices": 2404,
+  "triangles": 1552,
+  "maps": [
+    "BaseColor",
+    "Normal",
+    "AO",
+    "MetalSmooth"
+  ],
+  "size": 1024,
+  "source": "ArtSource\\BlockoutReplacement20261014\\Banner.blend",
+  "unity": "Assets\\Art\\Environment\\BlockoutReplacement20261014\\Banner",
+  "review": "Blender render produced; Unity review pending"
+}

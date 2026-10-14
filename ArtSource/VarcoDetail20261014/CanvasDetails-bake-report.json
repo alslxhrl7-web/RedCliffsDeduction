@@ -1,0 +1,28 @@
+{
+  "name": "CanvasDetails",
+  "source": "Constructed supply tent; received VARCO cloth preserved as reference; procedural materials",
+  "vertices_before": 10448,
+  "vertices_after": 10438,
+  "triangles": 19740,
+  "dimensions": [
+    7.050846099853516,
+    4.929454803466797,
+    3.133037567138672
+  ],
+  "resolution": 1024,
+  "maps": [
+    "BaseColor",
+    "Normal",
+    "AO",
+    "MetalSmooth"
+  ],
+  "UV": "BakeUV only in FBX; SourceUV in editable source",
+  "padding": 12,
+  "engine": "Cycles 12 samples",
+  "metallic": 0,
+  "minimum_roughness": 0.72,
+  "smoothness": "1 - roughness",
+  "status": "BAKED; Unity verification pending",
+  "editable_parts": "EDITABLE_TENT_PARTS; roof, curtains, timber, ropes and pegs",
+  "entrance": "Blender +Y; verify Unity orientation before placement"
+}

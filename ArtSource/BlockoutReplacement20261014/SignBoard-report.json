@@ -1,0 +1,16 @@
+{
+  "family": "SignBoard",
+  "parts": 7,
+  "vertices": 584,
+  "triangles": 612,
+  "maps": [
+    "BaseColor",
+    "Normal",
+    "AO",
+    "MetalSmooth"
+  ],
+  "size": 1024,
+  "source": "ArtSource\\BlockoutReplacement20261014\\SignBoard.blend",
+  "unity": "Assets\\Art\\Environment\\BlockoutReplacement20261014\\SignBoard",
+  "review": "Blender render produced; Unity review pending"
+}

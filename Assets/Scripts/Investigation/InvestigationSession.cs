@@ -73,10 +73,13 @@ namespace RedCliffMystery.Investigation
             UpdateObjective();
             introductionFinished = true;
             CloseModal();
+            ShowTutorialOffer();
         }
 
         void Update()
         {
+            UpdateInvestigationTutorial();
+            RefreshGuidance();
             if (RecordArchiveScreen.IsOpen) return;
             if (titleScreenActive) return;
             if (Time.unscaledTime >= nextArchiveCapture) { nextArchiveCapture=Time.unscaledTime+.5f; RecordArchive.Capture(this); }
@@ -85,6 +88,7 @@ namespace RedCliffMystery.Investigation
             if (HandleSaveShortcuts()) return;
             if (!Application.isFocused || dayTransitionActive || enteringName || !BlocksMovement || Time.frameCount <= modalOpenedFrame || Keyboard.current == null) return;
             var keyboard = Keyboard.current;
+            if (keyboard.qKey.wasPressedThisFrame && view.title.text == "어느 쪽을 확인할까?") { CloseModal(); return; }
             if (keyboard.escapeKey.wasPressedThisFrame)
             {
                 if (onEscape != null) PlaytestObserver.Click("[키보드] Esc", true);
@@ -146,10 +150,12 @@ namespace RedCliffMystery.Investigation
             SetModal("잠시 멈춤", LocationName, "조사를 이어가거나 지금까지 확인한 사실을 살펴볼 수 있습니다.");
             PlaytestObserver.Pause();
             view.AddChoice("조사 계속", CloseModal);
+            view.AddChoice("조사 방향 선택", ShowInvestigationDirections);
             view.AddChoice("수첩 열기", ShowJournal);
             view.AddChoice("장소 이동", ShowTravel);
             view.AddChoice("저장 / 불러오기", ShowSaveMenu);
             view.AddChoice("소리 설정", ShowAudioSettings);
+            view.AddChoice("조사 방법", ShowInvestigationHelp);
             onAdvance = CloseModal;
         }
 
@@ -177,6 +183,7 @@ namespace RedCliffMystery.Investigation
             SetModal(introductionFinished ? "대화" : "서막 · 조조의 명령", sequenceSpeaker, "“" + sequence[lineIndex] + "”",
                 $"{lineIndex + 1} / {sequence.Length}  ·  E / Enter 계속" + (introductionFinished ? " · Esc 대화 종료" : ""));
             view.AddChoice(lineIndex == sequence.Length - 1 ? (introductionFinished ? "진술 확인" : "명을 받들겠습니다") : "계속", AdvanceDialogue);
+            if (!introductionFinished) view.AddChoice("도입 건너뛰기", SkipOpeningBriefing);
             if (sequenceIsPlayer) VarcoIdleMotion.StopSpeech();
             onAdvance = AdvanceDialogue;
         }
@@ -295,7 +302,7 @@ namespace RedCliffMystery.Investigation
             CloseModal();
         }
 
-        void UpdateObjective() => view.SetObjective(NextInvestigationStep());
+        void UpdateObjective() => view.SetObjective(CaseSummary().Split('\n')[0]);
         public void RefreshWalkLocation() { view.SetPlayerIdentity(PlayerName,LocationName); UpdateObjective(); }
 
         string NextInvestigationStep() => OrderObjective();

@@ -1,0 +1,16 @@
+{
+  "family": "CommandSeal",
+  "parts": 6,
+  "vertices": 924,
+  "triangles": 1100,
+  "maps": [
+    "BaseColor",
+    "Normal",
+    "AO",
+    "MetalSmooth"
+  ],
+  "size": 1024,
+  "source": "ArtSource\\BlockoutReplacement20261014\\CommandSeal.blend",
+  "unity": "Assets\\Art\\Environment\\BlockoutReplacement20261014\\CommandSeal",
+  "review": "Blender render produced; Unity review pending"
+}

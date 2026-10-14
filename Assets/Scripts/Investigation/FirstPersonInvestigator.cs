@@ -27,6 +27,7 @@ namespace RedCliffMystery.Investigation
             var mouse = Mouse.current;
             if (keyboard == null) return;
             if (keyboard.escapeKey.wasPressedThisFrame) { session.ShowPause(); return; }
+            if (keyboard.qKey.wasPressedThisFrame) { session.ShowInvestigationDirections(); return; }
             if (keyboard.jKey.wasPressedThisFrame) { session.ShowJournal(); return; }
             // Escape in the Editor may release the cursor before Update sees the key.
             if (Cursor.lockState != CursorLockMode.Locked) { session.ShowPause(); return; }

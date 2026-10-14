@@ -1,0 +1,69 @@
+{
+  "workflow": "https://3d.varco.ai/flow/909eba21-8617-4ce7-8621-ad52296e34e9",
+  "date": "2026-10-14",
+  "source": "VARCO generation; private setting",
+  "assets": {
+    "CampStandard": {
+      "varco_asset_id": "cc5decdb-9e31-4597-b89c-fb06e4fe75dc",
+      "status": "Hand-built refinement baked and applied; Unity Play camera reviewed",
+      "source": "Source/CampStandard/model.usda",
+      "master": "CampStandardCrafted.blend"
+    },
+    "CanvasDetails": {
+      "varco_asset_id": "7bddc623-7879-43c2-97b8-1b8402e72bd7",
+      "source": "Source/CanvasDetails/model.usda",
+      "status": "Baked and applied; Unity edit-mode renders reviewed; manual movement not tested",
+      "master": "CanvasDetails.blend",
+      "game_bytes": 2761077,
+      "master_bytes": 17026925,
+      "construction": "Constructed complete tent; original VARCO sheet retained as reference"
+    },
+    "SupplyLoad": {
+      "varco_asset_id": "56bc41ce-56bf-43d7-8465-cbfa5aac19f9",
+      "source": "Source/SupplyLoad/model.usda",
+      "status": "Baked and applied; Unity edit-mode renders reviewed; manual movement not tested",
+      "master": "SupplyLoad.blend",
+      "game_bytes": 4781809,
+      "master_bytes": 19401151
+    },
+    "FieldTable": {
+      "varco_asset_id": "91612aa3-39dd-478f-be1d-a509a5874ea5",
+      "source": "Source/FieldTable/model.usda",
+      "status": "Baked and applied; Unity edit-mode renders reviewed; manual movement not tested",
+      "master": "FieldTable.blend",
+      "game_bytes": 3840695,
+      "master_bytes": 14061606
+    },
+    "ArchiveShelf": {
+      "varco_asset_id": "2c9a8bde-6546-49e5-8230-e45872af75c9",
+      "source": "Source/ArchiveShelf/model.usda",
+      "status": "Baked and applied; Unity edit-mode renders reviewed; manual movement not tested",
+      "master": "ArchiveShelf.blend",
+      "game_bytes": 3692239,
+      "master_bytes": 12855512
+    },
+    "CampFence": {
+      "status": "Refined, 1K four-map baked, applied to NavalCamp/NorthFence; Play overview and close render reviewed",
+      "source": "Source/BridgeIncoming/b93615db-9f72-4483-b5d1-3c1831b9a123/model.usda",
+      "master": "CampFence.blend",
+      "game_bytes": 4420006,
+      "source_bytes": 14905034,
+      "triangles": 6000
+    }
+  },
+  "verification": "Tutorial flow passed; 63 progression checks passed; 4 maps, 663 colliders preserved; single installed standard. Local changes only.",
+  "handoff": "Four props baked and applied. Source and individual Blender masters preserved; ordinary Git. VARCO export/import reverified at 12:29 in VARCO_TransferInbox. Existing Blender PID 23952 retained.",
+  "texture_source": {
+    "Wood049": "Existing ambientCG Wood049, CC0 1.0; https://ambientcg.com/view?id=Wood049"
+  },
+  "received_imports": [
+    {
+      "time": "2026-10-14T11:18:52",
+      "bytes": 14905645,
+      "meshes": 1,
+      "source_directory": "Source/BridgeIncoming",
+      "status": "Refined, baked and applied to Unity north fence",
+      "asset": "CampFence"
+    }
+  ]
+}

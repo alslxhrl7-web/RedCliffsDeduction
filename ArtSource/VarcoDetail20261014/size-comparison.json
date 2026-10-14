@@ -1,0 +1,17 @@
+{
+  "before": {
+    "files": {
+      "CampStandard.fbx": 537564,
+      "CampStandard_AO.png": 2580880,
+      "CampStandard_BaseColor.png": 3564287,
+      "CampStandard_MetalSmooth.png": 396813,
+      "CampStandard_Normal.png": 1207515
+    },
+    "game_bytes": 8287059,
+    "blend_bytes": 19695445
+  },
+  "after_game_bytes": 3180059,
+  "after_blend_bytes": 16462823,
+  "game_reduction_percent": 61.6,
+  "blend_reduction_percent": 16.4
+}

@@ -1,0 +1,26 @@
+{
+  "name": "SupplyLoad",
+  "source": "VARCO varco-3d-2.0; private generation",
+  "vertices_before": 8734,
+  "vertices_after": 4306,
+  "triangles": 8640,
+  "dimensions": [
+    0.9852399230003357,
+    1.0053950548171997,
+    0.9984926581382751
+  ],
+  "resolution": 1024,
+  "maps": [
+    "BaseColor",
+    "Normal",
+    "AO",
+    "MetalSmooth"
+  ],
+  "UV": "BakeUV only in FBX; SourceUV in editable source",
+  "padding": 12,
+  "engine": "Cycles 12 samples",
+  "metallic": 0,
+  "minimum_roughness": 0.72,
+  "smoothness": "1 - roughness",
+  "status": "BAKED; Unity verification pending"
+}

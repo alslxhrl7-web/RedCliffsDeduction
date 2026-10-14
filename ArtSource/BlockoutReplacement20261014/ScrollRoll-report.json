@@ -1,0 +1,16 @@
+{
+  "family": "ScrollRoll",
+  "parts": 6,
+  "vertices": 6430,
+  "triangles": 7484,
+  "maps": [
+    "BaseColor",
+    "Normal",
+    "AO",
+    "MetalSmooth"
+  ],
+  "size": 1024,
+  "source": "ArtSource\\BlockoutReplacement20261014\\ScrollRoll.blend",
+  "unity": "Assets\\Art\\Environment\\BlockoutReplacement20261014\\ScrollRoll",
+  "review": "Blender render produced; Unity review pending"
+}

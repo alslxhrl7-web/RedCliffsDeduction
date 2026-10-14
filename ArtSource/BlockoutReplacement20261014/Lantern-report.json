@@ -1,0 +1,17 @@
+{
+  "family": "Lantern",
+  "parts": 20,
+  "vertices": 3307,
+  "triangles": 3828,
+  "maps": [
+    "BaseColor",
+    "Normal",
+    "AO",
+    "MetalSmooth",
+    "Emission"
+  ],
+  "size": 1024,
+  "source": "ArtSource\\BlockoutReplacement20261014\\Lantern.blend",
+  "unity": "Assets\\Art\\Environment\\BlockoutReplacement20261014\\Lantern",
+  "review": "Blender render produced; Unity review pending"
+}

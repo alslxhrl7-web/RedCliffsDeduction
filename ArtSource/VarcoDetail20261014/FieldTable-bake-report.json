@@ -1,0 +1,26 @@
+{
+  "name": "FieldTable",
+  "source": "VARCO varco-3d-2.0; private generation",
+  "vertices_before": 8714,
+  "vertices_after": 5052,
+  "triangles": 10200,
+  "dimensions": [
+    1.8679494857788086,
+    0.9941756725311279,
+    0.8453965187072754
+  ],
+  "resolution": 1024,
+  "maps": [
+    "BaseColor",
+    "Normal",
+    "AO",
+    "MetalSmooth"
+  ],
+  "UV": "BakeUV only in FBX; SourceUV in editable source",
+  "padding": 12,
+  "engine": "Cycles 12 samples",
+  "metallic": 0,
+  "minimum_roughness": 0.72,
+  "smoothness": "1 - roughness",
+  "status": "BAKED; Unity verification pending"
+}

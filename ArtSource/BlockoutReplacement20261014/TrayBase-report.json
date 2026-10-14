@@ -1,0 +1,16 @@
+{
+  "family": "TrayBase",
+  "parts": 5,
+  "vertices": 480,
+  "triangles": 540,
+  "maps": [
+    "BaseColor",
+    "Normal",
+    "AO",
+    "MetalSmooth"
+  ],
+  "size": 1024,
+  "source": "ArtSource\\BlockoutReplacement20261014\\TrayBase.blend",
+  "unity": "Assets\\Art\\Environment\\BlockoutReplacement20261014\\TrayBase",
+  "review": "Blender render produced; Unity review pending"
+}

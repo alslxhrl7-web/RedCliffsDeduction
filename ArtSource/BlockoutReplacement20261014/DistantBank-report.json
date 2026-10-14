@@ -1,0 +1,16 @@
+{
+  "family": "DistantBank",
+  "parts": 13,
+  "vertices": 1209,
+  "triangles": 1008,
+  "maps": [
+    "BaseColor",
+    "Normal",
+    "AO",
+    "MetalSmooth"
+  ],
+  "size": 1024,
+  "source": "ArtSource\\BlockoutReplacement20261014\\DistantBank.blend",
+  "unity": "Assets\\Art\\Environment\\BlockoutReplacement20261014\\DistantBank",
+  "review": "Blender render produced; Unity review pending"
+}

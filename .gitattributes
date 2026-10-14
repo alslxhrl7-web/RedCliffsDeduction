@@ -6,3 +6,17 @@
 *.zip filter=lfs diff=lfs merge=lfs -text
 *.sh text eol=lf
 /ArtSource/CharacterPolish20261012/Input/*.json filter=lfs diff=lfs merge=lfs -text
+
+# New refined props use ordinary Git; keep existing LFS history intact.
+/Assets/Art/Environment/VarcoDetailBaked/** -filter -diff -merge -text
+/ArtSource/VarcoDetail20261014/** -filter -diff -merge -text
+/ArtSource/VarcoDetail20261014/*.py text diff
+/ArtSource/VarcoDetail20261014/*.md text diff
+/ArtSource/VarcoDetail20261014/*.json text diff
+/ArtSource/ModelQuality20261014/** -filter -diff -merge -text
+/ArtSource/ModelQuality20261014/*.json text diff
+/Assets/Art/ModelQuality20261014/** -filter -diff -merge -text
+/ArtSource/BlockoutReplacement20261014/** -filter -diff -merge -text
+/ArtSource/BlockoutReplacement20261014/*.md text diff
+/ArtSource/BlockoutReplacement20261014/*.json text diff
+/Assets/Art/Environment/BlockoutReplacement20261014/** -filter -diff -merge -text

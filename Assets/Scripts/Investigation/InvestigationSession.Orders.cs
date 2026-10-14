@@ -18,7 +18,10 @@ namespace RedCliffMystery.Investigation
         }
         void OrderRecord(OrderFact fact, string title, string body, Action back)
         {
+            bool newlyRecorded = !HasOrder(fact);
             if (!OrderState.TryRecord(fact)) return;
+            if (newlyRecorded) RecordGuidanceNotice((fact & (OrderFact.Compared | OrderFact.Verified | OrderFact.Motive | OrderFact.Map | OrderFact.ClaimChallenged)) != 0 ? "판단 기록" : (fact & (OrderFact.CourierClaim | OrderFact.NoMessenger | OrderFact.Movement | OrderFact.Explanation | OrderFact.OptionalCareer | OrderFact.OptionalProtection)) != 0 ? "새 진술" : "새 기록", title);
+            ObserveTutorialRecord();
             UpdateObjective();
             back();
             string speaker = view.title.text == "문서 전달자" ? "전령" : view.title.text;
@@ -31,13 +34,14 @@ namespace RedCliffMystery.Investigation
 
         void BeginOrderIntroduction()
         {
+            // Temporary in-world briefing. A later cutscene should call the same completion flow.
             BeginSequence("조조", new[] {
                 PlayerName + ", 그대를 군령 분실 사건을 조사할 임시 참모로 삼겠다.",
                 "문서고에서는 내보냈다 하고, 받아야 할 부대에서는 받지 못했다 한다. 어디서 인계가 끊겼는지 밝혀라. 누구의 잘못인지는 그 뒤에 따져도 늦지 않다.",
                 "열나흗날 밤까지 경위를 보고하라. 사소한 전달 착오로 여겨 덮어둘 일이 아니다. 관련자의 말과 남은 기록을 함께 확인하라."
             }, () => {
                 SetModal("임무 수령", "군령의 인계 경로를 밝혀라",
-                    "문서고의 보관 자리와 반출 대장을 확인할 수 있다. 수군 진영에서는 채모·장윤을, 진영에서 이동하는 보급 천막에서는 전달자와 기록 담당자를 만날 수 있다. 모든 조사를 마치지 않아도 이동할 수 있다.\n\nJ 수첩 · Esc 이동/저장\n새 조사 묶음은 1회, 같은 묶음의 질문·재열람·비교는 무료다. 이번 구간은 임시 12회 안에서 진행한다.\n\n문서를 회수한 뒤 내용과 출고 경위를 조사하라. 조사를 마치면 조조에게 최종 보고할 결론과 근거를 직접 선택한다.");
+                    "문서고는 군령을 내보냈지만, 수령 부대는 받지 못했다고 한다.\n문서와 관계자의 말을 확인해 인계 경로를 밝혀라.\n\n조사를 마치면 조조에게 최종 보고할 결론과 근거를 선택한다.");
                 view.AddChoice("문서고로 향한다", FinishIntroduction);
                 onAdvance = FinishIntroduction;
             });
@@ -103,15 +107,7 @@ namespace RedCliffMystery.Investigation
             view.AddChoice("대화 마치기", CloseModal);
         }
 
-        public void ShowOrderSelection()
-        {
-            if (HasOrder(OrderFact.Verified)) { ShowOrderFollowUp(); return; }
-            OrderModal("다음 조사 선택", "전달자의 인계 주장, 두석의 목격, 설평의 서류 취급 중 무엇을 확인할지 선택하자. 추가 질문 없이 현장 조사로 돌아가도 된다.");
-            view.AddChoice("전달자의 인계 경위", () => OrderDirections("수군 진영에서 Esc 이동 메뉴로 보급 천막에 가면 문서 전달 전령에게 물을 수 있다."));
-            view.AddChoice("두석의 동선 설명", () => OrderDirections("문서고 입구의 두석에게 물을 수 있다."));
-            view.AddChoice("설평의 서류 취급 · 선택", () => OrderDirections("문서고의 설평에게 물을 수 있다. 과거 전체를 조사할 필요는 없다."));
-            view.AddChoice("추가 질문 없이 돌아간다", CloseModal);
-        }
+        public void ShowOrderSelection() => ShowInvestigationDirections();
         void OrderDirections(string body) { OrderModal("조사 대상", body); view.AddChoice("직접 찾아간다", CloseModal); view.AddChoice("장소 이동", ShowTravel); }
 
         public void ShowOrderDuseok()
@@ -207,15 +203,7 @@ namespace RedCliffMystery.Investigation
             view.AddChoice("조사 계속", CloseModal);
         }
 
-        string OrderObjective()
-        {
-            if (FinalReportCompleted) return "최종 보고 완료";
-            if (HasFollowUp(OrderFollowUpFact.Knowing)) return "수첩에서 근거를 검토하고 조조에게 최종 보고하자";
-            if (HasOrder(OrderFact.Verified)) return FollowRouteHint();
-            if (HasOrder(OrderFact.Compared)) return "발급 기록 탁자의 보관 부본과 변경 승인 여부를 확인하자";
-            if (HasOrder(OrderFact.Recovered)) return "회수한 군령과 확인표를 비교하고 은닉 이유를 확인하자";
-            return "군령의 반출과 미수령 사이를 조사하자 · J 수첩 / Esc 이동";
-        }
+        string OrderObjective() => CaseSummary();
         public void ShowOrderJournal()
         {
             if (HasOrder(OrderFact.Verified)) { ShowOrderFollowUp(); return; }

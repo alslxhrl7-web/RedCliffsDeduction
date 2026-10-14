@@ -1,0 +1,16 @@
+{
+  "family": "WovenMat",
+  "parts": 63,
+  "vertices": 2128,
+  "triangles": 1680,
+  "maps": [
+    "BaseColor",
+    "Normal",
+    "AO",
+    "MetalSmooth"
+  ],
+  "size": 1024,
+  "source": "ArtSource\\BlockoutReplacement20261014\\WovenMat.blend",
+  "unity": "Assets\\Art\\Environment\\BlockoutReplacement20261014\\WovenMat",
+  "review": "Blender render produced; Unity review pending"
+}

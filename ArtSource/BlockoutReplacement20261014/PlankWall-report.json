@@ -1,0 +1,16 @@
+{
+  "family": "PlankWall",
+  "parts": 17,
+  "vertices": 2080,
+  "triangles": 2540,
+  "maps": [
+    "BaseColor",
+    "Normal",
+    "AO",
+    "MetalSmooth"
+  ],
+  "size": 1024,
+  "source": "ArtSource\\BlockoutReplacement20261014\\PlankWall.blend",
+  "unity": "Assets\\Art\\Environment\\BlockoutReplacement20261014\\PlankWall",
+  "review": "Blender render produced; Unity review pending"
+}

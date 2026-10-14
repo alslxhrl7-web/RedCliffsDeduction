@@ -1,0 +1,624 @@
+{
+  "scope": "Active meshes only; primitives require separate environment review",
+  "assets": [
+    {
+      "path": "Assets/Art/Characters/RefinedHands/Caimao_Body.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Caimao_Body"
+      ]
+    },
+    {
+      "path": "Assets/Art/Characters/RefinedHands/Caimao_LeftHand.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Caimao_LeftHand"
+      ]
+    },
+    {
+      "path": "Assets/Art/Characters/RefinedHands/Caimao_RightHand.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Caimao_RightHand"
+      ]
+    },
+    {
+      "path": "Assets/Art/Characters/RefinedHands/CaoCao_Body.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "CaoCao_Body"
+      ]
+    },
+    {
+      "path": "Assets/Art/Characters/RefinedHands/CaoCao_LeftHand.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "CaoCao_LeftHand"
+      ]
+    },
+    {
+      "path": "Assets/Art/Characters/RefinedHands/CaoCao_RightHand.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "CaoCao_RightHand"
+      ]
+    },
+    {
+      "path": "Assets/Art/Characters/RefinedHands/DocumentCourier_Body.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "DocumentCourier_Body"
+      ]
+    },
+    {
+      "path": "Assets/Art/Characters/RefinedHands/DocumentCourier_LeftHand.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "DocumentCourier_LeftHand"
+      ]
+    },
+    {
+      "path": "Assets/Art/Characters/RefinedHands/DocumentCourier_RightHand.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "DocumentCourier_RightHand"
+      ]
+    },
+    {
+      "path": "Assets/Art/Characters/RefinedHands/Duseok_Body.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Duseok_Body"
+      ]
+    },
+    {
+      "path": "Assets/Art/Characters/RefinedHands/Duseok_LeftHand.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Duseok_LeftHand"
+      ]
+    },
+    {
+      "path": "Assets/Art/Characters/RefinedHands/Duseok_RightHand.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Duseok_RightHand"
+      ]
+    },
+    {
+      "path": "Assets/Art/Characters/RefinedHands/GamblingSoldier_Body.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "GamblingSoldier_Body"
+      ]
+    },
+    {
+      "path": "Assets/Art/Characters/RefinedHands/GamblingSoldier_LeftHand.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "GamblingSoldier_LeftHand"
+      ]
+    },
+    {
+      "path": "Assets/Art/Characters/RefinedHands/GamblingSoldier_RightHand.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "GamblingSoldier_RightHand"
+      ]
+    },
+    {
+      "path": "Assets/Art/Characters/RefinedHands/HanJin_Body.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "HanJin_Body"
+      ]
+    },
+    {
+      "path": "Assets/Art/Characters/RefinedHands/HanJin_LeftHand.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "HanJin_LeftHand"
+      ]
+    },
+    {
+      "path": "Assets/Art/Characters/RefinedHands/HanJin_RightHand.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "HanJin_RightHand"
+      ]
+    },
+    {
+      "path": "Assets/Art/Characters/RefinedHands/RecordsClerk_Body.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "RecordsClerk_Body"
+      ]
+    },
+    {
+      "path": "Assets/Art/Characters/RefinedHands/RecordsClerk_LeftHand.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "RecordsClerk_LeftHand"
+      ]
+    },
+    {
+      "path": "Assets/Art/Characters/RefinedHands/RecordsClerk_RightHand.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "RecordsClerk_RightHand"
+      ]
+    },
+    {
+      "path": "Assets/Art/Characters/RefinedHands/ReliefGuard_Body.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "ReliefGuard_Body"
+      ]
+    },
+    {
+      "path": "Assets/Art/Characters/RefinedHands/ReliefGuard_LeftHand.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "ReliefGuard_LeftHand"
+      ]
+    },
+    {
+      "path": "Assets/Art/Characters/RefinedHands/ReliefGuard_RightHand.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "ReliefGuard_RightHand"
+      ]
+    },
+    {
+      "path": "Assets/Art/Characters/RefinedHands/Seolpyeong_Body.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Seolpyeong_Body"
+      ]
+    },
+    {
+      "path": "Assets/Art/Characters/RefinedHands/Seolpyeong_LeftHand.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Seolpyeong_LeftHand"
+      ]
+    },
+    {
+      "path": "Assets/Art/Characters/RefinedHands/Seolpyeong_RightHand.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Seolpyeong_RightHand"
+      ]
+    },
+    {
+      "path": "Assets/Art/Characters/RefinedHands/Zhangyun_Body.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Zhangyun_BodyMaterialFix"
+      ]
+    },
+    {
+      "path": "Assets/Art/Characters/RefinedHands/Zhangyun_LeftHand.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Zhangyun_LeftHand"
+      ]
+    },
+    {
+      "path": "Assets/Art/Characters/RefinedHands/Zhangyun_RightHand.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Zhangyun_RightHand"
+      ]
+    },
+    {
+      "path": "Assets/Art/Characters/RoleActivities/DocumentCourier_HeldRecord.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "DocumentCourier_HeldRecord"
+      ]
+    },
+    {
+      "path": "Assets/Art/Characters/RoleActivities/RecordsClerk_HeldRecord.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "RecordsClerk_HeldRecord"
+      ]
+    },
+    {
+      "path": "Assets/Art/Characters/RoleActivities/Seolpyeong_HeldRecord.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Seolpyeong_HeldRecord"
+      ]
+    },
+    {
+      "path": "Assets/Art/Environment/CampRefreshBaked/FieldTent.fbx",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Env_FieldTent_FieldTent"
+      ]
+    },
+    {
+      "path": "Assets/Art/Environment/CampRefreshBaked/Ground_0.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Env_Ground_0_Ground_0"
+      ]
+    },
+    {
+      "path": "Assets/Art/Environment/CampRefreshBaked/Ground_1.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Env_Ground_1_Ground_1"
+      ]
+    },
+    {
+      "path": "Assets/Art/Environment/CampRefreshBaked/Ground_10.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Env_Ground_10_Ground_10"
+      ]
+    },
+    {
+      "path": "Assets/Art/Environment/CampRefreshBaked/Ground_2.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Env_Ground_2_Ground_2"
+      ]
+    },
+    {
+      "path": "Assets/Art/Environment/CampRefreshBaked/Ground_3.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Env_Ground_3_Ground_3"
+      ]
+    },
+    {
+      "path": "Assets/Art/Environment/CampRefreshBaked/Ground_4.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Env_Ground_4_Ground_4"
+      ]
+    },
+    {
+      "path": "Assets/Art/Environment/CampRefreshBaked/Ground_5.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Env_Ground_5_Ground_5"
+      ]
+    },
+    {
+      "path": "Assets/Art/Environment/CampRefreshBaked/Ground_6.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Env_Ground_6_Ground_6"
+      ]
+    },
+    {
+      "path": "Assets/Art/Environment/CampRefreshBaked/Ground_7.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Env_Ground_7_Ground_7"
+      ]
+    },
+    {
+      "path": "Assets/Art/Environment/CampRefreshBaked/Ground_8.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Env_Ground_8_Ground_8"
+      ]
+    },
+    {
+      "path": "Assets/Art/Environment/CampRefreshBaked/Ground_9.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Env_Ground_9_Ground_9"
+      ]
+    },
+    {
+      "path": "Assets/Art/Environment/CampRefreshBaked/RiverRock.fbx",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Env_RiverRock_RiverRock"
+      ]
+    },
+    {
+      "path": "Assets/Art/Environment/CampRefreshBaked/StoragePot.fbx",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Env_StoragePot_StoragePot"
+      ]
+    },
+    {
+      "path": "Assets/Art/Environment/CampRefreshBaked/SupplyCrate.fbx",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Env_SupplyCrate_SupplyCrate"
+      ]
+    },
+    {
+      "path": "Assets/Art/Environment/CampRefreshBaked/SurroundingEarth.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Env_SurroundingEarth_SurroundingEarth"
+      ]
+    },
+    {
+      "path": "Assets/Art/Environment/CommandTent/Meshes/CommandCanvasOpenDoor.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Env_CommandCanvasOpenDoor_CommandCanvasOpenDoor"
+      ]
+    },
+    {
+      "path": "Assets/Art/Environment/CommandTent/Meshes/Tent_CrimsonCloth.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Env_Tent_CrimsonCloth_Tent_CrimsonCloth"
+      ]
+    },
+    {
+      "path": "Assets/Art/Environment/NavalRiver/MooredBoat0Combined0.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Env_MooredBoat0Combined0_MooredBoat0Combined0"
+      ]
+    },
+    {
+      "path": "Assets/Art/Environment/NavalRiver/MooredBoat0Combined1.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Env_MooredBoat0Combined1_MooredBoat0Combined1"
+      ]
+    },
+    {
+      "path": "Assets/Art/Environment/NavalRiver/MooredBoat0Combined2.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Env_MooredBoat0Combined2_MooredBoat0Combined2"
+      ]
+    },
+    {
+      "path": "Assets/Art/Environment/NavalRiver/MooredBoat1Combined0.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Env_MooredBoat1Combined0_MooredBoat1Combined0"
+      ]
+    },
+    {
+      "path": "Assets/Art/Environment/NavalRiver/MooredBoat1Combined1.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Env_MooredBoat1Combined1_MooredBoat1Combined1"
+      ]
+    },
+    {
+      "path": "Assets/Art/Environment/NavalRiver/MooredBoat1Combined2.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Env_MooredBoat1Combined2_MooredBoat1Combined2"
+      ]
+    },
+    {
+      "path": "Assets/Art/Environment/NavalRiver/MooredBoat2Combined0.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Env_MooredBoat2Combined0_MooredBoat2Combined0"
+      ]
+    },
+    {
+      "path": "Assets/Art/Environment/NavalRiver/MooredBoat2Combined1.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Env_MooredBoat2Combined1_MooredBoat2Combined1"
+      ]
+    },
+    {
+      "path": "Assets/Art/Environment/NavalRiver/MooredBoat2Combined2.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Env_MooredBoat2Combined2_MooredBoat2Combined2"
+      ]
+    },
+    {
+      "path": "Assets/Art/Environment/NavalRiver/MooredBoat3Combined0.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Env_MooredBoat3Combined0_MooredBoat3Combined0"
+      ]
+    },
+    {
+      "path": "Assets/Art/Environment/NavalRiver/MooredBoat3Combined1.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Env_MooredBoat3Combined1_MooredBoat3Combined1"
+      ]
+    },
+    {
+      "path": "Assets/Art/Environment/NavalRiver/MooredBoat3Combined2.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Env_MooredBoat3Combined2_MooredBoat3Combined2"
+      ]
+    },
+    {
+      "path": "Assets/Art/Environment/VarcoDetailBaked/ArchiveShelf.fbx",
+      "status": "earlier_individual_blender_pass_applied"
+    },
+    {
+      "path": "Assets/Art/Environment/VarcoDetailBaked/CampFence.fbx",
+      "status": "earlier_individual_blender_pass_applied"
+    },
+    {
+      "path": "Assets/Art/Environment/VarcoDetailBaked/CampStandard.fbx",
+      "status": "earlier_individual_blender_pass_applied"
+    },
+    {
+      "path": "Assets/Art/Environment/VarcoDetailBaked/CanvasDetails.fbx",
+      "status": "earlier_individual_blender_pass_applied"
+    },
+    {
+      "path": "Assets/Art/Environment/VarcoDetailBaked/FieldTable.fbx",
+      "status": "earlier_individual_blender_pass_applied"
+    },
+    {
+      "path": "Assets/Art/Environment/VarcoDetailBaked/SupplyLoad.fbx",
+      "status": "earlier_individual_blender_pass_applied"
+    },
+    {
+      "path": "Assets/Art/Evidence/VarcoRefined20261012V2/MaintenanceOrderRefinedV2.fbx",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Env_MaintenanceOrderRefinedV2_MaintenanceOrderRefinedV2"
+      ]
+    },
+    {
+      "path": "Assets/Art/Evidence/VarcoRefined20261012V2/PersonnelRecordRefined.fbx",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Env_PersonnelRecordRefined_PersonnelRecordRefined"
+      ]
+    },
+    {
+      "path": "Assets/Art/Evidence/VarcoRemaining20261012/DutyRecordRefined.fbx",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Env_DutyRecordRefined_DutyRecordRefined"
+      ]
+    },
+    {
+      "path": "Assets/Art/Props/Archive/BoundSlipRoll.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Env_BoundSlipRoll_BoundSlipRoll"
+      ]
+    },
+    {
+      "path": "Assets/Art/Props/Archive/ClaySealBundle.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Env_ClaySealBundle_ClaySealBundle"
+      ]
+    },
+    {
+      "path": "Assets/Art/Props/Archive/OpenSlipLedger.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Env_OpenSlipLedger_OpenSlipLedger"
+      ]
+    },
+    {
+      "path": "Assets/Art/Props/Archive/StorageChest.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Env_StorageChest_StorageChest"
+      ]
+    },
+    {
+      "path": "Assets/Art/Props/Archive/TiedSlipStack.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Env_TiedSlipStack_TiedSlipStack"
+      ]
+    },
+    {
+      "path": "Assets/Art/Props/Archive/WoodDocumentCase.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Env_WoodDocumentCase_WoodDocumentCase"
+      ]
+    },
+    {
+      "path": "Assets/Art/Props/Archive/WritingKit.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Env_WritingKit_WritingKit"
+      ]
+    },
+    {
+      "path": "Assets/Art/Props/CampRefresh20261012/CampOilLamp.fbx",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Env_CampOilLamp_CampOilLamp"
+      ]
+    },
+    {
+      "path": "Assets/Art/Props/CampRefresh20261012/TransportChest.fbx",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Env_TransportChest_TransportChest"
+      ]
+    },
+    {
+      "path": "Assets/Art/Props/CommandDeskBaked/CommandDeskBaked.fbx",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Env_CommandDeskBaked_CommandDeskBaked"
+      ]
+    },
+    {
+      "path": "Assets/Art/Props/CommandDeskBaked/Tent_AgedBrass_WithoutDesk.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Env_Tent_AgedBrass_WithoutDesk_Tent_AgedBrass_WithoutDesk"
+      ]
+    },
+    {
+      "path": "Assets/Art/Props/CommandDeskBaked/Tent_DarkTimber_WithoutDesk.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Env_Tent_DarkTimber_WithoutDesk_Tent_DarkTimber_WithoutDesk"
+      ]
+    },
+    {
+      "path": "Assets/Art/Props/CommandDeskBaked/Tent_HempRope_WithoutDesk.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Env_Tent_HempRope_WithoutDesk_Tent_HempRope_WithoutDesk"
+      ]
+    },
+    {
+      "path": "Assets/Art/Props/CommandDeskBaked/Tent_LampGlow_WithoutDesk.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Env_Tent_LampGlow_WithoutDesk_Tent_LampGlow_WithoutDesk"
+      ]
+    },
+    {
+      "path": "Assets/Art/Props/CommandDeskBaked/Tent_MapInk_WithoutDesk.asset",
+      "status": "excluded_zero_rendered_triangles"
+    },
+    {
+      "path": "Assets/Art/Props/CommandDeskBaked/Tent_Parchment_WithoutDesk.asset",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Env_Tent_Parchment_WithoutDesk_Tent_Parchment_WithoutDesk"
+      ]
+    },
+    {
+      "path": "Assets/Art/Props/Duseok/Duseok_Spear_v1.fbx",
+      "status": "refined_baked_applied",
+      "outputs": [
+        "Env_Duseok_Spear_v1_ButtCap",
+        "Env_Duseok_Spear_v1_Cord0",
+        "Env_Duseok_Spear_v1_Cord1",
+        "Env_Duseok_Spear_v1_Cord2",
+        "Env_Duseok_Spear_v1_SocketCollar",
+        "Env_Duseok_Spear_v1_SpearBlade",
+        "Env_Duseok_Spear_v1_SpearShaftWoodFix"
+      ]
+    },
+    {
+      "path": "Library/unity default resources",
+      "status": "structural_primitives_preserved_not_remodeled"
+    }
+  ],
+  "updated": "2026-10-14",
+  "reviewed_mesh_parts": 88,
+  "characters": 10,
+  "character_body_hand_parts": 30,
+  "held_records": 3,
+  "environment_parts": 55,
+  "release_quality": false
+}

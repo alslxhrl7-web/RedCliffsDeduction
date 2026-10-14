@@ -1,0 +1,16 @@
+{
+  "family": "TimberBeam",
+  "parts": 9,
+  "vertices": 848,
+  "triangles": 964,
+  "maps": [
+    "BaseColor",
+    "Normal",
+    "AO",
+    "MetalSmooth"
+  ],
+  "size": 1024,
+  "source": "ArtSource\\BlockoutReplacement20261014\\TimberBeam.blend",
+  "unity": "Assets\\Art\\Environment\\BlockoutReplacement20261014\\TimberBeam",
+  "review": "Blender render produced; Unity review pending"
+}

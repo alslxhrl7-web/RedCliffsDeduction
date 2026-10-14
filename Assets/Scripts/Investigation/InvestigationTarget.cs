@@ -36,6 +36,7 @@ namespace RedCliffMystery.Investigation
 
         public void Interact(InvestigationSession session)
         {
+            session.ObserveTutorialInteraction(kind);
             if(kind==TargetKind.CaoCao) { session.TalkToCaoCaoOnFoot(); return; }
             if (session.HandleOrderTarget(kind)) return;
             switch (kind)

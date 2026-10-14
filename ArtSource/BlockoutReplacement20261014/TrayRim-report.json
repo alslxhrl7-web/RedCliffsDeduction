@@ -1,0 +1,16 @@
+{
+  "family": "TrayRim",
+  "parts": 1,
+  "vertices": 96,
+  "triangles": 108,
+  "maps": [
+    "BaseColor",
+    "Normal",
+    "AO",
+    "MetalSmooth"
+  ],
+  "size": 1024,
+  "source": "ArtSource\\BlockoutReplacement20261014\\TrayRim.blend",
+  "unity": "Assets\\Art\\Environment\\BlockoutReplacement20261014\\TrayRim",
+  "review": "Blender render produced; Unity review pending"
+}

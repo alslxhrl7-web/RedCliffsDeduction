@@ -1,0 +1,26 @@
+{
+  "name": "ArchiveShelf",
+  "source": "VARCO varco-3d-2.0; private generation",
+  "vertices_before": 7900,
+  "vertices_after": 5076,
+  "triangles": 10200,
+  "dimensions": [
+    3.2381834983825684,
+    1.3705472946166992,
+    2.098451614379883
+  ],
+  "resolution": 1024,
+  "maps": [
+    "BaseColor",
+    "Normal",
+    "AO",
+    "MetalSmooth"
+  ],
+  "UV": "BakeUV only in FBX; SourceUV in editable source",
+  "padding": 12,
+  "engine": "Cycles 12 samples",
+  "metallic": 0,
+  "minimum_roughness": 0.72,
+  "smoothness": "1 - roughness",
+  "status": "BAKED; Unity verification pending"
+}

@@ -12,6 +12,9 @@ namespace RedCliffMystery.Investigation
         public OrderFinalReport orderReport;
         public string playerName, savedAt;
         public string resumePoint;
+        public int tutorialVersion, tutorialStep;
+        public bool comparisonTipSeen;
+        public string selectedLead; // Optional in existing version-2 saves.
         public bool navalCamp, supplyTent, commandTent;
         public string[] inquiryIds, inquiryTitles;
         public string PreviewSummary() {
@@ -83,8 +86,8 @@ namespace RedCliffMystery.Investigation
     public sealed partial class InvestigationSession
     {
         InvestigationSaveData CaptureSave() => new InvestigationSaveData {
-            version = 2, order = OrderState.Copy(), orderReport = OrderReport.Copy(),
-            playerName = PlayerName, resumePoint = saveResumePoint,
+            version = 2, tutorialVersion = 1, tutorialStep = TutorialStep, comparisonTipSeen = comparisonTipSeen, order = OrderState.Copy(), orderReport = OrderReport.Copy(),
+            playerName = PlayerName, resumePoint = saveResumePoint, selectedLead = SelectedLead,
             savedAt = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), navalCamp = route.AtNavalCamp || route.OnConnectingRoad, supplyTent = route.AtSupplyTent, commandTent = !visitingCommandTent && !reportActive && route.AtCommandTent,
             inquiryIds = investigationTime.SavedIds, inquiryTitles = investigationTime.SavedTitles,
         };
@@ -149,6 +152,7 @@ namespace RedCliffMystery.Investigation
             if(data.commandTent) { introductionStage.Begin(); route.RefreshPhysicalLocation(); }
             else if (data.supplyTent && route.SupplyTentReady) route.EnterSupplyTent();
             else if (data.navalCamp) route.EnterNavalCamp(); else route.EnterArchive();
+            ResetTutorialMovement();
             view.SetPrologueLayout(false);
             view.SetPlayerIdentity(PlayerName, LocationName);
             RefreshInvestigationTime();
@@ -163,6 +167,11 @@ namespace RedCliffMystery.Investigation
             if (dayTransition != null) dayTransition.Cancel();
             dayTransitionActive = false;
             PlayerName = data.playerName;
+            TutorialStep = data.tutorialVersion == 1 ? Mathf.Clamp(data.tutorialStep,0,5) : 0;
+            comparisonTipSeen = data.comparisonTipSeen;
+            ResetTutorialMovement();
+            SelectedLead = IsLeadAvailable(data.selectedLead) ? data.selectedLead : "";
+            guidanceNotice = ""; noticeSeconds = 0; nextGuidanceRefresh = 0;
             investigationTime.Restore(data.inquiryIds, data.inquiryTitles);
             justStartedInquiry = null;
             pendingInquiryNotice = null;

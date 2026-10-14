@@ -1,0 +1,16 @@
+{
+  "family": "RockyBank",
+  "parts": 13,
+  "vertices": 1149,
+  "triangles": 1008,
+  "maps": [
+    "BaseColor",
+    "Normal",
+    "AO",
+    "MetalSmooth"
+  ],
+  "size": 1024,
+  "source": "ArtSource\\BlockoutReplacement20261014\\RockyBank.blend",
+  "unity": "Assets\\Art\\Environment\\BlockoutReplacement20261014\\RockyBank",
+  "review": "Blender render produced; Unity review pending"
+}

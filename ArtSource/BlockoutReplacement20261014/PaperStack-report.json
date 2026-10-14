@@ -1,0 +1,16 @@
+{
+  "family": "PaperStack",
+  "parts": 80,
+  "vertices": 4184,
+  "triangles": 2544,
+  "maps": [
+    "BaseColor",
+    "Normal",
+    "AO",
+    "MetalSmooth"
+  ],
+  "size": 1024,
+  "source": "ArtSource\\BlockoutReplacement20261014\\PaperStack.blend",
+  "unity": "Assets\\Art\\Environment\\BlockoutReplacement20261014\\PaperStack",
+  "review": "Blender render produced; Unity review pending"
+}

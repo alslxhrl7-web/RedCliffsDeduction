@@ -1,0 +1,16 @@
+{
+  "family": "TimberPost",
+  "parts": 12,
+  "vertices": 4672,
+  "triangles": 5424,
+  "maps": [
+    "BaseColor",
+    "Normal",
+    "AO",
+    "MetalSmooth"
+  ],
+  "size": 1024,
+  "source": "ArtSource\\BlockoutReplacement20261014\\TimberPost.blend",
+  "unity": "Assets\\Art\\Environment\\BlockoutReplacement20261014\\TimberPost",
+  "review": "Blender render produced; Unity review pending"
+}

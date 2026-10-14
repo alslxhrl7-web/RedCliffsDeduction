@@ -1,0 +1,16 @@
+{
+  "family": "WoodToken",
+  "parts": 5,
+  "vertices": 430,
+  "triangles": 336,
+  "maps": [
+    "BaseColor",
+    "Normal",
+    "AO",
+    "MetalSmooth"
+  ],
+  "size": 1024,
+  "source": "ArtSource\\BlockoutReplacement20261014\\WoodToken.blend",
+  "unity": "Assets\\Art\\Environment\\BlockoutReplacement20261014\\WoodToken",
+  "review": "Blender render produced; Unity review pending"
+}

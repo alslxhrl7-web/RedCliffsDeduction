@@ -1,0 +1,16 @@
+{
+  "family": "RoofLining",
+  "parts": 9,
+  "vertices": 864,
+  "triangles": 972,
+  "maps": [
+    "BaseColor",
+    "Normal",
+    "AO",
+    "MetalSmooth"
+  ],
+  "size": 1024,
+  "source": "ArtSource\\BlockoutReplacement20261014\\RoofLining.blend",
+  "unity": "Assets\\Art\\Environment\\BlockoutReplacement20261014\\RoofLining",
+  "review": "Blender render produced; Unity review pending"
+}
