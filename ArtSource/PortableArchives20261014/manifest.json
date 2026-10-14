@@ -1,0 +1,135 @@
+[
+  {
+    "original": "ArtSource/CharacterDetail20261013/CharacterDetails.blend",
+    "bytes": 145234032,
+    "sha256": "29fb8b148fe69cad3418b1e464b539c04238ccde4d30ef251cdf379ecaab9f03",
+    "parts": [
+      {
+        "file": "CharacterDetail20261013-CharacterDetails/part-001.bin",
+        "bytes": 26214400,
+        "sha256": "ca96fbfb2a8a3ea6f31123e7b6035c609f9a8e8bb8781bda6e4bf8c71d69daf4"
+      },
+      {
+        "file": "CharacterDetail20261013-CharacterDetails/part-002.bin",
+        "bytes": 26214400,
+        "sha256": "85fa7324c8d4aa19e00fa842e113031b02e3d6626a98ce040be21bf78781245a"
+      },
+      {
+        "file": "CharacterDetail20261013-CharacterDetails/part-003.bin",
+        "bytes": 26214400,
+        "sha256": "239c0737813d13700d0651a2b1f91dc2e7340d915a21bec769609123ac1f79af"
+      },
+      {
+        "file": "CharacterDetail20261013-CharacterDetails/part-004.bin",
+        "bytes": 26214400,
+        "sha256": "890bdab1b94764fd0057c7ce1ff9f69a7515e48fb681b9a20d4a7e6231e963f3"
+      },
+      {
+        "file": "CharacterDetail20261013-CharacterDetails/part-005.bin",
+        "bytes": 26214400,
+        "sha256": "52152ca417946671c2f06a3ef8ca96be781f730c8674708efd8bbb1ac4067912"
+      },
+      {
+        "file": "CharacterDetail20261013-CharacterDetails/part-006.bin",
+        "bytes": 14162032,
+        "sha256": "8290e691707e1afce0ec81cda2c7290f9affb4e3bf39b2c35e4a759a82d72311"
+      }
+    ]
+  },
+  {
+    "original": "ArtSource/CharacterPolish20261012/Characters_Polished.blend",
+    "bytes": 125550606,
+    "sha256": "c8019dbb6a1004968f8c884f34f1037a05a8d37734578aa13aab178bdcf3af56",
+    "parts": [
+      {
+        "file": "CharacterPolish20261012-Characters_Polished/part-001.bin",
+        "bytes": 26214400,
+        "sha256": "263a9829de9b04bde0f1a92a04cad175606caac5592f1e6693db891b93b23454"
+      },
+      {
+        "file": "CharacterPolish20261012-Characters_Polished/part-002.bin",
+        "bytes": 26214400,
+        "sha256": "494307422fd02b3d62b94823947591c81eae3f0af984813e2a98cc3f35a71af5"
+      },
+      {
+        "file": "CharacterPolish20261012-Characters_Polished/part-003.bin",
+        "bytes": 26214400,
+        "sha256": "6fbe0f1a7b902df4862c1ccf41af7ab3d04257711801de160409210dd73e2c74"
+      },
+      {
+        "file": "CharacterPolish20261012-Characters_Polished/part-004.bin",
+        "bytes": 26214400,
+        "sha256": "d6775733681b0bc49e5c93de21936480b0b5ae061c8fcac6def4f3ee2f3ba966"
+      },
+      {
+        "file": "CharacterPolish20261012-Characters_Polished/part-005.bin",
+        "bytes": 20693006,
+        "sha256": "6d8ee68bed80e3d5947755579ca9459c6ee213de459188fcb63599b08dddcd40"
+      }
+    ]
+  },
+  {
+    "original": "ArtSource/HandRefinement20261013/Hands.blend",
+    "bytes": 159658211,
+    "sha256": "f53d24959de21ff6584d5671c07697be01129723d0c9ef765709e1be6d69e1c2",
+    "parts": [
+      {
+        "file": "HandRefinement20261013-Hands/part-001.bin",
+        "bytes": 26214400,
+        "sha256": "21971959e14f8085a1cb073449fa97a8c79817b6c9b1b0addf1a7292e9d8ad96"
+      },
+      {
+        "file": "HandRefinement20261013-Hands/part-002.bin",
+        "bytes": 26214400,
+        "sha256": "096fcb9c3b1495fe7f27279c0076a9c21cf2c557487d7e705cfd95fea4897e7b"
+      },
+      {
+        "file": "HandRefinement20261013-Hands/part-003.bin",
+        "bytes": 26214400,
+        "sha256": "1fc2e3246e33018670fd1cfa78a308c4c37054b7e779d63f974ac5a110154439"
+      },
+      {
+        "file": "HandRefinement20261013-Hands/part-004.bin",
+        "bytes": 26214400,
+        "sha256": "f7fa73ac3483f27cd94e9bce87edeffe7a29e1a395afc5d5a111722b6da294ab"
+      },
+      {
+        "file": "HandRefinement20261013-Hands/part-005.bin",
+        "bytes": 26214400,
+        "sha256": "b07f31d3565c2e7bab31a26bb688b4ff2a42864213af011f92a067667bf4f313"
+      },
+      {
+        "file": "HandRefinement20261013-Hands/part-006.bin",
+        "bytes": 26214400,
+        "sha256": "34957bad8cef153533168539d388606cb041c8674888c42662d2bbd474c8e14e"
+      },
+      {
+        "file": "HandRefinement20261013-Hands/part-007.bin",
+        "bytes": 2371811,
+        "sha256": "4c9ef0f76bf0c8bc2e1bbbb257f27059bc3ea467de852868d645b0a42651f0b1"
+      }
+    ]
+  },
+  {
+    "original": "ArtSource/RoleActivities20261013/RoleActivities.blend",
+    "bytes": 76756100,
+    "sha256": "b6f67e5b2fa1a308979f8af9d14a3530f88654c477f062657208fd674950fd4a",
+    "parts": [
+      {
+        "file": "RoleActivities20261013-RoleActivities/part-001.bin",
+        "bytes": 26214400,
+        "sha256": "8545ffb87786c1ba16e102ba33114bfa83c658e303b456cd23e79f5443dc7394"
+      },
+      {
+        "file": "RoleActivities20261013-RoleActivities/part-002.bin",
+        "bytes": 26214400,
+        "sha256": "61042489b9d6c987acbbcba867b8ec3d9f941aa3a4743e6bfd3b5f09ba8fd4ed"
+      },
+      {
+        "file": "RoleActivities20261013-RoleActivities/part-003.bin",
+        "bytes": 24327300,
+        "sha256": "7a3ca18038ca6cc18bb0b501e171f526205fee8f7f838e2af8cb60adb08ec38c"
+      }
+    ]
+  }
+]

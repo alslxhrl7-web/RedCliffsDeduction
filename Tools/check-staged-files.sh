@@ -4,7 +4,7 @@ set -eu
 failed=0
 while IFS= read -r -d '' path; do
     case "$path" in
-        Assets/Art/Environment/VarcoDetailBaked/*|ArtSource/VarcoDetail20261014/*|Assets/Art/ModelQuality20261014/*|ArtSource/ModelQuality20261014/*|Assets/Art/Environment/BlockoutReplacement20261014/*|ArtSource/BlockoutReplacement20261014/*)
+        *)
             bytes=$(git cat-file -s ":$path")
             if (( bytes > 52428800 )); then
                 printf 'Commit blocked: refined prop exceeds 50 MiB ordinary Git budget: %s\n' "$path" >&2

@@ -101,3 +101,9 @@ __pycache__/
 # Hand transfer data and visual review images are reproducible from the editable source.
 /ArtSource/HandRefinement20261013/Output/
 /ArtSource/HandRefinement20261013/Preview/
+
+# Large editable originals are preserved as verified portable chunks.
+/ArtSource/CharacterDetail20261013/CharacterDetails.blend
+/ArtSource/CharacterPolish20261012/Characters_Polished.blend
+/ArtSource/HandRefinement20261013/Hands.blend
+/ArtSource/RoleActivities20261013/RoleActivities.blend
