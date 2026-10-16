@@ -16,6 +16,7 @@ namespace RedCliffMystery
         public TextAsset DetailMotion;
         DetailMotionClip detailClip;
         RefinedHand[] refinedHands;
+        SleeveLining[] sleeveLinings;
         public SkinnedMeshRenderer HeldRecord;
         public Vector3 HeldRecordOffset;
         struct Surface
@@ -111,6 +112,7 @@ namespace RedCliffMystery
             activityClip = RoleActivity != null ? RoleActivityClip.Read(RoleActivity) : null;
             detailClip = DetailMotion != null ? DetailMotionClip.Read(DetailMotion) : null;
             refinedHands = GetComponentsInChildren<RefinedHand>(true);
+            sleeveLinings = GetComponentsInChildren<SleeveLining>(true);
             var filters = GetComponentsInChildren<MeshFilter>(true);
             surfaces = new Surface[filters.Length];
             for (int index = 0; index < filters.Length; index++)
@@ -161,7 +163,13 @@ namespace RedCliffMystery
                         bounds.Encapsulate(rest[v.Index]+v.A);
                         bounds.Encapsulate(rest[v.Index]+v.B);
                     }
-                    bounds.Expand(detailClip != null ? .18f : .001f);mesh.bounds=bounds;
+                    // Authored meshes can have a 100x import scale. Padding is in world metres,
+                    // whereas Mesh.bounds is local; using metres directly made the actor ~20m tall.
+                    float padding = detailClip != null ? .18f : .001f;
+                    Vector3 scale = filter.transform.lossyScale;
+                    bounds.Expand(new Vector3(padding / Mathf.Max(Mathf.Abs(scale.x), .0001f),
+                        padding / Mathf.Max(Mathf.Abs(scale.y), .0001f), padding / Mathf.Max(Mathf.Abs(scale.z), .0001f)));
+                    mesh.bounds=bounds;
                 }
             }
         }
@@ -246,6 +254,7 @@ namespace RedCliffMystery
                 surface.Animated.vertices = surface.Buffer;
                 if(surface.ActivityOffsets != null)surface.Animated.normals=surface.Normals;
                 foreach(var hand in refinedHands)hand.Follow(surface.Filter,surface.Buffer);
+                foreach(var lining in sleeveLinings)lining.Follow(surface.Filter,surface.Buffer);
             }
         }
         void OnDisable() => Release();

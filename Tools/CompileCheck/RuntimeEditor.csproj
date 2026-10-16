@@ -2,7 +2,7 @@
   <!-- Game scripts as they compile inside the Unity editor (UNITY_EDITOR defined). -->
   <PropertyGroup><AssemblyName>CompileCheck.RuntimeEditor</AssemblyName><DefineConstants>$(UnityDefines);UNITY_EDITOR;UNITY_EDITOR_WIN;DEBUG</DefineConstants></PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(ProjectRoot)\Assets\Scripts\**\*.cs;$(ProjectRoot)\Assets\TutorialInfo\Readme.cs" />
+    <Compile Include="$(ProjectRoot)\Assets\Scripts\**\*.cs" />
     <Reference Include="$(UnityManaged)\UnityEngine\UnityEditor*.dll"><Private>false</Private></Reference>
   </ItemGroup>
 </Project>

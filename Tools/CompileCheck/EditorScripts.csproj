@@ -2,7 +2,7 @@
   <!-- Editor tools and Play Mode checks (Assets/Editor). Builds RuntimeEditor first. -->
   <PropertyGroup><AssemblyName>CompileCheck.EditorScripts</AssemblyName><DefineConstants>$(UnityDefines);UNITY_EDITOR;UNITY_EDITOR_WIN;DEBUG</DefineConstants></PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(ProjectRoot)\Assets\Editor\**\*.cs;$(ProjectRoot)\Assets\TutorialInfo\Editor\*.cs" />
+    <Compile Include="$(ProjectRoot)\Assets\Editor\**\*.cs" />
     <Reference Include="$(UnityManaged)\UnityEngine\UnityEditor*.dll"><Private>false</Private></Reference>
     <Reference Include="$(ScriptAssemblies)\UnityEditor.UI.dll;$(ScriptAssemblies)\Unity.RenderPipelines.Universal.Editor.dll;$(ScriptAssemblies)\Unity.RenderPipelines.Core.Editor.dll;$(ScriptAssemblies)\Unity.Pipeline.dll;$(ScriptAssemblies)\Unity.Pipeline.Editor.dll;$(ScriptAssemblies)\Unity.Pipeline.Attributes.dll"><Private>false</Private></Reference>
     <ProjectReference Include="RuntimeEditor.csproj" />

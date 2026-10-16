@@ -2,6 +2,6 @@
   <!-- Game scripts as they compile into a Windows player build (no UNITY_EDITOR). -->
   <PropertyGroup><AssemblyName>CompileCheck.RuntimePlayer</AssemblyName><DefineConstants>$(UnityDefines)</DefineConstants></PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(ProjectRoot)\Assets\Scripts\**\*.cs;$(ProjectRoot)\Assets\TutorialInfo\Readme.cs" />
+    <Compile Include="$(ProjectRoot)\Assets\Scripts\**\*.cs" />
   </ItemGroup>
 </Project>
