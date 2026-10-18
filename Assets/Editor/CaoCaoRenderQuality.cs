@@ -1,0 +1,6 @@
+using System.IO;using UnityEditor;using UnityEditor.SceneManagement;using UnityEngine;using UnityEngine.Rendering;using UnityEngine.Rendering.Universal;
+public static class CaoCaoRenderQuality {
+[MenuItem("Tools/RedCliffs/CaoCao Full Rework/Improve Edge Quality")]
+public static void Apply(){if(EditorApplication.isPlaying)throw new System.Exception("Exit Play");var a=GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;if(!a)throw new System.Exception("URP missing");string path=AssetDatabase.GetAssetPath(a);string backup="LocalArchive/CaoCaoHairEnemies20261016/Revision7/PreviousUnityAssets/PC_RPAsset.asset";if(!File.Exists(backup))File.Copy(path,backup);a.msaaSampleCount=1;EditorUtility.SetDirty(a);foreach(var c in Object.FindObjectsByType<Camera>(FindObjectsInactive.Include)){if(!c.CompareTag("MainCamera"))continue;var u=c.GetComponent<UniversalAdditionalCameraData>();if(u){u.renderPostProcessing=true;u.antialiasing=AntialiasingMode.TemporalAntiAliasing;u.taaSettings.quality=TemporalAAQuality.High;u.taaSettings.baseBlendFactor=.85f;u.taaSettings.contrastAdaptiveSharpening=.1f;EditorUtility.SetDirty(u);EditorSceneManager.MarkSceneDirty(c.gameObject.scene);}}AssetDatabase.SaveAssets();EditorSceneManager.SaveOpenScenes();}
+}
+

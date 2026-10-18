@@ -23,6 +23,9 @@ sysinfo.txt
 crashlytics-build.properties
 /Assets/StreamingAssets/aa/
 /LocalArchive/
+# Blender automatic save backups; editable .blend sources follow their existing policy.
+*.blend1
+*.blend2
 /AudioPreviews/*.wav
 /AudioPreviews/*.mp4
 /AudioPreviews/*.jpg
@@ -36,3 +39,12 @@ playtest.on
 # Unity MCP connection (contains this machine's user path)
 /.mcp.json
 !/Tools/CompileCheck/*.csproj
+
+# Local review captures and generated Visual Scripting cache.
+/Assets/LocalArchive/
+/Assets/LocalArchive.meta
+/Assets/Unity.VisualScripting.Generated/
+/Assets/Unity.VisualScripting.Generated.meta
+# Retired educational Enemies-derived runtime exports. Editable originals are preserved separately.
+/Assets/Art/Characters/VarcoV3/CaoCao/EnemiesHair/
+/Assets/Art/Characters/VarcoV3/CaoCao/EnemiesHair.meta

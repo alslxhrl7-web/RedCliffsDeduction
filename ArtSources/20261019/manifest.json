@@ -1,0 +1,709 @@
+{
+  "format": "zip-split-v1",
+  "part_bytes": 44040192,
+  "files": [
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/CaoCao_ArtRefinement.blend",
+      "bytes": 138954822,
+      "sha256": "985e64c1aab99a1184150a93de0319e911859f02e28bd1731ce28271bb5531e1"
+    },
+    {
+      "path": "LocalArchive/SeolpyeongFace20261019/Seolpyeong_Face_Workbench.blend",
+      "bytes": 120171727,
+      "sha256": "77a5e134d23509dd8d0f26d09d92cf8e7d04b3ce4231345786e0c2869321311c"
+    },
+    {
+      "path": "LocalArchive/CharacterParts20261018/Caimao/Caimao_Parts_Workbench.blend",
+      "bytes": 44629296,
+      "sha256": "01ff7d32734a40a8cca20131f0eb64a69370fa5bfb23c41877bbff7be01eddef"
+    },
+    {
+      "path": "LocalArchive/CharacterParts20261018/DocumentCourier/DocumentCourier_Parts_Workbench.blend",
+      "bytes": 33706335,
+      "sha256": "10a68a595e2c4a828afe58c6dd0ec9b08742890dd3b5329f9a24e972c8c3c653"
+    },
+    {
+      "path": "LocalArchive/CharacterParts20261018/Duseok/Duseok_Parts_Workbench.blend",
+      "bytes": 437533577,
+      "sha256": "609c8abe1c5eb0be2debfb541f0c3b0b372a1b1b630d1395dea1b69a4556aacd"
+    },
+    {
+      "path": "LocalArchive/CharacterParts20261018/GamblingSoldier/GamblingSoldier_Parts_Workbench.blend",
+      "bytes": 31071504,
+      "sha256": "4f8cb194f24681e39a0577a98631b7231fd6121785b2ae181697ae9b05c580b2"
+    },
+    {
+      "path": "LocalArchive/CharacterParts20261018/HanJin/HanJin_Parts_Workbench.blend",
+      "bytes": 31223810,
+      "sha256": "8a127360383579d3b861f32fb21d6351f7e5b1a03deb966f8ab029bc0da5c658"
+    },
+    {
+      "path": "LocalArchive/CharacterParts20261018/RecordsClerk/RecordsClerk_Parts_Workbench.blend",
+      "bytes": 33460266,
+      "sha256": "27209d3ce70e7d266370f6a95abeefa2fe2dcdac737cb3eaafd0b6de751d1d04"
+    },
+    {
+      "path": "LocalArchive/CharacterParts20261018/ReliefGuard/ReliefGuard_Parts_Workbench.blend",
+      "bytes": 34613447,
+      "sha256": "9828e336aa1a04c9147fcdd927cb2a3977592e93f5305256bbd33c721ccbb16f"
+    },
+    {
+      "path": "LocalArchive/CharacterParts20261018/Seolpyeong/Seolpyeong_Parts_Workbench.blend",
+      "bytes": 120717473,
+      "sha256": "86db7aec49c10114e939f213aff9bda3d3102dbbcfdf2a8edbb5fa48c200b043"
+    },
+    {
+      "path": "LocalArchive/CharacterParts20261018/Zhangyun/Zhangyun_Parts_Workbench.blend",
+      "bytes": 33656078,
+      "sha256": "c730060fbbfb91891c2739543daa566f93db44d8a07fb20e430eef15c34871d0"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision2/seol_face_bake.py",
+      "bytes": 9946,
+      "sha256": "5aadeb41e5f0895f5b3a5ae58ccdadd52d87a121ec76bb2f37c7a0662df5fa14"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision2/seol_face_begin.py",
+      "bytes": 1018,
+      "sha256": "883a275182f9817c8499bb8f681b31b51659aa713d8a47b617cab05c6bc15015"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision2/seol_face_body_normals.py",
+      "bytes": 3535,
+      "sha256": "32dbb2b6d2c476e6d5548fbf4a83ad28a7dd4f89324a500297929eed07f79bbf"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision2/seol_face_continuity.py",
+      "bytes": 2455,
+      "sha256": "8e3b74b164e57211cb42a86ba98793a086f53086047d643e90e16240601f50c7"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision2/seol_face_eye_embed.py",
+      "bytes": 5537,
+      "sha256": "e4346df215f43160b074b4439b6509800b7c83e8157274e0d5088c4dbc1b52ea"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision2/seol_face_eye_finish.py",
+      "bytes": 2215,
+      "sha256": "f625dba98c81098334c0db7ce2106f49c039f7869627dc125da6f29b32414f69"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision2/seol_face_eyes.py",
+      "bytes": 6798,
+      "sha256": "911053a01fcd8e6da3a4c6240ac373383d1617941588f420729530e0c911aefa"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision2/seol_face_finish_geometry.py",
+      "bytes": 2016,
+      "sha256": "f708d25eecfa8eaf60e0374de8b13ee0b0e04598f7c2e33731d8f1993811d8ba"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision2/seol_face_head_fit.py",
+      "bytes": 4553,
+      "sha256": "2880c7e59a1b7f4cafb4b2482b409d4cc1bb289ebda7b550b8dd1f92547de97d"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision2/seol_face_neutral.py",
+      "bytes": 1118,
+      "sha256": "96327449a954d915cf7fdf929e0093be09e77c48d753537c3d8be1a1760f6ab9"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision2/seol_face_reference.py",
+      "bytes": 2543,
+      "sha256": "ae71674cb84e3f7eccaaaf6cf71fc413cf31407eeaf6fa019dd1d2b8f2fd3a34"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision2/seol_face_sculpt.py",
+      "bytes": 4115,
+      "sha256": "394cc6332df950dd3428a82e19242731b725480fd8a54557e05337dbce3f9859"
+    },
+    {
+      "path": "LocalArchive/SeolpyeongFace20261019/bake-status.json",
+      "bytes": 94,
+      "sha256": "35851d55beba2f0af17348a802e8de1b593976a443f93c2d67c1c264c69ee5af"
+    },
+    {
+      "path": "LocalArchive/SeolpyeongFace20261019/body-normal-repair.json",
+      "bytes": 283,
+      "sha256": "13395756e64f6aa4c7f4a98f0fdfe48756d7cd44209e06f3f11f710379bf8ba5"
+    },
+    {
+      "path": "LocalArchive/SeolpyeongFace20261019/embedded-eye-stage.json",
+      "bytes": 313,
+      "sha256": "13b1cec3b9559057d7b30a89d2adeaa6bbb7c45a3a0fc5ee82f7ba8dd45353ff"
+    },
+    {
+      "path": "LocalArchive/SeolpyeongFace20261019/eye-diagnostic.txt",
+      "bytes": 399,
+      "sha256": "fcaff3d52773f7e104d92d07b4983b6d9628282191e6ec969ff126bf72a79b43"
+    },
+    {
+      "path": "LocalArchive/SeolpyeongFace20261019/eye-finish.json",
+      "bytes": 395,
+      "sha256": "4f302c3f98378ec2728eb4f93fffdc42aca7753ba5c509446302c97953633845"
+    },
+    {
+      "path": "LocalArchive/SeolpyeongFace20261019/eye-lid-projection.json",
+      "bytes": 427,
+      "sha256": "e12c8e2b577bbbaba5fa4e47ca18817a6687ce5033361ba1db4584072f645c49"
+    },
+    {
+      "path": "LocalArchive/SeolpyeongFace20261019/face-final-geometry.json",
+      "bytes": 403,
+      "sha256": "126a2af36146eb1f53b2ec3b959ea11e665466bdbf287855ddff9690016b7fca"
+    },
+    {
+      "path": "LocalArchive/SeolpyeongFace20261019/geometry-continuity.json",
+      "bytes": 344,
+      "sha256": "958743b12b1cbfaecb0328b3ff73379af4b49e4dd50f9a2564ca02b0a813f30d"
+    },
+    {
+      "path": "LocalArchive/SeolpyeongFace20261019/head-boundary-repair.json",
+      "bytes": 309,
+      "sha256": "180004fc7991716587ab1b5f6c0fb299689907380ec4d764d0691952010bd9dc"
+    },
+    {
+      "path": "LocalArchive/SeolpyeongFace20261019/image-generation.txt",
+      "bytes": 1656,
+      "sha256": "b148938774797615ec90eddafe70618e89f22c6efa697715f6c5f64239585f75"
+    },
+    {
+      "path": "LocalArchive/SeolpyeongFace20261019/inspection.txt",
+      "bytes": 65,
+      "sha256": "5bf3c270e45b01317c657cacd999f47e1726302eaf94d9913949a9fe021855de"
+    },
+    {
+      "path": "LocalArchive/SeolpyeongFace20261019/landmark-depth.json",
+      "bytes": 985,
+      "sha256": "92d94c9506e425ada629171dfb239c33d3fdc4d196555d47dfb2ab540c256aaa"
+    },
+    {
+      "path": "LocalArchive/SeolpyeongFace20261019/original-reference.json",
+      "bytes": 3146,
+      "sha256": "92a9c1fa7be6c7bcf5c83816494f74d9c7a88c9550fa293891122e46dd239348"
+    },
+    {
+      "path": "LocalArchive/SeolpyeongFace20261019/sculpt-stage.json",
+      "bytes": 314,
+      "sha256": "11c9f9f9a5443320924573ddf15fd60c52646ef8de0c803fb2d601234d491263"
+    },
+    {
+      "path": "LocalArchive/SeolpyeongFace20261019/source-context.json",
+      "bytes": 601,
+      "sha256": "483a2aa688f01bd964dc06117a8644d474a36c882daa1f438df7c79634d45b95"
+    },
+    {
+      "path": "LocalArchive/SeolpyeongFace20261019/source-inspection.json",
+      "bytes": 3609,
+      "sha256": "d331f60e27d0c2833e010543ded30e3440dacc03bdb8a71e65ac10844e0f8952"
+    },
+    {
+      "path": "LocalArchive/SeolpyeongFace20261019/unity-applied.txt",
+      "bytes": 276,
+      "sha256": "6e6a479519cdf3e01274ac30aa2457ad74fe3b82aa8b13d4a7ffc68bcc96e6e9"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/bake-progress.json",
+      "bytes": 138,
+      "sha256": "4dc4cc146c7ef492d188c3d90f966f79c8160bbdb2353c5398ec20e1944f58f2"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/bake-report.json",
+      "bytes": 1262,
+      "sha256": "4e8fb74342eb90eb993e1022694d0a8984edda21b9ad0f539be531331860ce34"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/cao_revision16_bake.py",
+      "bytes": 8773,
+      "sha256": "4190967a115dcda6b398ce07bb56b0e2b68f7a61377add2bf12445b7238747a7"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/cao_revision16_beard_finish.py",
+      "bytes": 3330,
+      "sha256": "ae3d4681b2370ee981b6d153aa54795b1feca3dc8ba1014c8bc778348ebc556f"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/cao_revision16_begin.py",
+      "bytes": 2503,
+      "sha256": "661752cac1a2cd1b81f1632a1c06529d1c85b41c9cfd0a64bb9cc58687eccd34"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/cao_revision16_body_delivery.py",
+      "bytes": 3668,
+      "sha256": "131e44a1bacb7e7828d1969d4d76e9195f69a7381428732a478a26d101d0ab8a"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/cao_revision16_compact_session.py",
+      "bytes": 923,
+      "sha256": "b7a788101c639adf121b7aeb0169433db880544bcc26810b36508169743b4b9e"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/cao_revision16_export_clean.py",
+      "bytes": 2699,
+      "sha256": "ce06621db506191745544b0460774990cf6aa423e2bd47782d058463a485b661"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/cao_revision16_finalize.py",
+      "bytes": 2742,
+      "sha256": "63e89d00f6c9941835d40674d538add621fece91d253b39594c21c48b8ee92e3"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/cao_revision16_groom.py",
+      "bytes": 7925,
+      "sha256": "1a4d816845b958593db23a5ca19819aafdc3836a15c56bbdebfa6be902e62f8a"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/cao_revision16_groom_refine.py",
+      "bytes": 6480,
+      "sha256": "6e627df3512fdc15e2b3a4a1ceaf12e397375f02293c40be9cdf223a42c0d461"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/cao_revision16_hands.py",
+      "bytes": 3954,
+      "sha256": "f16fb4724c8d4605f0b3c80067dde2f6dccc071624eff79f29eac153708f82f6"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/cao_revision16_materials.py",
+      "bytes": 4467,
+      "sha256": "d3ca13dc7afdd14fa1f4544601d6a6c0e01f1b11406756f7f61e27902f64e061"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/cao_revision16_portrait.py",
+      "bytes": 2475,
+      "sha256": "8e70d1977d1ce705a1843a291dd016d6ce5d3814a662f48e1ef7dfb89cfa5299"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/cao_revision16_skin_finish.py",
+      "bytes": 8716,
+      "sha256": "8295af7a70b89e87246bd5e0369b76036b83a8d14ace0e90bfaef1293bec0a00"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/cao_revision16_surface.py",
+      "bytes": 2717,
+      "sha256": "62c8dd58e3376717a8ccd5282ed6c1d6209ccfcae89dd176ce8c73d489574d11"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/cao_revision16_temple_material.py",
+      "bytes": 2859,
+      "sha256": "f4214c051e41a5efd4790b332fb381bc84ff0d34d034989f0e54f0e53c8393f1"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/cao_revision16_temple_part.py",
+      "bytes": 4527,
+      "sha256": "ed05f43f72e219747c2a869e7c0ad5e39d0bc2d506dd010d9f271519daa4ddfe"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/cao_revision16_temples.py",
+      "bytes": 1255,
+      "sha256": "60397061f75e0d4c1497e08914e7fa32fb9587d4a20db1e15c0c7ff2d991ffce"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/cao_revision16_uv_seams.py",
+      "bytes": 3298,
+      "sha256": "f005610fea6062279c3cc71c035b2ff151ce2452dfff555f29044fe5671a4b75"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/comparison-state.txt",
+      "bytes": 1572,
+      "sha256": "01dbb5fd3df471a2bc82419c09441e577285fc920baafba891e5a8b11216c331"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/delivery-inspection.txt",
+      "bytes": 431,
+      "sha256": "651957a823eac456aafb62174e6952c0b21384b103ede8bb42f0ec0c0e7170a3"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/delivery-sizes.json",
+      "bytes": 1004,
+      "sha256": "42687752b4805bcee592a8906aed2952352fac2370cd22503f19db4972776be4"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/dependency-check.txt",
+      "bytes": 93,
+      "sha256": "52c8cc8394db9e48ca3d7df34bcd047c3852bc2495c6d9bd9d8f3ade216d7d8b"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/face-surface.json",
+      "bytes": 916418,
+      "sha256": "9e256da024e9cfc73b49b314da8cb397d53aa842730b7c249c37cab5fcf5cb0d"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/groom-build.json",
+      "bytes": 390,
+      "sha256": "9c67ac1633e4689e7d3c7dedf87568f32314d799006a466a901fb2b1a8bfb989"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/groom-refinement.json",
+      "bytes": 122,
+      "sha256": "ef2a6ec67965869ea1dc4b5971349f11a05983627bb46a6e023bd22c318612e0"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/hand-anatomy-fit.json",
+      "bytes": 4963,
+      "sha256": "828f6d90ffdbb1601053e1cb9d82673d895d72f7947701f1802c74ea0153de95"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/hand-repair.json",
+      "bytes": 3051,
+      "sha256": "25a2a67c568a192181999f0666f9f3b95ae1f74923e88a1c7c136372b47246c0"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/image-generation.txt",
+      "bytes": 3924,
+      "sha256": "b97a9704a2c6fa4f6b3d9dd8de09c1803743075e04edf67c42b47c2e29772b0c"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/live-validation.txt",
+      "bytes": 249,
+      "sha256": "22f6e4c19c55fe6555f21b714e0a99842a47284acab111c419e033f0b5dbad08"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/material-refinement.json",
+      "bytes": 363,
+      "sha256": "e403f08b3beea61d58efc9c4f1ba8414ade9eb3118852fa5afec3248fedb45d5"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/motion-equivalence.txt",
+      "bytes": 70,
+      "sha256": "94951384f563a3da8ff4e6e4c37e8c2675d60ef09a9a358d094bbe9662d779b3"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/prefab-scene-dependencies.txt",
+      "bytes": 12644,
+      "sha256": "7f96271343b860f5769adfb43d4669f9039fc8db1c13951728c74a640189558d"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/projection-review.json",
+      "bytes": 345,
+      "sha256": "0b98f89be421e25aba22337c4561371b2ba80325c27620925005c8ad42202d80"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/r16-bake-result.json",
+      "bytes": 21,
+      "sha256": "5a8d559d6562c8c96ef4f20ec58e195e69200dd47495dd68384b5a3121526420"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/r16-beard-finish-result.json",
+      "bytes": 21,
+      "sha256": "5a8d559d6562c8c96ef4f20ec58e195e69200dd47495dd68384b5a3121526420"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/r16-begin-result.json",
+      "bytes": 1179,
+      "sha256": "52e3eaa0b24330963923a189126afb1fc9754bf02ea79b83cd98e86b33ccf5a5"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/r16-body-delivery-result.json",
+      "bytes": 21,
+      "sha256": "5a8d559d6562c8c96ef4f20ec58e195e69200dd47495dd68384b5a3121526420"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/r16-compact-session-result.json",
+      "bytes": 48,
+      "sha256": "75af65e7b31bd3a954323e98a2dbca6d0a5d7e3c46713f3eb741211d548e6000"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/r16-export-clean-result.json",
+      "bytes": 49,
+      "sha256": "06eb1ea81409980e373d6e48913f63d8f3e0eec0da9dade63a312deca99e28ee"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/r16-finalize-result.json",
+      "bytes": 21,
+      "sha256": "5a8d559d6562c8c96ef4f20ec58e195e69200dd47495dd68384b5a3121526420"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/r16-groom-refine-result.json",
+      "bytes": 21,
+      "sha256": "5a8d559d6562c8c96ef4f20ec58e195e69200dd47495dd68384b5a3121526420"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/r16-groom-result.json",
+      "bytes": 21,
+      "sha256": "5a8d559d6562c8c96ef4f20ec58e195e69200dd47495dd68384b5a3121526420"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/r16-hands-result.json",
+      "bytes": 21,
+      "sha256": "5a8d559d6562c8c96ef4f20ec58e195e69200dd47495dd68384b5a3121526420"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/r16-materials-result.json",
+      "bytes": 21,
+      "sha256": "5a8d559d6562c8c96ef4f20ec58e195e69200dd47495dd68384b5a3121526420"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/r16-portrait-result.json",
+      "bytes": 21,
+      "sha256": "5a8d559d6562c8c96ef4f20ec58e195e69200dd47495dd68384b5a3121526420"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/r16-skin-finish-result.json",
+      "bytes": 211,
+      "sha256": "878788920714e86b2f848c33554dfa01b8b1ad3b8827daa6130e3b00e142e33f"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/r16-skin-finish-v2-result.json",
+      "bytes": 48,
+      "sha256": "6d19244faa63bcd64967f60bbd0e56365342ebc3604fbb7eaa6a0540fa100983"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/r16-surface-result.json",
+      "bytes": 21,
+      "sha256": "5a8d559d6562c8c96ef4f20ec58e195e69200dd47495dd68384b5a3121526420"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/r16-temple-baked-probe-result.json",
+      "bytes": 48,
+      "sha256": "7cb1696fb4ac5b10ff13679da78c940021eea80ffe5471b5e87dd8d64ae1e797"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/r16-temple-depth-fit-result.json",
+      "bytes": 49,
+      "sha256": "5a74301d2960e86029753bd00e8ad70900cdfbe24b932bd006a66b98a066be50"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/r16-temple-fit-final-result.json",
+      "bytes": 48,
+      "sha256": "b05edab3d3a220fa32b915fd806a2b21a04712c2d17cd1989e2345bff9941cba"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/r16-temple-material-result.json",
+      "bytes": 49,
+      "sha256": "ee7ab491c74e83abd24a2d2e11f41e1c26522427cb32e74f5549e47af26260b8"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/r16-temple-part-result.json",
+      "bytes": 48,
+      "sha256": "bd8879f07adf733dc7b26084b26b21c3598bb47c488cf0bed093f65238b1d47a"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/r16-temple-pigment-fit-result.json",
+      "bytes": 49,
+      "sha256": "db706d05631eadd1da37c788304d367218c53c272038d8fe9c7935ee1eb5b0db"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/r16-temple-probe-result.json",
+      "bytes": 49,
+      "sha256": "00f60ec10744b5fa393e1ac4231b8e9adf2fa5313776e915c942ed5b95d99e50"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/r16-temples-result.json",
+      "bytes": 49,
+      "sha256": "e5eed1b328a7f6910663b9776ec4ad9ef026f12c9902f1768ef36ce1629c0a1f"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/r16-uv-seams-result.json",
+      "bytes": 49,
+      "sha256": "18fdeaed0279a09119f6fe4f4d89f029941e955107462c07e364f9948b7ed901"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/r16_temple_baked_probe.py",
+      "bytes": 722,
+      "sha256": "fd6733a9407d1276e6f336f21d2125005e18832df8eef7e1f96e8678a33b99ce"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/r16_temple_probe.py",
+      "bytes": 660,
+      "sha256": "91bbb76411b6d7f3bcaa23828856748cc41a39a6af80a890af6ff0237be46cec"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/recover_r16_bridge.py",
+      "bytes": 1295,
+      "sha256": "51c8697e60098de33d8a862248d2fe1567de8476f4505df931bfa81c09dffced"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/renderer-error-diagnosis.json",
+      "bytes": 3974,
+      "sha256": "3f90e8bb29ae51367e941e362ff68ee342224cd305b5f52a91e7705399717a1d"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/session-compaction.json",
+      "bytes": 54874,
+      "sha256": "20c710061e039ab604e2689a9ca51af0aa020b075f64e309c4ea5aeaa9731eb1"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/skin-finish.json",
+      "bytes": 240,
+      "sha256": "1f6955d06671fc0f45bf6ed99e9eb5a6d81c762a93cc676ca16b043a3267f16d"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/source-inventory.json",
+      "bytes": 17267,
+      "sha256": "01894b50ad514e2f9dc9bedabd8bac4295c89dcc292cacf12c5f0d085ff1262a"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/surface-repair.json",
+      "bytes": 203,
+      "sha256": "9d666880c6bd9f4c0b00154226024f75e189bf1def7fe096212f2d3170f37a27"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/temple-baked-sample.json",
+      "bytes": 5061,
+      "sha256": "e2d2cb7ce2302706cf4ceb706bf30d03b0003bda369407006b86d18daad67ba1"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/temple-material-repair.json",
+      "bytes": 399,
+      "sha256": "8438bfe916b61bc5487f2f658028ba1f3b24548a74b47ea41f200ea89e651c1e"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/temple-part.json",
+      "bytes": 403,
+      "sha256": "3fba051e69436ffe9e8aabf230114764cb9196b9dcc2191ffd502d3af4a9b16a"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/temple-repair.json",
+      "bytes": 325,
+      "sha256": "54729f464a3669083ec1e0e9ee7a4fe4f402e91490c7143fbf80bab1a9960579"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/temple-sample.json",
+      "bytes": 12549,
+      "sha256": "db26f05a2109250665a053541e1a3e62097e1d2dc3cacaf24a9582b690486968"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/unity-applied.txt",
+      "bytes": 132,
+      "sha256": "e23abc9d45eec4ce3bd6e7dfa5ac48b580800b8af1ae500c442b9e35dff6f2fc"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/unity-temple-sample.txt",
+      "bytes": 2061,
+      "sha256": "49e466856971145470d2189cc796205e000f9713eb3e4f6e6b888e19c43f229a"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/uv-seam-repair.json",
+      "bytes": 683,
+      "sha256": "9965180b49c1252d7462d628276367434fd7feaec49f2beb582e880115e23892"
+    },
+    {
+      "path": "LocalArchive/CaoCaoHairEnemies20261016/Revision16/validation-final.json",
+      "bytes": 7425,
+      "sha256": "31ad1ade1cf624e2e01735c5c00853d1f6c80d50590f4ab00e8dd0809b8324c4"
+    }
+  ],
+  "parts": [
+    {
+      "name": "characters-source.zip.part001",
+      "bytes": 44040192,
+      "sha256": "249d233abf6ef8748e4621e2d45007caab51b91b0cf351092fec16b3307489ce"
+    },
+    {
+      "name": "characters-source.zip.part002",
+      "bytes": 44040192,
+      "sha256": "1170d751b4118fd5e3600804a28cd169c288ee381830d25a06e03a698e9565ff"
+    },
+    {
+      "name": "characters-source.zip.part003",
+      "bytes": 44040192,
+      "sha256": "d7e5e4fe746500a768eed97ec785ab95e59572e0967abdae619bdddcc68767ac"
+    },
+    {
+      "name": "characters-source.zip.part004",
+      "bytes": 44040192,
+      "sha256": "7e84d73f2a80e3404428dde87742421e87ebb79603131b733e2a8a256960e1a4"
+    },
+    {
+      "name": "characters-source.zip.part005",
+      "bytes": 44040192,
+      "sha256": "0e946922d9ddc2da3f6c1a30322b64ce68ac92229e899052d1da098e3fb9b833"
+    },
+    {
+      "name": "characters-source.zip.part006",
+      "bytes": 44040192,
+      "sha256": "c5bfd48063fdb72f2f2cd1f47c655b19f06efd2a3fc5bed35bf453fc20d14600"
+    },
+    {
+      "name": "characters-source.zip.part007",
+      "bytes": 44040192,
+      "sha256": "c7d7e1b837dca55b6c0ad88d4bff404c47564f8b37bd53c9b16e9978058b25af"
+    },
+    {
+      "name": "characters-source.zip.part008",
+      "bytes": 44040192,
+      "sha256": "79906f092cd0da7dfc968d570b68c5c374c86684b8780af9ca35a19fe4673ee1"
+    },
+    {
+      "name": "characters-source.zip.part009",
+      "bytes": 44040192,
+      "sha256": "8920b211f77001cb2d75ea7f4baaf483b474ab1182dafd43f68777b54ded590e"
+    },
+    {
+      "name": "characters-source.zip.part010",
+      "bytes": 44040192,
+      "sha256": "2e5751e25b8727ea621aaf040b005ae95470ffc12df1f147c127ebf2f76fd1f2"
+    },
+    {
+      "name": "characters-source.zip.part011",
+      "bytes": 44040192,
+      "sha256": "483f0eeba51c32c97ee5c7b6077769da816ce743dc3bc1e0973cc6e4d22815e7"
+    },
+    {
+      "name": "characters-source.zip.part012",
+      "bytes": 44040192,
+      "sha256": "751d915ebdcaf8eac9fe9c0b2b4d259c8d703bed2659e5c80b951c486f831c3e"
+    },
+    {
+      "name": "characters-source.zip.part013",
+      "bytes": 44040192,
+      "sha256": "ce603ebd9d7151801bbce581fde7d7a32e65a27870b63163015292a49f5ee423"
+    },
+    {
+      "name": "characters-source.zip.part014",
+      "bytes": 44040192,
+      "sha256": "fc5fb5a15cff128eda26f4e8044ad3b452bca465fb4a64ba72fa3118dcf3cdc6"
+    },
+    {
+      "name": "characters-source.zip.part015",
+      "bytes": 44040192,
+      "sha256": "69f36825405ae947aef867419720375ceeb3e72de16dc49fd119f3f80f42f762"
+    },
+    {
+      "name": "characters-source.zip.part016",
+      "bytes": 44040192,
+      "sha256": "5f85d5c47ea4b1724890f72a461fe77e8df55f4f56672af34e4cc86ff080666b"
+    },
+    {
+      "name": "characters-source.zip.part017",
+      "bytes": 44040192,
+      "sha256": "c0dd363530d24d0b1092740bac80274f3fa4e145f5c9b2e644c21df1b5e3acc1"
+    },
+    {
+      "name": "characters-source.zip.part018",
+      "bytes": 44040192,
+      "sha256": "ce84fd337c97ea6b564365749bb59e6bb42adba3a4f582196e322c7de0687eea"
+    },
+    {
+      "name": "characters-source.zip.part019",
+      "bytes": 44040192,
+      "sha256": "65a7a1f0600fef5ee3c1c36f5b7f298322dda644ee19fb4c1f44b30ca76cc2eb"
+    },
+    {
+      "name": "characters-source.zip.part020",
+      "bytes": 44040192,
+      "sha256": "92c27db9ea2698efbcf4469301feddade3b3a0a6d27678a4725d71a07a9b5e18"
+    },
+    {
+      "name": "characters-source.zip.part021",
+      "bytes": 44040192,
+      "sha256": "f88258dcd196edde072f9193dd470a672a38f37900b4f55d57f03746689dd080"
+    },
+    {
+      "name": "characters-source.zip.part022",
+      "bytes": 44040192,
+      "sha256": "c2c5459aa7a65b8d6ac5e84ae4024eafc10c07b5c8e1d74c0bb5d39775af14d0"
+    },
+    {
+      "name": "characters-source.zip.part023",
+      "bytes": 44040192,
+      "sha256": "43f05e470683a8e8d180207f8b3ac0af7b23b9c7f22fa58b7c08c7dcb944580c"
+    },
+    {
+      "name": "characters-source.zip.part024",
+      "bytes": 37375154,
+      "sha256": "74ede2093fdb77f460bb7cb85a7050c17cb00fc84c0489e31af72aff7e475cd9"
+    }
+  ],
+  "archive_sha256": "8df7790483318a82aa55d4aa52d02b155df1ae1bf5305ce3ec6cffa78cd1e5b5"
+}

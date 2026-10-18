@@ -1,0 +1,4 @@
+# New baked delivery uses ordinary Git; existing LFS history is unchanged.
+*.fbx -filter -diff -merge -text
+*.png -filter -diff -merge -text
+*.asset -filter -diff -merge

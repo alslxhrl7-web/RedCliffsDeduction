@@ -1,0 +1,3 @@
+*.fbx -filter -diff -merge -text
+*.png -filter -diff -merge -text
+*.asset -filter -diff -merge

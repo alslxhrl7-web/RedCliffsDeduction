@@ -1,0 +1,102 @@
+[
+  {
+    "part": "Body",
+    "material": "BAKED_R16_Body",
+    "base": "Body_BaseColor.png",
+    "normal": "Body_Normal.png",
+    "metalSmooth": "Body_MetalSmooth.png",
+    "roughness": 0.55,
+    "metallic": 1,
+    "alphaClip": false
+  },
+  {
+    "part": "Face",
+    "material": "BAKED_R16_Face",
+    "base": "Face_BaseColor.png",
+    "normal": "Face_Normal.png",
+    "metalSmooth": "Face_MetalSmooth.png",
+    "roughness": 0.55,
+    "metallic": 1,
+    "alphaClip": false
+  },
+  {
+    "part": "OriginalHair",
+    "material": "BAKED_R16_OriginalHair",
+    "base": "OriginalHair_BaseColor.png",
+    "normal": "OriginalHair_Normal.png",
+    "metalSmooth": "",
+    "roughness": 0.55,
+    "metallic": 0,
+    "alphaClip": true
+  },
+  {
+    "part": "OriginalKnot",
+    "material": "BAKED_OriginalKnot",
+    "base": "OriginalKnot_BaseColor.png",
+    "normal": "OriginalKnot_Normal.png",
+    "metalSmooth": "OriginalKnot_MetalSmooth.png",
+    "roughness": 0.55,
+    "metallic": 0,
+    "alphaClip": false
+  },
+  {
+    "part": "OriginalBinding",
+    "material": "BAKED_OriginalBinding",
+    "base": "OriginalBinding_BaseColor.png",
+    "normal": "OriginalBinding_Normal.png",
+    "metalSmooth": "OriginalBinding_MetalSmooth.png",
+    "roughness": 0.55,
+    "metallic": 0,
+    "alphaClip": false
+  },
+  {
+    "part": "BeardGroom",
+    "material": "BAKED_R16_BeardGroom",
+    "base": "BeardGroom_BaseColor.png",
+    "normal": "",
+    "metalSmooth": "",
+    "roughness": 0.65,
+    "metallic": 0,
+    "alphaClip": true
+  },
+  {
+    "part": "HandNails",
+    "material": "BAKED_R16_HandNails",
+    "base": "HandNails_BaseColor.png",
+    "normal": "HandNails_Normal.png",
+    "metalSmooth": "",
+    "roughness": 0.48,
+    "metallic": 0,
+    "alphaClip": false
+  },
+  {
+    "part": "DetailGroom",
+    "material": "BAKED_R16_DetailGroom",
+    "base": "DetailGroom_BaseColor.png",
+    "normal": "",
+    "metalSmooth": "",
+    "roughness": 0.57,
+    "metallic": 0,
+    "alphaClip": false
+  },
+  {
+    "part": "Hands",
+    "material": "BAKED_R16_Hands",
+    "base": "Hands_BaseColor.png",
+    "normal": "Hands_Normal.png",
+    "metalSmooth": "",
+    "roughness": 0.55,
+    "metallic": 0,
+    "alphaClip": false
+  },
+  {
+    "part": "TempleHair",
+    "material": "BAKED_R16_TempleHair",
+    "base": "TempleHair_BaseColor.png",
+    "normal": "TempleHair_Normal.png",
+    "metalSmooth": "",
+    "roughness": 0.72,
+    "metallic": 0,
+    "alphaClip": false
+  }
+]

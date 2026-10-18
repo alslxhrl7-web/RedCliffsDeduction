@@ -47,7 +47,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RedCliffMystery.VarcoIdleMotion
   Profile: 0
   Amplitude: 0.003
-  MouthHeightOverride: 0.9
+  DisableLipMotion: 1
+  MouthHeightOverride: 0.864
 --- !u!1 &3848626113099768452
 GameObject:
   m_ObjectHideFlags: 0
@@ -88,7 +89,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3848626113099768452}
-  m_Mesh: {fileID: 4300000, guid: 203247ae2bd6dfb4099890403291e570, type: 2}
+  m_Mesh: {fileID: 4300000, guid: 27daead0f68c9c54aba952b0a1c2f101, type: 2}
 --- !u!23 &7025698994924876273
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -114,7 +115,16 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 2d5cb72de7a060b42b9c2fe8a3924cba, type: 2}
+  - {fileID: 2100000, guid: b5561a5d16e3db04fa8d21912fc77dc6, type: 2}
+  - {fileID: 2100000, guid: 9d2a09366427d414ab765ee722f35a1f, type: 2}
+  - {fileID: 2100000, guid: 609829d83086c1b4bbfcaf8b0f2830af, type: 2}
+  - {fileID: 2100000, guid: 2c361536646259e4b81dab9e43b88e5c, type: 2}
+  - {fileID: 2100000, guid: ecae962bdcce2454db0c323b36e23136, type: 2}
+  - {fileID: 2100000, guid: ac1b0234ed3034a45a3ce0f1cb642a96, type: 2}
+  - {fileID: 2100000, guid: c552fb4425f6c224e9587f1b8985ea14, type: 2}
+  - {fileID: 2100000, guid: fd9f2686ef39d60429318e9a343f2d17, type: 2}
+  - {fileID: 2100000, guid: 72e2a77a13fdbaf4eb78918aee993a44, type: 2}
+  - {fileID: 2100000, guid: ee08d307abe818545b817e64eb9ae211, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

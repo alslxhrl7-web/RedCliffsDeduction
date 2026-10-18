@@ -7,6 +7,7 @@ namespace RedCliffMystery
     {
         public int Profile;
         public float Amplitude = .005f;
+        public bool DisableLipMotion;
         [Range(0, 1)] public float MouthHeightOverride;
         struct Surface
         {
@@ -16,6 +17,8 @@ namespace RedCliffMystery
             public float[] Weight;
             public float[] MouthWeight;
             public float Height, MouthY;
+            public Vector3[] BreathBasis, SwayBasis;
+            public Matrix4x4 BasisToVisual, BasisToMesh;
         }
         Surface[] surfaces;
         float nextSample;
@@ -36,7 +39,7 @@ namespace RedCliffMystery
             foreach (var motion in FindObjectsByType<VarcoIdleMotion>(FindObjectsSortMode.None))
                 if (motion.Profile == profile) motion.StartSpeech(text, Time.time);
         }
-        public void StartSpeech(string text, float time) { speech = text; speechStart = time; }
+        public void StartSpeech(string text, float time) { speech = DisableLipMotion ? null : text; speechStart = time; }
         public bool IsSpeaking => !string.IsNullOrEmpty(speech) && MouthShape(speech, Time.time - speechStart) != Vector2.zero;
         public bool HasSpeech => !string.IsNullOrEmpty(speech);
         public static Vector2 MouthShape(string text, float elapsed)
@@ -65,10 +68,12 @@ namespace RedCliffMystery
         {
             if (surfaces != null) return;
             var filters = GetComponentsInChildren<MeshFilter>(true);
+            var hairReference = GetComponentInChildren<VarcoHairAttachment>(true);
             surfaces = new Surface[filters.Length];
             for (int index = 0; index < filters.Length; index++)
             {
                 var filter = filters[index];
+                bool isHairAttachment = filter.GetComponentInParent<VarcoHairAttachment>() != null;
                 var mesh = Instantiate(filter.sharedMesh);
                 mesh.MarkDynamic();
                 var rest = mesh.vertices;
@@ -80,6 +85,8 @@ namespace RedCliffMystery
                     float y = transform.InverseTransformPoint(filter.transform.TransformPoint(rest[i])).y;
                     min = Mathf.Min(min, y); max = Mathf.Max(max, y);
                 }
+                if (!isHairAttachment && hairReference != null && hairReference.BodyReferenceHeight > 0)
+                    max = min + hairReference.BodyReferenceHeight;
                 float height = max - min;
                 float mouthY = min + height * (MouthHeightOverride > 0 ? MouthHeightOverride : MouthHeightFraction(Profile));
                 float front = float.PositiveInfinity;
@@ -93,6 +100,7 @@ namespace RedCliffMystery
                     var p = transform.InverseTransformPoint(filter.transform.TransformPoint(rest[i]));
                     float y = p.y;
                     weight[i] = Mathf.SmoothStep(0, 1, Mathf.InverseLerp(min + (max - min) * .42f, min + (max - min) * .75f, y));
+                    if (isHairAttachment) { weight[i] = 1; mouthWeight[i] = 0; continue; }
                     mouthWeight[i] = Mathf.Max(0, 1 - Mathf.Abs(p.x) / (height * .035f))
                         * Mathf.Max(0, 1 - Mathf.Abs(y - mouthY) / (height * .015f))
                         * Mathf.Clamp01(1 - (p.z - front) / (height * .035f));
@@ -100,6 +108,24 @@ namespace RedCliffMystery
                 surfaces[index] = new Surface { Filter = filter, Original = filter.sharedMesh, Animated = mesh,
                     Rest = rest, Buffer = new Vector3[rest.Length], Weight = weight,
                     MouthWeight = mouthWeight, Height = height, MouthY = mouthY };
+                if (DisableLipMotion)
+                {
+                    var toVisual = transform.worldToLocalMatrix * filter.transform.localToWorldMatrix;
+                    var toMesh = filter.transform.worldToLocalMatrix * transform.localToWorldMatrix;
+                    var breathBasis = new Vector3[rest.Length];
+                    var swayBasis = new Vector3[rest.Length];
+                    for (int i = 0; i < rest.Length; i++)
+                    {
+                        var p = toVisual.MultiplyPoint3x4(rest[i]);
+                        float w = weight[i];
+                        breathBasis[i] = toMesh.MultiplyVector(new Vector3(p.x*w,.2f*w,p.z*1.5f*w));
+                        swayBasis[i] = toMesh.MultiplyVector(new Vector3(.45f*w,0,0));
+                    }
+                    surfaces[index].BreathBasis = breathBasis;
+                    surfaces[index].SwayBasis = swayBasis;
+                    surfaces[index].BasisToVisual = toVisual;
+                    surfaces[index].BasisToMesh = toMesh;
+                }
                 filter.sharedMesh = mesh;
             }
         }
@@ -138,11 +164,20 @@ namespace RedCliffMystery
             float phase = Profile * 1.37f;
             float breath = Mathf.Sin(time * (1.35f + Profile * .035f) + phase);
             float sway = Mathf.Sin(time * .61f + phase);
-            Vector2 mouth = MouthShape(speech, time - speechStart);
+            Vector2 mouth = DisableLipMotion ? Vector2.zero : MouthShape(speech, time - speechStart);
             foreach (var surface in surfaces)
             {
                 var toVisual = transform.worldToLocalMatrix * surface.Filter.transform.localToWorldMatrix;
                 var toMesh = surface.Filter.transform.worldToLocalMatrix * transform.localToWorldMatrix;
+                if (DisableLipMotion && surface.BreathBasis != null &&
+                    surface.BasisToVisual.Equals(toVisual) && surface.BasisToMesh.Equals(toMesh))
+                {
+                    float b = breath * Amplitude, s = sway * Amplitude;
+                    for (int i = 0; i < surface.Rest.Length; i++)
+                        surface.Buffer[i] = surface.Rest[i] + surface.BreathBasis[i]*b + surface.SwayBasis[i]*s;
+                    surface.Animated.vertices = surface.Buffer;
+                    continue;
+                }
                 for (int i = 0; i < surface.Rest.Length; i++)
                 {
                     Vector3 p = toVisual.MultiplyPoint3x4(surface.Rest[i]);
